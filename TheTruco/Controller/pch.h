@@ -11,5 +11,6 @@
 #include "framework.h"
 
 #pragma comment(lib, "Model.lib")
+#pragma comment(lib, "Core.lib")
 
 #endif //PCH_H

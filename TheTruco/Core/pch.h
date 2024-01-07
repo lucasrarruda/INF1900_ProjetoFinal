@@ -10,6 +10,4 @@
 // add headers that you want to pre-compile here
 #include "framework.h"
 
-#pragma comment(lib, "Core.lib")
-
 #endif //PCH_H
