@@ -7,12 +7,11 @@
 #include "View.h"
 #include "ViewDlg.h"
 
-#include <TestController.h>
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+using namespace std;
 
 // CViewApp
 
@@ -30,8 +29,7 @@ CViewApp::CViewApp()
 
 	// TODO: add construction code here,
 	// Place all significant initialization in InitInstance
-	TestController test = TestController(5);
-	int valueTest = test.getTest();
+	_menuView = make_unique<MenuView>();
 }
 
 

@@ -7,10 +7,10 @@ class ViewBase
 {
 public:
 	ViewBase() = default;
-	virtual ~ViewBase() = 0;
+	virtual ~ViewBase() = default;
 
 	virtual void Updated() = 0;
 
 protected:
-	std::unique_ptr<ControllerBase> _controller;
+	std::shared_ptr<ControllerBase> _controller;
 };

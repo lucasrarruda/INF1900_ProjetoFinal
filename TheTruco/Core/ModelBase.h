@@ -7,12 +7,12 @@ class ModelBase
 {
 public:
 	ModelBase() = default;
-	virtual ~ModelBase() = 0;
+	virtual ~ModelBase() = default;
 
-	virtual void Attach(ViewBase observer) = 0;
-	virtual void Detach(ViewBase observer) = 0;
+	virtual void Attach(std::shared_ptr<ViewBase> observer) = 0;
+	virtual void Detach(std::shared_ptr<ViewBase> observer) = 0;
 	virtual void Notify() = 0;
 
 protected:
-	std::unique_ptr<ViewBase> _view;
+	std::shared_ptr<ViewBase> _view;
 };

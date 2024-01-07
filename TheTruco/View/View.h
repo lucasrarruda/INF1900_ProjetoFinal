@@ -10,6 +10,7 @@
 
 #include "resource.h"		// main symbols
 
+#include "MenuView.h"
 
 // CViewApp:
 // See View.cpp for the implementation of this class
@@ -27,6 +28,9 @@ public:
 // Implementation
 
 	DECLARE_MESSAGE_MAP()
+
+private:
+	std::unique_ptr<MenuView> _menuView;
 };
 
 extern CViewApp theApp;

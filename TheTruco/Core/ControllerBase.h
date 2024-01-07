@@ -4,7 +4,7 @@ class ControllerBase
 {
 public:
 	ControllerBase() = default;
-	virtual ~ControllerBase() = 0;
+	virtual ~ControllerBase() = default;
 
 	virtual void Execute() = 0;
 };
