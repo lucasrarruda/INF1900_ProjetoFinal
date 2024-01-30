@@ -10,6 +10,8 @@
 // add headers that you want to pre-compile here
 #include "framework.h"
 
+#include "Resource.h"
+
 #pragma comment(lib, "Model.lib")
 #pragma comment(lib, "Controller.lib")
 #pragma comment(lib, "Core.lib")
