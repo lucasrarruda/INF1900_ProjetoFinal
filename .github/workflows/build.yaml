@@ -16,6 +16,10 @@ jobs:
     - name: Set up MSVC environment
       uses: microsoft/setup-msbuild@v1
 
+    - name: Clean Project
+      run: |
+        msbuild /t:Clean /p:Configuration=Release /p:Platform=x64 TheTruco\TheTruco.sln
+
     - name: Build Project
       run: |
         msbuild /p:Configuration=Release /p:Platform=x64 TheTruco\TheTruco.sln
