@@ -27,5 +27,5 @@ jobs:
     - name: Archive artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: artifacts
+        name: TheTruco
         path: TheTruco\x64
