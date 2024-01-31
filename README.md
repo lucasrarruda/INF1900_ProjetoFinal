@@ -30,22 +30,6 @@ O usuário pode:
 3. Restaurar uma partida interrompida:
     - Apenas para o jogador criador da partida;
 
-## Storyboard
-
-A imagem abaixo mostra o fluxo de navegação geral da aplicação.
-
-![Alt text](Doc/storyboard.jpg)
-
-O usuário pode:
-
-1. Iniciar um novo jogo:
-    - A cada jogo será criado um código novo para compartillhar com outro jogador;
-    - A partida só iniciará após o segundo jogador se conectar;
-2. Entrar em uma partida:
-    - O jogador convidado deve utilizar o código do jogo para acessar a partida;
-3. Restaurar uma partida interrompida:
-    - Apenas para o jogador criador da partida;
-
 ## Arquitetura do Projeto
 
 O projeto foi implementado em *C++ 17* utilizando o padrão arquitetural MVC (*Model View Controller*). Para criação da interface de usuário foi utilizado o framework MFC (Microsoft Foundation Class).
