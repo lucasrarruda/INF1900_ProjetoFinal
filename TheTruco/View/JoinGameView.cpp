@@ -1,9 +1,9 @@
 #include "pch.h"
-#include "JoinGameView.h"
+#include <JoinGameView.h>
 
 using namespace std;
 
-JoinGameView::JoinGameView(CWnd* parentWindow) : ViewBase(), _parentWindow(parentWindow)
+JoinGameView::JoinGameView(CWnd* parentWindow) : Interfaces::ViewBase(), _parentWindow(parentWindow)
 {
 }
 

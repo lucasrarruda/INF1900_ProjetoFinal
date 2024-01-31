@@ -1,9 +1,9 @@
 #pragma once
 #include <afxwin.h>
-#include "MenuView.h"
-#include "GameView.h"
-#include "JoinGameView.h"
-#include "NewGameView.h"
+#include <MenuView.h>
+#include <GameView.h>
+#include <JoinGameView.h>
+#include <NewGameView.h>
 
 class MainFrame : public CFrameWnd
 {

@@ -4,9 +4,8 @@
 
 #include "pch.h"
 #include "framework.h"
-#include "View.h"
-
-#include "MainFrame.h"
+#include <View.h>
+#include <MainFrame.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

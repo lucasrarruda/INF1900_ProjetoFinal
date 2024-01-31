@@ -1,10 +1,10 @@
 #pragma once
 
-#include <ViewBase.h>
+#include <Interfaces/ViewBase.h>
 #include <GameModelFake.h>
 #include <memory>
 
-class MenuView: public ViewBase, public CFrameWnd
+class MenuView: public Interfaces::ViewBase, public CFrameWnd
 {
 public:
 	MenuView(CWnd* parentWindow);
