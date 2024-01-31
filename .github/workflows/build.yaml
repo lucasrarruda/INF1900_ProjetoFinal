@@ -1,0 +1,27 @@
+name: Build MFC Project
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Set up MSVC environment
+      uses: microsoft/setup-msbuild@v1
+
+    - name: Build Project
+      run: |
+        msbuild /p:Configuration=Release /p:Platform=x64 TheTruco\TheTruco.sln
+
+    - name: Archive artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: artifacts
+        path: TheTruco\x64
