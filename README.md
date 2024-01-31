@@ -12,7 +12,7 @@ Alunos:
 
 ## Requisitos
 
-O projeto está de acordo com os requisitos definidos [aqui](Doc/Requisitos_TheTruco_ProjetoFinal.docx.pdf).
+O projeto está de acordo com os requisitos definidos [aqui](Doc/Requisitos_TheTruco_ProjetoFinal.pdf).
 
 ## Storyboard
 
