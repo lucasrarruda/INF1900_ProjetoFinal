@@ -1,6 +1,7 @@
 #pragma once
-#include <ViewBase.h>
-class JoinGameView : public ViewBase, public CFrameWnd
+#include <Interfaces/ViewBase.h>
+
+class JoinGameView : public Interfaces::ViewBase, public CFrameWnd
 {
 public:
 	JoinGameView(CWnd* parentWindow);

@@ -1,6 +1,7 @@
 #pragma once
-#include <ViewBase.h>
-class NewGameView : public ViewBase, public CFrameWnd
+#include <Interfaces/ViewBase.h>
+
+class NewGameView : public Interfaces::ViewBase, public CFrameWnd
 {
 public:
 	NewGameView(CWnd* parentWindow);

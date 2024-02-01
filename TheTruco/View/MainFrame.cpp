@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "MainFrame.h"
+#include <MainFrame.h>
 
 BEGIN_MESSAGE_MAP(MainFrame, CFrameWnd)
 	ON_COMMAND(IDC_NEW_GAME_BUTTON, NavigateNewGame)

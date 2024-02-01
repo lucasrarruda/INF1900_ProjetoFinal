@@ -1,10 +1,10 @@
 #include "pch.h"
-#include "MenuView.h"
+#include <MenuView.h>
 #include <MenuControllerFake.h>
 
 using namespace std;
 
-MenuView::MenuView(CWnd* parentWindow) : ViewBase(), _parentWindow(parentWindow)
+MenuView::MenuView(CWnd* parentWindow) : Interfaces::ViewBase(), _parentWindow(parentWindow)
 {
 	_gameModel = make_shared<GameModelFake>();
 	_controller = make_shared<MenuControllerFake>(_gameModel);

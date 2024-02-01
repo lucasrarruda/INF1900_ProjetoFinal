@@ -1,9 +1,9 @@
 #include "pch.h"
-#include "GameView.h"
+#include <GameView.h>
 
 using namespace std;
 
-GameView::GameView(CWnd* parentWindow) : ViewBase(), _parentWindow(parentWindow)
+GameView::GameView(CWnd* parentWindow) : Interfaces::ViewBase(), _parentWindow(parentWindow)
 {
 }
 

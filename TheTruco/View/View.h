@@ -8,7 +8,7 @@
 	#error "include 'pch.h' before including this file for PCH"
 #endif
 
-#include "resource.h"		// main symbols
+#include <Resource.h>		// main symbols
 
 // CViewApp:
 // See View.cpp for the implementation of this class
