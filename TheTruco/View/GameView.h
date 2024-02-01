@@ -27,10 +27,13 @@ private:
 	CStatic _yourPoints;
 	CStatic _theirScore;
 	CStatic _theirPoints;
-	CStatic _labelConsole;
 	CStatic _gameConsole;
 	CButton _trucoButton;
+	CButton _leaveGameButton;
 	CFont _trucoButtonFont;
+	CFont _labelFont;
+	CFont _scoresFont;
+	CFont _buttonFont;
 
 	CStatic _cardsDeck;
 	CStatic _yourDroppedCard;
@@ -45,6 +48,9 @@ private:
 	CButton _yourCardOne;
 	CButton _yourCardTwo;
 	CButton _yourCardThree;
+	CButton _yourCardCoverOne;
+	CButton _yourCardCoverTwo;
+	CButton _yourCardCoverThree;
 
 	void CreateGameScore();
 	void CreateGameCards();
