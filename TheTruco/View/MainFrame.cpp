@@ -1,5 +1,8 @@
 #include "pch.h"
 #include <MainFrame.h>
+#include <DisplayHelper.h>
+
+using namespace std;
 
 BEGIN_MESSAGE_MAP(MainFrame, CFrameWnd)
 	ON_COMMAND(IDC_NEW_GAME_BUTTON, NavigateNewGame)
@@ -32,7 +35,13 @@ BOOL MainFrame::PreCreateWindow(CREATESTRUCT& cs)
 
 BOOL MainFrame::Create()
 {
-	if (!CFrameWnd::Create(NULL, _T("The Truco"), WS_OVERLAPPED | WS_SYSMENU, CRect(100, 100, 1280, 1280)))
+	auto [dpiX, dpiY] = DisplayHelper::GetMonitorDpi();
+	if (dpiX >= 1.0)
+		dpiX >= 0.8;
+	if (dpiY == 1.0)
+		dpiY = 0.8;
+
+	if (!CFrameWnd::Create(NULL, _T("The Truco"), WS_OVERLAPPED | WS_SYSMENU, CRect(100, 100, static_cast<int>(1280 * dpiX), static_cast<int>(1280 * dpiY))))
 		return FALSE;
 
 	ShowWindow(SW_SHOW);
@@ -46,6 +55,7 @@ BOOL MainFrame::Create()
 	_newGameView.Hide();
 	_joinGameView.Hide();
 	_gameView.Hide();
+	UpdateFrame();
 
 	return TRUE;
 }

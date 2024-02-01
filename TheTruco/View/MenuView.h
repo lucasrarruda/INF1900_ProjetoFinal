@@ -24,9 +24,11 @@ private:
 	CEdit _nickNameBox;
 	CButton _newGameButton;
 	CButton _joinGameButton;
-	CButton _recoverLastGame;
+	CButton _recoverLastGameButton;
 
 	CFont _titleFont;
 	CFont _nicknameFont;
+	CFont _labelFont;
+	CFont _buttonFont;
 };
 
