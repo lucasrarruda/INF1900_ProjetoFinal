@@ -16,15 +16,14 @@ private:
 	CWnd* _parentWindow;
 	CStatic _labelTitle;
 	CStatic _labelGameCode;
-	CStatic _GameCode;
-	CStatic _labelPlayerOne;
-	CStatic _labelPlayerTwo;
-	CStatic _labelPlayerThree;
-	CStatic _labelPlayerFour;
+	CStatic _gameCode;
+	CStatic _labelPlayerPartner;
 	CButton _startGameButton;
 	CButton _backMenuButton;
 
 	CFont _titleFont;
 	CFont _gameCodeFont;
+	CFont _labelFont;
+	CFont _buttonFont;
 };
 

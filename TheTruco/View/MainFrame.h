@@ -4,6 +4,7 @@
 #include <GameView.h>
 #include <JoinGameView.h>
 #include <NewGameView.h>
+#include <tuple>
 
 class MainFrame : public CFrameWnd
 {

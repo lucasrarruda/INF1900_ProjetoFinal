@@ -17,10 +17,12 @@ private:
 	CStatic _labelTitle;
 	CStatic _labelGameCode;
 	CEdit _gameCodeBox;
-	CButton _startGameButton;
+	CButton _joinGameButton;
 	CButton _backMenuButton;
 
 	CFont _titleFont;
 	CFont _gameCodeFont;
+	CFont _labelFont;
+	CFont _buttonFont;
 };
 
