@@ -1,30 +1,27 @@
-// NamedPipeCheck.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
-#include <iostream>
+#include <windows.h> 
+#include <stdio.h> 
+#include <tchar.h>
+#include <strsafe.h>
 #include "../Core/CommunicationService.h"
+#include "../Core/StructMessage.h"
+#include <iostream>
 
+#pragma comment(lib,"Core.lib")
+
+using namespace Communication;
 int main()
 {
-    std::cout << "Hello World!\n";
-    CommunicationService communication;
-    std::wstring current= communication.GetCurrentPasswordConnection();
 
-    StructMessage message;
-    message.Content = "Test Message";
-    bool messagesuccessfuly = communication.SendDataToPipe(message);
+    // The main loop creates an instance of the named pipe and 
+    // then waits for a client to connect to it. When the client 
+    // connects, a thread is created to handle communications 
+    // with that client, and this loop is free to wait for the
+    // next client connect request. It is an infinite loop.
 
-
-    
+        CommunicationService communication;
+        auto valuepassword = communication.GetCurrentPasswordConnection();
+        std::wcout << "Current password:" << valuepassword << std::endl;
+        auto getopenedchannel = communication.OpenCommunicationChannel(valuepassword);
+        std::cout << "Opened channel: " << getopenedchannel << std::endl;
+        StructMessage receivedvalue = communication.ReceiveDataFromPipe();
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file

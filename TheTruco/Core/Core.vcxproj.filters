@@ -13,8 +13,14 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="NewFilter1">
-      <UniqueIdentifier>{672b086a-ac7f-4292-b069-12bd900092b2}</UniqueIdentifier>
+    <Filter Include="Util">
+      <UniqueIdentifier>{bfbf9c78-851e-4820-966c-6464e60a9946}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Communication">
+      <UniqueIdentifier>{1a37ee2a-81aa-4ab3-8fc1-6df66e23cb6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Communication\MessageTypes">
+      <UniqueIdentifier>{6645336f-6938-4dd9-8d13-651201c24737}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -33,31 +39,37 @@
     <ClInclude Include="ModelBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AppUtil.h">
+      <Filter>Util</Filter>
+    </ClInclude>
     <ClInclude Include="CommunicationService.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NamedPipeManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NamedPipeConstant.h">
-      <Filter>Header Files</Filter>
+      <Filter>Communication</Filter>
     </ClInclude>
     <ClInclude Include="StructMessage.h">
-      <Filter>Header Files</Filter>
+      <Filter>Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="NamedPipeConstant.h">
+      <Filter>Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="NamedPipeManager.h">
+      <Filter>Communication</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AppUtil.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
     <ClCompile Include="CommunicationService.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Communication</Filter>
     </ClCompile>
     <ClCompile Include="NamedPipeManager.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Communication</Filter>
     </ClCompile>
     <ClCompile Include="StructMessage.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Communication</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

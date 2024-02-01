@@ -1,48 +1,74 @@
 #include "pch.h"
-#include "CommunicationService.h"
+#include <CommunicationService.h>
 #include <random>
 
-CommunicationService::CommunicationService(const std::wstring password ): _pipeManager(password){
+using namespace Communication;
+using namespace Util;
+
+CommunicationService::CommunicationService(const std::wstring &password){
+    DeserializeCurrentMachineName(password);
+    _pipeManager =std::make_unique<NamedPipeManager>(_currentPassword, _currentMachineName);
 }
-CommunicationService::CommunicationService(): _currentPassword(CreateConnectionKey()), _pipeManager(_currentPassword) {
+CommunicationService::CommunicationService(): _currentConnectionKey(CreateConnectionKey()),_isCurrentServer(true) {
+    DeserializeCurrentMachineName(_currentConnectionKey);
+    _pipeManager = std::make_unique<NamedPipeManager>(_currentPassword, _currentMachineName);
 }
 
-std::wstring CommunicationService::GetCurrentPasswordConnection() {
-    return _currentPassword;
+std::wstring CommunicationService::GetConnectionKey() const {
+    return _currentConnectionKey;
 }
 
-void CommunicationService::SetConnectionPassword(std::wstring &password ) {
+void CommunicationService::SetConnectionPassword(const std::wstring_view &password ) {
     _currentPassword = password;
 }
 
 bool CommunicationService::SendDataToPipe(const StructMessage& data) {
-    if (_pipeManager.ConnectToPipe(_currentPassword)) {
-        return _pipeManager.SendMessageW(data);
+    if (_pipeManager->IsPipeConnected()) {
+        return _pipeManager->SendMessageW(data);
+    }
+    else {
+        _pipeManager->ConnectToPipe(_currentPassword);
+        SendDataToPipe(data);
     }
     return false;
 }
 
 StructMessage CommunicationService::ReceiveDataFromPipe() {
-    if (_pipeManager.ConnectToPipe(_currentPassword)) {
-        return _pipeManager.ReceiveMessage();
+    if (_pipeManager->IsPipeConnected()) {
+        return _pipeManager->ReceiveMessage();
     }
     else {
         StructMessage message;
         message.Content = "Error";
+        message.MessageSuccessfuly = false;
         return message;
     }
 }
+
+void CommunicationService::DeserializeCurrentMachineName(const std::wstring& password) {
+    size_t pos = password.find('|');
+    _currentMachineName = (std::stoi(password.substr(0, pos)));
+    _currentPassword = password.substr(pos + 1);
+}
+
 
 std::wstring CommunicationService::CreateConnectionKey() {
     std::random_device rd;
     std::mt19937 generator(rd());
     std::wstring caracters = L"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     std::wstring password;
-
-    // Gera a senha de 6 caracteres
+    password = AppUtil::GetCurrentPcName();
+    password.push_back(L'|');
     for (int i = 0; i < 6; ++i) {
         std::uniform_int_distribution<int> distribuicao(0, caracters.size() - 1);
         password.push_back(caracters[distribuicao(generator)]);
     }
     return password;
 } 
+
+bool CommunicationService::OpenCommunicationChannel(const std::wstring& password) {
+    if (!_pipeManager->IsPipeConnected()) {
+        return _pipeManager->CreateConnectionToPipe(password);
+    }
+    return true;
+}

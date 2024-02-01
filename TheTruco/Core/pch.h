@@ -9,5 +9,11 @@
 
 // add headers that you want to pre-compile here
 #include "framework.h"
+#include <string>
+#include <random>
+#include <string_view>
+#include <iostream>
+#include <memory>
+#include <tchar.h>
 
 #endif //PCH_H
