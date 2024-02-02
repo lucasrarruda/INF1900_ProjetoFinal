@@ -71,19 +71,19 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)Model;$(SolutionDir)Core;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(SolutionDir)Model;$(SolutionDir)Core;$(IncludePath)</IncludePath>
     <ReferencePath>$(SolutionDir)$(PlatformShortName)\$(Configuration);$(ReferencePath)</ReferencePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)Model;$(SolutionDir)Core;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(SolutionDir)Model;$(SolutionDir)Core;$(IncludePath)</IncludePath>
     <ReferencePath>$(SolutionDir)$(PlatformShortName)\$(Configuration);$(ReferencePath)</ReferencePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)Model;$(SolutionDir)Core;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(SolutionDir)Model;$(SolutionDir)Core;$(IncludePath)</IncludePath>
     <ReferencePath>$(SolutionDir)$(PlatformShortName)\$(Configuration);$(ReferencePath)</ReferencePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)Model;$(SolutionDir)Core;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(SolutionDir)Model;$(SolutionDir)Core;$(IncludePath)</IncludePath>
     <ReferencePath>$(SolutionDir)$(PlatformShortName)\$(Configuration);$(ReferencePath)</ReferencePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -162,6 +162,8 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="MenuControllerFake.h" />
+    <ClInclude Include="Services\GameService.h" />
+    <ClInclude Include="Services\UserService.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -171,6 +173,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="MenuControllerFake.cpp" />
+    <ClCompile Include="Services\GameService.cpp" />
+    <ClCompile Include="Services\UserService.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

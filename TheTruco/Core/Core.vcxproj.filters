@@ -30,13 +30,13 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ViewBase.h">
+    <ClInclude Include="Interfaces\ControllerBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ControllerBase.h">
+    <ClInclude Include="Interfaces\ModelBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ModelBase.h">
+    <ClInclude Include="Interfaces\ViewBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AppUtil.h">
