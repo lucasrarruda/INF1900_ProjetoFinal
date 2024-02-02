@@ -4,7 +4,7 @@
 #include <UserModel.h>
 #include <memory>
 
-class MenuView: public Interfaces::ViewBase, public CFrameWnd
+class MenuView: public Interfaces::ViewBase, public CFrameWnd, public std::enable_shared_from_this<MenuView>
 {
 public:
 	MenuView(CWnd* parentWindow, std::shared_ptr<Model::UserModel> userModel);

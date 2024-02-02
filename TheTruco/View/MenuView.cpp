@@ -11,7 +11,7 @@ MenuView::MenuView(CWnd* parentWindow, std::shared_ptr<Model::UserModel> userMod
 	_parentWindow(parentWindow),
 	_userModel(userModel)
 {
-	//_userModel->Attach(this);
+	_userModel->Attach(shared_from_this());
 	_controller = make_shared<MenuControllerFake>(_userModel);
 }
 
