@@ -530,6 +530,8 @@ void GameService::TurnCard(GameModel& currentGame)
 
     currentGame.GetGameCardDeck()->RemoveCardFromCardDeck(turnCardKey);
 
+
+    // Acho que esse trecho de código não é necessário, verificar na validação ------
     vector<int> manilas;
     int countManilas = 0;
     for (auto& card : currentGame.GetGameCardDeck()->GetCardDeck())
@@ -545,6 +547,7 @@ void GameService::TurnCard(GameModel& currentGame)
     {
         currentGame.GetGameCardDeck()->SetCardManila(manila);
     }
+    // -----------------------------------------------------
 
     for (auto& player : currentGame.GetPlayers())
     {
