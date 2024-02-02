@@ -1,8 +1,8 @@
 #include "pch.h"
-#include <NamedPipeManager.h>
-#include <NamedPipeConstant.h>
+#include <Communication/NamedPipeManager.h>
+#include <Communication/NamedPipeConstant.h>
 #include <strsafe.h>
-#include <AppUtil.h>
+#include <Helpers/Utils.h>
 
 using namespace Communication;
 

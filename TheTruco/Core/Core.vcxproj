@@ -155,9 +155,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="AppUtil.h" />
-    <ClInclude Include="CommunicationService.h" />
-    <ClInclude Include="ControllerBase.h" />
+    <ClInclude Include="Communication\CommunicationService.h" />
+    <ClInclude Include="Communication\NamedPipeConstant.h" />
+    <ClInclude Include="Communication\NamedPipeManager.h" />
+    <ClInclude Include="Communication\StructMessage.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Helpers\Constants\CardsValueConstants.h" />
     <ClInclude Include="Helpers\Constants\Constants.h" />
@@ -174,13 +175,11 @@
     <ClInclude Include="Interfaces\ModelBase.h" />
     <ClInclude Include="Interfaces\ViewBase.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="StructMessage.h" />
-    <ClInclude Include="ViewBase.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AppUtil.cpp" />
-    <ClCompile Include="CommunicationService.cpp" />
-    <ClCompile Include="NamedPipeManager.cpp" />
+    <ClCompile Include="Communication\CommunicationService.cpp" />
+    <ClCompile Include="Communication\NamedPipeManager.cpp" />
+    <ClCompile Include="Communication\StructMessage.cpp" />
     <ClCompile Include="Helpers\DatabaseUtils.cpp" />
     <ClCompile Include="Helpers\DataEncoderUtils.cpp" />
     <ClCompile Include="Helpers\Utils.cpp" />
@@ -190,7 +189,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="StructMessage.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

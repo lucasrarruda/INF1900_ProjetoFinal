@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{a05b0d7e-37af-4f7a-b43c-abc80deaae7f}</ProjectGuid>
+    <ProjectGuid>{cc031367-8ace-446a-a749-94486a84ec5b}</ProjectGuid>
     <RootNamespace>NamedPipeCheck</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -71,11 +71,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir);$(SolutionDir)Core</IncludePath>
+    <IncludePath>$(ProjectDir);$(SolutionDir)Core;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)$(PlatformShortName)\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir);$(SolutionDir)Core</IncludePath>
+    <IncludePath>$(ProjectDir);$(SolutionDir)Core;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)$(PlatformShortName)\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

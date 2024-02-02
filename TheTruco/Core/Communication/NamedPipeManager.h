@@ -1,5 +1,5 @@
 #pragma once
-#include <StructMessage.h>
+#include <Communication/StructMessage.h>
 #include <windows.h>
 #include <string>
 

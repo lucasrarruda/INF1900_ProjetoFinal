@@ -1,9 +1,9 @@
 #include "pch.h"
-#include <CommunicationService.h>
 #include <random>
+#include "CommunicationService.h"
 
 using namespace Communication;
-using namespace Util;
+using namespace Helpers;
 
 CommunicationService::CommunicationService(const std::wstring &password){
     DeserializeCurrentMachineName(password);
@@ -47,7 +47,7 @@ StructMessage CommunicationService::ReceiveDataFromPipe() {
 
 void CommunicationService::DeserializeCurrentMachineName(const std::wstring& password) {
     size_t pos = password.find('|');
-    _currentMachineName = (std::stoi(password.substr(0, pos)));
+    _currentMachineName = (password.substr(0, pos));
     _currentPassword = password.substr(pos + 1);
 }
 
@@ -57,7 +57,7 @@ std::wstring CommunicationService::CreateConnectionKey() {
     std::mt19937 generator(rd());
     std::wstring caracters = L"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     std::wstring password;
-    password = AppUtil::GetCurrentPcName();
+    password = Utils::GetCurrentPcName();
     password.push_back(L'|');
     for (int i = 0; i < 6; ++i) {
         std::uniform_int_distribution<int> distribuicao(0, caracters.size() - 1);

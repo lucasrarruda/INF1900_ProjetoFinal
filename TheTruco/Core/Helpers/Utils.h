@@ -14,5 +14,6 @@ namespace Helpers
         static std::wstring GetGameDataDirectory(const std::wstring& pathDirectory = Constants::BASE_DIRECTORY);
 
         static std::vector<std::string> SplitString(std::string value, const std::string& delimiter);
+        static std::wstring GetCurrentPcName();
     };
 }

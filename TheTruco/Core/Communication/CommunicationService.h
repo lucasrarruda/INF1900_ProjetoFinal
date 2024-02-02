@@ -1,8 +1,9 @@
 #pragma once
-#include <NamedPipeManager.h>
-#include <AppUtil.h>
+#include <Communication/NamedPipeManager.h>
+#include <Helpers/Utils.h>
 #include <memory>
 #include <string>
+#include <string_view>
 
 namespace Communication {
 
