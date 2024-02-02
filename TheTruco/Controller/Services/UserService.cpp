@@ -69,7 +69,7 @@ void UserService::RemoveUser(const UserModel& user)
     }
 }
 
-UserModel UserService::GetConflictingUser(UserModel user)
+UserModel UserService::GetConflictingUser(UserModel& user)
 {
     UserDTO userConflictngDTO = _userRepository.GetConflictingUser(ToUserDTO(user));
 

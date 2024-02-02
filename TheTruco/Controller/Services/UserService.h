@@ -17,7 +17,7 @@ namespace Service
         Model::UserModel SaveUser(const Model::UserModel& user);
         void UpdateUser(const Model::UserModel& user);
         void RemoveUser(const Model::UserModel& user);
-        Model::UserModel GetConflictingUser(Model::UserModel user);
+        Model::UserModel GetConflictingUser(Model::UserModel& user);
 
     private: 
         Repository::UserRepository _userRepository;
