@@ -156,12 +156,26 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
+    <ClInclude Include="Helpers\Constants\CardsValueConstants.h" />
+    <ClInclude Include="Helpers\Constants\Constants.h" />
+    <ClInclude Include="Helpers\Constants\SuitsConstants.h" />
+    <ClInclude Include="Helpers\DatabaseUtils.h" />
+    <ClInclude Include="Helpers\DataEncoderUtils.h" />
+    <ClInclude Include="Helpers\Enums\CardsValueEnum.h" />
+    <ClInclude Include="Helpers\Enums\CharacterEncoding.h" />
+    <ClInclude Include="Helpers\Enums\ModeGame.h" />
+    <ClInclude Include="Helpers\Enums\SuitsEnum.h" />
+    <ClInclude Include="Helpers\Enums\TrucoEnum.h" />
+    <ClInclude Include="Helpers\Utils.h" />
     <ClInclude Include="Interfaces\ControllerBase.h" />
     <ClInclude Include="Interfaces\ModelBase.h" />
     <ClInclude Include="Interfaces\ViewBase.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Helpers\DatabaseUtils.cpp" />
+    <ClCompile Include="Helpers\DataEncoderUtils.cpp" />
+    <ClCompile Include="Helpers\Utils.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
