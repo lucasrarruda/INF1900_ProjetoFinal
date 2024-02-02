@@ -5,6 +5,8 @@
 #include <JoinGameView.h>
 #include <NewGameView.h>
 #include <tuple>
+#include <memory>
+#include <UserModel.h>
 
 class MainFrame : public CFrameWnd
 {
@@ -31,6 +33,8 @@ private:
 	GameView _gameView;
 	NewGameView _newGameView;
 	JoinGameView _joinGameView;
+
+	std::shared_ptr<Model::UserModel> _userModel;
 
 	void HideAllViews();
 	void UpdateFrame();

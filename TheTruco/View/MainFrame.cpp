@@ -19,7 +19,7 @@ END_MESSAGE_MAP()
 
 MainFrame::MainFrame() : _menuView(this), _gameView(this), _newGameView(this), _joinGameView(this)
 {
-	
+	_userModel = make_shared<Model::UserModel>();
 }
 
 BOOL MainFrame::PreCreateWindow(CREATESTRUCT& cs)

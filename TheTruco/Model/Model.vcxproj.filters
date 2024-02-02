@@ -21,9 +21,6 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GameModelFake.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CardDeckModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -63,9 +60,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameModelFake.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CardDeckModel.cpp">

@@ -1,13 +1,13 @@
 #pragma once
 
 #include <Interfaces/ViewBase.h>
-#include <GameModelFake.h>
+#include <UserModel.h>
 #include <memory>
 
 class MenuView: public Interfaces::ViewBase, public CFrameWnd
 {
 public:
-	MenuView(CWnd* parentWindow);
+	MenuView(CWnd* parentWindow, std::shared_ptr<Model::UserModel> userModel);
 	~MenuView() = default;
 
 	void Create();
@@ -15,8 +15,10 @@ public:
 	void Show();
 	void Hide();
 
+	void NewGameCommand();
+
 private:
-	std::shared_ptr<GameModelFake> _gameModel;
+	std::shared_ptr<Model::UserModel> _userModel;
 
 	CWnd* _parentWindow;
 	CStatic _labelTitle;

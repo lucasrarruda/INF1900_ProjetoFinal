@@ -163,7 +163,6 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="GameModel.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="GameModelFake.h" />
     <ClInclude Include="PlayerModel.h" />
     <ClInclude Include="PlayingCardModel.h" />
     <ClInclude Include="Repository\Base\BaseRepository.h" />
@@ -184,7 +183,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="GameModelFake.cpp" />
     <ClCompile Include="PlayerModel.cpp" />
     <ClCompile Include="PlayingCardModel.cpp" />
     <ClCompile Include="Repository\GameRepository.cpp" />

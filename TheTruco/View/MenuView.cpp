@@ -2,13 +2,17 @@
 #include <MenuView.h>
 #include <MenuControllerFake.h>
 #include <DisplayHelper.h>
+#include <GeneralHelper.h>
 
 using namespace std;
 
-MenuView::MenuView(CWnd* parentWindow) : Interfaces::ViewBase(), _parentWindow(parentWindow)
+MenuView::MenuView(CWnd* parentWindow, std::shared_ptr<Model::UserModel> userModel) : 
+	Interfaces::ViewBase(), 
+	_parentWindow(parentWindow),
+	_userModel(userModel)
 {
-	_gameModel = make_shared<GameModelFake>();
-	_controller = make_shared<MenuControllerFake>(_gameModel);
+	//_userModel->Attach(this);
+	_controller = make_shared<MenuControllerFake>(_userModel);
 }
 
 void MenuView::Create()
@@ -103,4 +107,12 @@ void MenuView::Hide()
 	_newGameButton.ShowWindow(SW_HIDE);
 	_joinGameButton.ShowWindow(SW_HIDE);
 	_recoverLastGameButton.ShowWindow(SW_HIDE);
+}
+
+void MenuView::NewGameCommand()
+{
+	CString nickname;
+	_nickNameBox.GetWindowTextW(nickname);
+
+	_userModel->SetNickName(GeneralHelper::CStringToString(nickname));
 }
