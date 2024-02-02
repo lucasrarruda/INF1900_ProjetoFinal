@@ -118,3 +118,14 @@ std::vector<std::string> Utils::SplitString(std::string value, const std::string
 
     return result;
 }
+
+std::wstring Utils::GetCurrentPcName() {
+    char buffer[MAX_COMPUTERNAME_LENGTH + 1];
+    DWORD length = sizeof(buffer);
+    std::wstring ws = L"127.0.0.1";
+    bool ok = GetComputerNameExA((COMPUTER_NAME_FORMAT)0, buffer, &length);
+    if (ok) {
+        ws = std::wstring(buffer, buffer + strlen(buffer));
+    }
+    return  ws;
+}

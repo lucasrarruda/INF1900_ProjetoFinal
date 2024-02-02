@@ -155,6 +155,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Communication\CommunicationService.h" />
+    <ClInclude Include="Communication\NamedPipeConstant.h" />
+    <ClInclude Include="Communication\NamedPipeManager.h" />
+    <ClInclude Include="Communication\StructMessage.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Helpers\Constants\CardsValueConstants.h" />
     <ClInclude Include="Helpers\Constants\Constants.h" />
@@ -173,6 +177,9 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Communication\CommunicationService.cpp" />
+    <ClCompile Include="Communication\NamedPipeManager.cpp" />
+    <ClCompile Include="Communication\StructMessage.cpp" />
     <ClCompile Include="Helpers\DatabaseUtils.cpp" />
     <ClCompile Include="Helpers\DataEncoderUtils.cpp" />
     <ClCompile Include="Helpers\Utils.cpp" />
