@@ -24,12 +24,24 @@
     <ClInclude Include="MenuControllerFake.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Services\GameService.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\UserService.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MenuControllerFake.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\GameService.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\UserService.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
