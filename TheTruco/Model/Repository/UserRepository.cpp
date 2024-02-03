@@ -26,8 +26,7 @@ UserDTO UserRepository::GetConflictingUser(const UserDTO& userDTO)
 
     for (auto& user : getUsers)
     {
-        if ((Serialize::ConvertGUIDToString(user.Id).compare(Serialize::ConvertGUIDToString(userDTO.Id)) == 0)
-            && (user.NickName.compare(userDTO.NickName) == 0))
+        if ((user.NickName.compare(userDTO.NickName) == 0))
         {
             return user;
         }

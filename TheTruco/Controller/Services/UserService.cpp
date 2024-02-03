@@ -54,6 +54,8 @@ void UserService::UpdateUser(const UserModel& user)
         userNew.NickName = user.GetNickName();
         userNew.GamesWin = user.GetGamesWin();
         userNew.GamesLose = user.GetGamesLose();
+        userNew.CurrentGameID = user.GetCurrentGameID();
+        userNew.OnCurrentGame = user.GetOnCurrentGame();
 
         _userRepository.Update(DATABASE_USERS, userNew.NickName, userNew);
     }
