@@ -1,22 +1,22 @@
 #include "pch.h"
 #include <MenuView.h>
-#include <MenuControllerFake.h>
 #include <DisplayHelper.h>
 #include <GeneralHelper.h>
 
 using namespace std;
 
-MenuView::MenuView(CWnd* parentWindow, std::shared_ptr<Model::UserModel> userModel) : 
+MenuView::MenuView(CWnd* parentWindow, std::shared_ptr<MenuController> menuController) :
 	Interfaces::ViewBase(), 
 	_parentWindow(parentWindow),
-	_userModel(userModel)
+	_menuController(menuController)
 {
-	_userModel->Attach(shared_from_this());
-	_controller = make_shared<MenuControllerFake>(_userModel);
+	
 }
 
 void MenuView::Create()
 {
+	InitializeController();
+
 	auto [dpiX, dpiY] = DisplayHelper::GetMonitorDpi();
 
 	_titleFont.CreatePointFont(static_cast<int>(380 * dpiX), _T("Arial"));
@@ -111,8 +111,26 @@ void MenuView::Hide()
 
 void MenuView::NewGameCommand()
 {
+	UpdateNickname();
+	_menuController->NewGame();
+}
+
+void MenuView::JoinGameCommand()
+{
+	UpdateNickname();
+}
+
+
+
+void MenuView::InitializeController()
+{
+	_userModel = _menuController->GetUserModel();
+	_userModel->Attach(shared_from_this());
+}
+
+void MenuView::UpdateNickname()
+{
 	CString nickname;
 	_nickNameBox.GetWindowTextW(nickname);
-
 	_userModel->SetNickName(GeneralHelper::CStringToString(nickname));
 }

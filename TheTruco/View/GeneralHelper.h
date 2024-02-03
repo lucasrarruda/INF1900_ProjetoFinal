@@ -7,7 +7,7 @@ namespace GeneralHelper
 {
 	inline std::string CStringToString(CString content)
 	{
-		const char* convertedContent = CT2CA(content);
+		CT2CA convertedContent(content);
 		return std::string(convertedContent);
 	}
 };

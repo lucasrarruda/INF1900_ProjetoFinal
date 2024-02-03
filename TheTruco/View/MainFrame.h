@@ -6,7 +6,7 @@
 #include <NewGameView.h>
 #include <tuple>
 #include <memory>
-#include <UserModel.h>
+#include <MenuController.h>
 
 class MainFrame : public CFrameWnd
 {
@@ -29,12 +29,11 @@ public:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	MenuView _menuView;
-	GameView _gameView;
-	NewGameView _newGameView;
-	JoinGameView _joinGameView;
-
-	std::shared_ptr<Model::UserModel> _userModel;
+	std::shared_ptr<MenuView> _menuView;
+	std::shared_ptr<GameView> _gameView;
+	std::shared_ptr<NewGameView> _newGameView;
+	std::shared_ptr<JoinGameView> _joinGameView;
+	std::shared_ptr<MenuController> _menuController;
 
 	void HideAllViews();
 	void UpdateFrame();
