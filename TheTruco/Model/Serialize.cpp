@@ -49,7 +49,7 @@ UserDTO Serialize::ConvertStringToUserDTO(const std::string& result)
 			userDTO.CurrentGameID = value;
 			continue;
 		case 6:
-			userDTO.OnCurrentGame = (value.compare("true") == 0) ? 0 : 1;
+			userDTO.OnCurrentGame = (value.compare("true") == 0) ? true : false;
 			continue;
         }
     }
@@ -92,7 +92,7 @@ GameDTO Serialize::ConvertStringToGameDTO(const std::string& result)
 			gameDTO.Id = ConvertStringToGUID(value);
 			continue;
 		case 2:
-			gameDTO.PlayGame = (value.compare("true") == 0) ? 0 : 1;
+			gameDTO.PlayGame = (value.compare("true") == 0) ? true : false;
 			continue;
 		case 3:
 			gameDTO.TurnPlayer = stoi(value);
@@ -127,7 +127,7 @@ GameDTO Serialize::ConvertStringToGameDTO(const std::string& result)
 			gameDTO.HandPoints = stoi(value);
 			continue;
 		case 8:
-			gameDTO.FirstRound = (value.compare("true") == 0) ? 0 : 1;
+			gameDTO.FirstRound = (value.compare("true") == 0) ? true : false;
 			continue;
 		case 9:
 			gameDTO.PlayerOneDiscardCardKey = stoi(value);
@@ -263,9 +263,9 @@ map<int, shared_ptr<PlayerModel>> Serialize::ConvertStringToPlayerModelMap(const
 	{
 		playerModelResponse = Utils::SplitString(value, ";");
 
-		ready = (playerModelResponse[2].compare("true") == 0) ? 0 : 1;
-		hostPlayer = (playerModelResponse[4].compare("true") == 0) ? 0 : 1;
-		isBot = (playerModelResponse[6].compare("true") == 0) ? 0 : 1;
+		ready = (playerModelResponse[2].compare("true") == 0) ? true : false;
+		hostPlayer = (playerModelResponse[4].compare("true") == 0) ? true : false;
+		isBot = (playerModelResponse[6].compare("true") == 0) ? true : false;
 
 		auto player = std::make_shared<PlayerModel>(playerModelResponse[1], ready, stoi(playerModelResponse[3]), hostPlayer);
 		player->SetHandPoints(stoi(playerModelResponse[5]));

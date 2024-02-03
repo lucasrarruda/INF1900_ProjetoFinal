@@ -7,7 +7,5 @@ namespace Interfaces
 	public:
 		ControllerBase() = default;
 		virtual ~ControllerBase() = default;
-
-		virtual void Execute() = 0;
 	};
 }

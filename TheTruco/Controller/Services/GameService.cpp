@@ -122,7 +122,7 @@ GameModel GameService::JoinGame(const string& id, shared_ptr<PlayerModel>& playe
 {
     auto game = GetGameById(id);
 
-    player->SetReady(false);
+    player->SetReady(true);
     player->SetNumberPlayer(3);
     player->SetHostPlayer(false);
     player->SetIsBot(false);
