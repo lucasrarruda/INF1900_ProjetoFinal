@@ -12,17 +12,6 @@ MenuView::MenuView(CWnd* parentWindow, std::shared_ptr<Controller::MenuControlle
 	_menuController(menuController)
 {
 	_userModel = _menuController->GetUserModel();
-	//EXEMPLO DE VALIDAÇÃO DOS MÉTODOS
-	
-	//auto testeconexao = make_shared<Communication::CommunicationService>();
-	//auto teste = make_shared<Controller::MenuController>(testeconexao);
-	//auto teste2 = make_shared<Controller::MenuController>(testeconexao);
-
-	//teste->NewGame("ARTHUR");
-	//teste2->JoinGame("JOAO", teste->GetGameModel().GetId());
-	//teste->RecoverLastGame("LAURA");
-	//teste->GetUserModel().SetOnCurrentGame(false);
-	//teste->RecoverLastGame("ARTHUR");
 }
 
 void MenuView::Create()
@@ -123,14 +112,24 @@ void MenuView::Hide()
 
 void MenuView::NewGameCommand()
 {
+	// TODO: incluir validação para quando o nickname não estiver definido
 	UpdateNickname();
 	_menuController->NewGame();
 }
 
 void MenuView::JoinGameCommand()
 {
+	// TODO: incluir validação para quando o nickname não estiver definido
 	UpdateNickname();
 	_menuController->JoinGame();
+}
+
+void MenuView::RecoverLastGame()
+{
+	// TODO: incluir validação para quando o nickname não estiver definido
+	// TODO: incluir validação para quando o nickname não for igual ao último jogo
+	UpdateNickname();
+	_menuController->RecoverLastGame();
 }
 
 void MenuView::UpdateNickname()

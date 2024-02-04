@@ -17,6 +17,7 @@ public:
 
 	void NewGameCommand();
 	void JoinGameCommand();
+	void RecoverLastGame();
 
 private:
 	std::shared_ptr<Controller::MenuController> _menuController;

@@ -18,6 +18,7 @@ public:
 
 	void NavigateNewGame();
 	void NavigateJoinGame();
+	void NavigateRecoverLastGame();
 	void NavigatePlayGame();
 	void NavigateMenu();
 

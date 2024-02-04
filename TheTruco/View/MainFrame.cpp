@@ -15,6 +15,7 @@ BEGIN_MESSAGE_MAP(MainFrame, CFrameWnd)
 	ON_COMMAND(IDC_YOUR_CARD_TWO_BUTTON, DropCardTwo)
 	ON_COMMAND(IDC_YOUR_CARD_THREE_BUTTON, DropCardThree)
 	ON_COMMAND(IDC_TRUCO_BUTTON, NotifyTruco)
+	ON_COMMAND(IDC_RECOVER_LAST_GAME_BUTTON, NavigateRecoverLastGame)
 END_MESSAGE_MAP()
 
 MainFrame::MainFrame()
@@ -77,7 +78,16 @@ void MainFrame::NavigateNewGame()
 void MainFrame::NavigateJoinGame()
 {
 	HideAllViews();
+	_menuView->JoinGameCommand();
 	_joinGameView->Show();
+	UpdateFrame();
+}
+
+void MainFrame::NavigateRecoverLastGame()
+{
+	HideAllViews();
+	_menuView->RecoverLastGame();
+	_newGameView->Show();
 	UpdateFrame();
 }
 
