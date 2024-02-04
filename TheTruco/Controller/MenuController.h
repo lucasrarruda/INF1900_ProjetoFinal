@@ -36,8 +36,8 @@ namespace Controller
 		std::shared_ptr<Communication::CommunicationService> _communicationService;
 
 		void ValidationUserAndGame();
-		void CreateConnection(const std::string& id, const bool& createGame);
-		void ConnectionChannel(const std::string& id, const bool& joinGame);
+		void CreateConnection(const bool& createGame);
+		void ConnectionChannel(const bool& joinGame);
 	};
 }
 

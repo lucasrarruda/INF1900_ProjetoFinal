@@ -84,7 +84,7 @@ void MenuController::JoinGame()
 
 		_userService->UpdateUser(_userModel);
 
-		ConnectionChannel(_gameModel->GetId(), true);
+		ConnectionChannel(true);
 	}
 	catch (std::invalid_argument& e)
 	{
@@ -130,14 +130,14 @@ void MenuController::RecoverLastGame()
 		{
 			if (player.second->GetNickName().compare(_userModel->GetNickName()) == 0)
 			{
-				playerHost = player.second->GetHostPlayer();
+				playerHost = player.second->IsHostPlayer();
 				break;
 			}
 		}
 
 		if (playerHost)
 		{
-			CreateConnection(_gameModel->GetId(), false);
+			CreateConnection(false);
 
 			// Nessa Etapa o usuário fica esperando a resposta do client (do usuário do JoinGame) para poder começar a partida
 			// Precisamos mexer aqui para validação dessa resposta
@@ -146,7 +146,7 @@ void MenuController::RecoverLastGame()
 		else 
 		{
 			bool teste;
-			ConnectionChannel(_gameModel->GetId(), false);
+			ConnectionChannel(false);
 		}
 	}
 	catch (std::invalid_argument& e)
@@ -186,12 +186,12 @@ void MenuController::ValidationUserAndGame()
 	}
 }
 
-void MenuController::CreateConnection(const string& id, const bool& createGame)
+void MenuController::CreateConnection(const bool& createGame)
 {
 	// Aqui deu erro ao criar a conexão precisa ser verificado
-	//auto password = Utils::SplitString(id, "{")[1];
+	//string password = Utils::SplitString(_gameModel->GetId(), "{")[1];
 	//password = Utils::SplitString(password, "}")[0];
-	//auto valuePassword = Serialize::ConvertStringToWString(password);
+	//wstring valuePassword = Serialize::ConvertStringToWString(password);
 	//auto getOpenedChannel = _communicationService->OpenCommunicationChannel(valuePassword); 
 	
 	auto getOpenedChannel = false;
@@ -215,7 +215,7 @@ void MenuController::CreateConnection(const string& id, const bool& createGame)
 	}
 }
 
-void MenuController::ConnectionChannel(const string& id, const bool& joinGame)
+void MenuController::ConnectionChannel(const bool& joinGame)
 {
 	// Nessa etapa o usuário vai enviar uma resposta avisando para o host que logou e está pronto para começar a partida
 	// Precisamos mexer aqui para criar o client e enviar a resposta para o servidor

@@ -224,7 +224,7 @@ string Serialize::ConvertPlayerModelMapToString(const map<int, shared_ptr<Player
 	{
 		playerModelKey = to_string(player.first);
 		ready = player.second->GetReady() ? "true" : "false";
-		hostPlayer = player.second->GetHostPlayer() ? "true" : "false";
+		hostPlayer = player.second->IsHostPlayer() ? "true" : "false";
 		isBot = player.second->GetIsBot() ? "true" : "false";
 
 		auto playingCardModelVector = ConvertPlayingCardModelMapToPlayingCardModelVector(player.second->GetCardDeck());

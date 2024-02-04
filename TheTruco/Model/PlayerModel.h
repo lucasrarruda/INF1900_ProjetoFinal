@@ -23,7 +23,7 @@ namespace Model
         inline int GetNumberPlayer() const { return _numberPlayer; }
         inline void SetNumberPlayer(const int& numberPlayer) { _numberPlayer = numberPlayer; };
 
-        inline bool GetHostPlayer() const { return _hostPlayer; }
+        inline bool IsHostPlayer() const { return _hostPlayer; }
         inline void SetHostPlayer(const bool& host) { _hostPlayer = host; };
 
         inline bool GetIsBot() const { return _isBot; }
