@@ -162,7 +162,6 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="MenuController.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="MenuControllerFake.h" />
     <ClInclude Include="Services\GameService.h" />
     <ClInclude Include="Services\UserService.h" />
   </ItemGroup>
@@ -174,7 +173,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="MenuControllerFake.cpp" />
     <ClCompile Include="Services\GameService.cpp" />
     <ClCompile Include="Services\UserService.cpp" />
   </ItemGroup>

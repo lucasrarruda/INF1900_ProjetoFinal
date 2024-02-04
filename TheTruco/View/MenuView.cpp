@@ -1,31 +1,23 @@
 #include "pch.h"
 #include <MenuView.h>
-#include <MenuControllerFake.h>
 #include <MenuController.h>
 #include <DisplayHelper.h>
+#include <GeneralHelper.h>
 
 using namespace std;
 
-MenuView::MenuView(CWnd* parentWindow) : Interfaces::ViewBase(), _parentWindow(parentWindow)
+MenuView::MenuView(CWnd* parentWindow, std::shared_ptr<Controller::MenuController> menuController) :
+	Interfaces::ViewBase(), 
+	_parentWindow(parentWindow),
+	_menuController(menuController)
 {
-	_gameModel = make_shared<GameModelFake>();
-	_controller = make_shared<MenuControllerFake>(_gameModel);
-
-	//EXEMPLO DE VALIDAÇÃO DOS MÉTODOS
-	
-	//auto testeconexao = make_shared<Communication::CommunicationService>();
-	//auto teste = make_shared<Controller::MenuController>(testeconexao);
-	//auto teste2 = make_shared<Controller::MenuController>(testeconexao);
-
-	//teste->NewGame("ARTHUR");
-	//teste2->JoinGame("JOAO", teste->GetGameModel().GetId());
-	//teste->RecoverLastGame("LAURA");
-	//teste->GetUserModel().SetOnCurrentGame(false);
-	//teste->RecoverLastGame("ARTHUR");
+	_userModel = _menuController->GetUserModel();
 }
 
 void MenuView::Create()
 {
+	_userModel->Attach(shared_from_this());
+
 	auto [dpiX, dpiY] = DisplayHelper::GetMonitorDpi();
 
 	_titleFont.CreatePointFont(static_cast<int>(380 * dpiX), _T("Arial"));
@@ -93,7 +85,7 @@ void MenuView::Create()
 	_recoverLastGameButton.SetFont(&_buttonFont);
 }
 
-void MenuView::Updated()
+void MenuView::Update()
 {
 	// Update UI with new model values
 }
@@ -116,4 +108,33 @@ void MenuView::Hide()
 	_newGameButton.ShowWindow(SW_HIDE);
 	_joinGameButton.ShowWindow(SW_HIDE);
 	_recoverLastGameButton.ShowWindow(SW_HIDE);
+}
+
+void MenuView::NewGameCommand()
+{
+	// TODO: incluir validação para quando o nickname não estiver definido
+	UpdateNickname();
+	_menuController->NewGame();
+}
+
+void MenuView::JoinGameCommand()
+{
+	// TODO: incluir validação para quando o nickname não estiver definido
+	UpdateNickname();
+	_menuController->JoinGame();
+}
+
+void MenuView::RecoverLastGame()
+{
+	// TODO: incluir validação para quando o nickname não estiver definido
+	// TODO: incluir validação para quando o nickname não for igual ao último jogo
+	UpdateNickname();
+	_menuController->RecoverLastGame();
+}
+
+void MenuView::UpdateNickname()
+{
+	CString nickname;
+	_nickNameBox.GetWindowTextW(nickname);
+	_userModel->SetNickName(GeneralHelper::CStringToString(nickname));
 }

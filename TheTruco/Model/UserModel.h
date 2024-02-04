@@ -15,19 +15,39 @@ namespace Model
         inline std::string GetId() const { return _id; }
 
         inline std::string GetNickName() const { return _nickName; }
-        inline void SetNickName(const std::string& nickName) { _nickName = nickName; };
+        inline void SetNickName(const std::string& nickName) 
+        { 
+            _nickName = nickName;
+            Notify();
+        };
 
         inline int GetGamesWin() const { return _gamesWin; }
-        inline void SetGamesWin() { _gamesWin++; };
+        inline void SetGamesWin() 
+        { 
+            _gamesWin++; 
+            Notify();
+        };
 
         inline int GetGamesLose() const { return _gamesLose; }
-        inline void SetGamesLose() { _gamesLose++; };
+        inline void SetGamesLose() 
+        { 
+            _gamesLose++; 
+            Notify();
+        };
 
         inline std::string GetCurrentGameID() const { return _currentGameID; }
-        inline void SetCurrentGameID(const std::string& currentGameID) { _currentGameID = currentGameID; };
+        inline void SetCurrentGameID(const std::string& currentGameID) 
+        { 
+            _currentGameID = currentGameID; 
+            Notify();
+        };
 
         inline bool GetOnCurrentGame() const { return _onCurrentGame; }
-        inline void SetOnCurrentGame(const bool& onCurrentGame) { _onCurrentGame = onCurrentGame; };
+        inline void SetOnCurrentGame(const bool& onCurrentGame) 
+        { 
+            _onCurrentGame = onCurrentGame; 
+            Notify();
+        };
 
     private:
         std::string _id = "";

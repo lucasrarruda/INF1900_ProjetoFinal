@@ -48,7 +48,7 @@ void GameView::Create()
 	_leaveGameButton.SetFont(&_labelFont);
 }
 
-void GameView::Updated()
+void GameView::Update()
 {
 	// Update UI with new model values
 }

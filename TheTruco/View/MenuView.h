@@ -1,22 +1,27 @@
 #pragma once
 
 #include <Interfaces/ViewBase.h>
-#include <GameModelFake.h>
+#include <MenuController.h>
 #include <memory>
 
-class MenuView: public Interfaces::ViewBase, public CFrameWnd
+class MenuView: public Interfaces::ViewBase, public CFrameWnd, public std::enable_shared_from_this<MenuView>
 {
 public:
-	MenuView(CWnd* parentWindow);
+	MenuView(CWnd* parentWindow, std::shared_ptr<Controller::MenuController> menuController);
 	~MenuView() = default;
 
 	void Create();
-	void Updated();
+	void Update();
 	void Show();
 	void Hide();
 
+	void NewGameCommand();
+	void JoinGameCommand();
+	void RecoverLastGame();
+
 private:
-	std::shared_ptr<GameModelFake> _gameModel;
+	std::shared_ptr<Controller::MenuController> _menuController;
+	std::shared_ptr<Model::UserModel> _userModel;
 
 	CWnd* _parentWindow;
 	CStatic _labelTitle;
@@ -30,5 +35,7 @@ private:
 	CFont _nicknameFont;
 	CFont _labelFont;
 	CFont _buttonFont;
+
+	void UpdateNickname();
 };
 

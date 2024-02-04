@@ -13,40 +13,40 @@ namespace Service
         explicit GameService(const Repository::GameRepository& gameRepository) : _gameRepository(gameRepository) {};
         ~GameService() = default;
 
-        std::vector<Model::GameModel> GetAllGames();
-        Model::GameModel GetGameById(const std::string& id);
-        Model::GameModel SaveGame(const Model::GameModel& game);
-        void UpdateGame(const Model::GameModel& game);
-        void RemoveGame(const Model::GameModel& game);
-        Model::GameModel GetConflictingGame(Model::GameModel game);
+        std::vector<std::shared_ptr<Model::GameModel>> GetAllGames();
+        std::shared_ptr<Model::GameModel> GetGameById(const std::string& id);
+        std::shared_ptr<Model::GameModel> SaveGame(std::shared_ptr<Model::GameModel> game);
+        void UpdateGame(std::shared_ptr<Model::GameModel> game);
+        void RemoveGame(std::shared_ptr<Model::GameModel> game);
+        std::shared_ptr<Model::GameModel> GetConflictingGame(std::shared_ptr<Model::GameModel> game);
 
-        Model::GameModel NewGame(std::shared_ptr<Model::PlayerModel>& playerHost);
-        Model::GameModel JoinGame(const std::string& id, std::shared_ptr<Model::PlayerModel>& player);
-        Model::GameModel RecoverLastGame(const std::string& currentGameID);
-        void ReadyGame(Model::GameModel& currentGame, const std::string& nickName);
+        std::shared_ptr<Model::GameModel> NewGame(std::shared_ptr<Model::PlayerModel>& playerHost);
+        std::shared_ptr<Model::GameModel> JoinGame(const std::string& id, std::shared_ptr<Model::PlayerModel>& player);
+        std::shared_ptr<Model::GameModel> RecoverLastGame(const std::string& currentGameID);
+        void ReadyGame(std::shared_ptr<Model::GameModel> currentGame, const std::string& nickName);
         
-        void StartGame(Model::GameModel& currentGame);
-        void LeaveGame(Model::GameModel& currentGame, const std::string& nickName);
-        void SurrenderGame(Model::GameModel& currentGame);
+        void StartGame(std::shared_ptr<Model::GameModel> currentGame);
+        void LeaveGame(std::shared_ptr<Model::GameModel> currentGame, const std::string& nickName);
+        void SurrenderGame(std::shared_ptr<Model::GameModel> currentGame);
       
-        void Hand(Model::GameModel& currentGame);
-        void PlayCard(Model::GameModel& currentGame, const std::string& nickName, const int& cardKey);
-        void HideCard(Model::GameModel& currentGame, const std::string& nickName, const int& cardKey);
-        void Truco(Model::GameModel& currentGame);
-        bool ElevenHand(Model::GameModel& currentGame, const std::string& nickName);
-        bool IronHand(Model::GameModel& currentGame);
-        void RunGame(Model::GameModel& currentGame, const std::string& nickName);
-        void FinishedRound(Model::GameModel& currentGame);
-        void FinishedHand(Model::GameModel& currentGame);
+        void Hand(std::shared_ptr<Model::GameModel> currentGame);
+        void PlayCard(std::shared_ptr<Model::GameModel> currentGame, const std::string& nickName, const int& cardKey);
+        void HideCard(std::shared_ptr<Model::GameModel> currentGame, const std::string& nickName, const int& cardKey);
+        void Truco(std::shared_ptr<Model::GameModel> currentGame);
+        bool ElevenHand(std::shared_ptr<Model::GameModel> currentGame, const std::string& nickName);
+        bool IronHand(std::shared_ptr<Model::GameModel> currentGame);
+        void RunGame(std::shared_ptr<Model::GameModel> currentGame, const std::string& nickName);
+        void FinishedRound(std::shared_ptr<Model::GameModel> currentGame);
+        void FinishedHand(std::shared_ptr<Model::GameModel> currentGame);
 
     private:
         Repository::GameRepository _gameRepository;
 
-        Repository::DTOs::GameDTO ToGameDTO(Model::GameModel gameModel);
-        Model::GameModel ToGameModel(Repository::DTOs::GameDTO gameDTO);
+        Repository::DTOs::GameDTO ToGameDTO(std::shared_ptr<Model::GameModel> gameModel);
+        std::shared_ptr<Model::GameModel> ToGameModel(Repository::DTOs::GameDTO gameDTO);
 
-        void DistributeCards(Model::GameModel& currentGame);
-        void TurnCard(Model::GameModel& currentGame);
+        void DistributeCards(std::shared_ptr<Model::GameModel> currentGame);
+        void TurnCard(std::shared_ptr<Model::GameModel> currentGame);
         bool ElevenHand(const int& totalPoints);
     };
 }

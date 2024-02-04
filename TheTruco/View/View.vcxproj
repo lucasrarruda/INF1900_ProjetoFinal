@@ -198,6 +198,7 @@
     <ClInclude Include="DisplayHelper.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="GameView.h" />
+    <ClInclude Include="GeneralHelper.h" />
     <ClInclude Include="JoinGameView.h" />
     <ClInclude Include="MainFrame.h" />
     <ClInclude Include="MenuView.h" />

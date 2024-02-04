@@ -67,7 +67,7 @@ void JoinGameView::Create()
 	_backMenuButton.SetFont(&_buttonFont);
 }
 
-void JoinGameView::Updated()
+void JoinGameView::Update()
 {
 	// Update UI with new model values
 }

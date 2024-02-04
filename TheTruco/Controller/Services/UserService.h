@@ -3,6 +3,7 @@
 #include <Repository/UserRepository.h>
 #include <UserModel.h>
 
+
 namespace Service
 {
     class UserService
@@ -12,17 +13,17 @@ namespace Service
         explicit UserService(const Repository::UserRepository& userRepository) : _userRepository(userRepository) {};
         ~UserService() = default;
 
-        std::vector<Model::UserModel> GetAllUsers();
-        Model::UserModel GetUserById(const std::string& id);
-        Model::UserModel SaveUser(const Model::UserModel& user);
-        void UpdateUser(const Model::UserModel& user);
-        void RemoveUser(const Model::UserModel& user);
-        Model::UserModel GetConflictingUser(Model::UserModel& user);
+        std::vector<std::shared_ptr<Model::UserModel>> GetAllUsers();
+        std::shared_ptr<Model::UserModel> GetUserById(const std::string& id);
+        std::shared_ptr<Model::UserModel> SaveUser(std::shared_ptr<Model::UserModel> user);
+        void UpdateUser(std::shared_ptr<Model::UserModel> user);
+        void RemoveUser(std::shared_ptr<Model::UserModel> user);
+        std::shared_ptr<Model::UserModel> GetConflictingUser(std::shared_ptr<Model::UserModel> user);
 
     private: 
         Repository::UserRepository _userRepository;
 
-        Repository::DTOs::UserDTO ToUserDTO(Model::UserModel userModel);
-        Model::UserModel ToUserModel(Repository::DTOs::UserDTO userDTO);
+        Repository::DTOs::UserDTO ToUserDTO(std::shared_ptr<Model::UserModel> userModel);
+        std::shared_ptr<Model::UserModel> ToUserModel(Repository::DTOs::UserDTO userDTO);
     };
 }

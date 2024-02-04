@@ -5,6 +5,8 @@
 #include <JoinGameView.h>
 #include <NewGameView.h>
 #include <tuple>
+#include <memory>
+#include <MenuController.h>
 
 class MainFrame : public CFrameWnd
 {
@@ -16,6 +18,7 @@ public:
 
 	void NavigateNewGame();
 	void NavigateJoinGame();
+	void NavigateRecoverLastGame();
 	void NavigatePlayGame();
 	void NavigateMenu();
 
@@ -27,10 +30,12 @@ public:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	MenuView _menuView;
-	GameView _gameView;
-	NewGameView _newGameView;
-	JoinGameView _joinGameView;
+	std::shared_ptr<MenuView> _menuView;
+	std::shared_ptr<GameView> _gameView;
+	std::shared_ptr<NewGameView> _newGameView;
+	std::shared_ptr<JoinGameView> _joinGameView;
+	std::shared_ptr<Communication::CommunicationService> _communicationService;
+	std::shared_ptr<Controller::MenuController> _menuController;
 
 	void HideAllViews();
 	void UpdateFrame();
