@@ -24,14 +24,6 @@ MenuController::MenuController(const shared_ptr<CommunicationService>& communica
 	_userModel = make_shared<UserModel>();
 }
 
-MenuController::MenuController(const MenuController& other): 
-	_gameService(other._gameService), _userService(other._userService),
-	_gameModel(other._gameModel), _userModel(other._userModel),
-	_communicationService(other._communicationService)
-{
-
-}
-
 void MenuController::NewGame()
 {
 	try
@@ -40,7 +32,7 @@ void MenuController::NewGame()
 
 		auto playerHost = make_shared<Model::PlayerModel>();
 		playerHost->SetNickName(_userModel->GetNickName());
-		_gameModel = _gameService->NewGame(playerHost);
+		_gameModel->CopyFrom(_gameService->NewGame(playerHost));
 		
 		_userModel->SetCurrentGameID(_gameModel->GetId());
 		_userModel->SetOnCurrentGame(true);
@@ -52,7 +44,12 @@ void MenuController::NewGame()
 
 		// Nessa Etapa o usuário fica esperando a resposta do client (do usuário do JoinGame) para poder começar a partida
 		// Precisamos mexer aqui para validação dessa resposta
-		StructMessage receivedvalue = _communicationService->ReceiveDataFromPipe();
+		StructMessage receivedValue = _communicationService->ReceiveDataFromPipe();
+		StartGame(receivedValue.MessageSuccessfuly); //Resposta do player que acabou de entrar na partida
+		StructMessage sendValue;
+		receivedValue.MessageSuccessfuly = true;
+		sendValue.Content = Serialize::ConvertGameModelToString(_gameModel); //Enviar alguma coisa aqui
+		_communicationService->SendDataToPipe(sendValue); //Envia para o player a resposta que deu certo a criação do game
 	}
 	catch (const std::exception& ex)
 	{
@@ -83,8 +80,6 @@ void MenuController::JoinGame()
 		_userModel->SetOnCurrentGame(true);
 
 		_userService->UpdateUser(_userModel);
-
-		ConnectionChannel(_gameModel->GetId(), true);
 	}
 	catch (std::invalid_argument& e)
 	{
@@ -92,13 +87,6 @@ void MenuController::JoinGame()
 		_userModel->SetOnCurrentGame(false);
 		_userService->UpdateUser(_userModel);
 		_gameService->RemoveGame(_gameModel);
-	}
-	catch (std::overflow_error& ex)
-	{
-		_userModel->SetCurrentGameID("");
-		_userModel->SetOnCurrentGame(false);
-		_userService->UpdateUser(_userModel);
-		_gameService->LeaveGame(_gameModel, _userModel->GetNickName());
 	}
 	catch (std::exception& ex)
 	{
@@ -108,13 +96,34 @@ void MenuController::JoinGame()
 	}
 }
 
+void MenuController::StartJoinGame()
+{
+	try
+	{
+		ConnectionChannel(_gameModel->GetId(), true);
+
+		StructMessage sendValue;
+		sendValue.MessageSuccessfuly = true;
+		_communicationService->SendDataToPipe(sendValue); //Envia para o player a resposta que deu certo entra no game
+		StructMessage receivedValue = _communicationService->ReceiveDataFromPipe();
+		StartGameJoinGame(receivedValue);
+	}
+	catch (std::overflow_error& ex)
+	{
+		_userModel->SetCurrentGameID("");
+		_userModel->SetOnCurrentGame(false);
+		_userService->UpdateUser(_userModel);
+		_gameService->LeaveGame(_gameModel, _userModel->GetNickName());
+	}
+}
+
 void MenuController::RecoverLastGame()
 {
 	try
 	{
 		ValidationUserAndGame();
 
-		_gameModel = _gameService->RecoverLastGame(_userModel->GetCurrentGameID());
+		_gameModel->CopyFrom(_gameService->RecoverLastGame(_userModel->GetCurrentGameID()));
 
 		if (_gameModel->GetId().compare("{00000000-0000-0000-0000-000000000000}") == 0)
 		{
@@ -141,12 +150,21 @@ void MenuController::RecoverLastGame()
 
 			// Nessa Etapa o usuário fica esperando a resposta do client (do usuário do JoinGame) para poder começar a partida
 			// Precisamos mexer aqui para validação dessa resposta
-			StructMessage receivedvalue = _communicationService->ReceiveDataFromPipe();
+			StructMessage receivedValue = _communicationService->ReceiveDataFromPipe();
+			StartGame(receivedValue.MessageSuccessfuly); //Resposta do player que acabou de entrar na partida
+			StructMessage sendValue;
+			receivedValue.MessageSuccessfuly = true;
+			sendValue.Content = Serialize::ConvertGameModelToString(_gameModel); //Enviar alguma coisa aqui
+			_communicationService->SendDataToPipe(sendValue); //Envia para o player a resposta que deu certo a criação do game
 		}
 		else 
 		{
-			bool teste;
 			ConnectionChannel(_gameModel->GetId(), false);
+			StructMessage sendValue;
+			sendValue.MessageSuccessfuly = true;
+			_communicationService->SendDataToPipe(sendValue); //Envia para o player a resposta que deu certo entra no game
+			StructMessage receivedValue = _communicationService->ReceiveDataFromPipe();
+			StartGameJoinGame(receivedValue);
 		}
 	}
 	catch (std::invalid_argument& e)
@@ -159,6 +177,25 @@ void MenuController::RecoverLastGame()
 	{
 		_userModel->SetOnCurrentGame(false);
 		_userService->UpdateUser(_userModel);
+	}
+}
+
+void MenuController::Back(bool const& newGame, bool const& joinGame)
+{
+	if (newGame)
+	{
+		_userModel->SetCurrentGameID("");
+		_userModel->SetOnCurrentGame(false);
+		_userService->UpdateUser(_userModel);
+		_gameService->RemoveGame(_gameModel);
+	}
+
+	if (joinGame)
+	{
+		_userModel->SetCurrentGameID("");
+		_userModel->SetOnCurrentGame(false);
+		_userService->UpdateUser(_userModel);
+		_gameService->LeaveGame(_gameModel, _userModel->GetNickName());
 	}
 }
 
@@ -238,5 +275,31 @@ void MenuController::ConnectionChannel(const string& id, const bool& joinGame)
 		}
 
 		throw std::overflow_error("Ocorreu um problema ao entrar no game, tente novamente!");
+	}
+}
+
+void MenuController::StartGame(const bool& messageSuccessfuly)
+{
+	//Resposta positiva que o usuário se conectou no game! (Só um exemplo de resposta)
+	if (messageSuccessfuly)
+	{
+		_gameService->StartGame(_gameModel);
+		_gameService->Hand(_gameModel);
+	}
+	else
+	{
+		throw std::exception("O jogador não conseguiu se conectar na partida!");
+	}
+}
+
+void MenuController::StartGameJoinGame(StructMessage response)
+{
+	if (response.MessageSuccessfuly == true)
+	{
+		_gameModel->CopyFrom(Serialize::ConvertStringToGameModel(response.Content));
+	}
+	else
+	{
+		throw std::exception("O host não conseguiu inicializar a partida!");
 	}
 }

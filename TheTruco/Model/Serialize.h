@@ -3,6 +3,7 @@
 #include <combaseapi.h>
 #include <Repository/DTOs/UserDTO.h>
 #include <Repository/DTOs/GameDTO.h>
+#include <GameModel.h>
 
 namespace Helpers
 {
@@ -14,6 +15,9 @@ namespace Helpers
 
         static Repository::DTOs::GameDTO ConvertStringToGameDTO(const std::string& result);
         static std::string ConvertGameDTOToString(const Repository::DTOs::GameDTO& result);
+
+        static std::shared_ptr<Model::GameModel> ConvertStringToGameModel(const std::string& result);
+        static std::string ConvertGameModelToString(const std::shared_ptr<Model::GameModel>& result);
 
         static std::string ConvertGameCardDeckModelToString(const std::shared_ptr<Model::CardDeckModel>& cardDeckModel);
         static std::shared_ptr<Model::CardDeckModel> ConvertStringToGameCardDeckModel(const std::string& cardDeckModel);

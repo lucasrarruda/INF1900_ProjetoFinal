@@ -175,6 +175,110 @@ string Serialize::ConvertGameDTOToString(const GameDTO& result)
 	return resultString;
 }
 
+shared_ptr<GameModel> Serialize::ConvertStringToGameModel(const string& result)
+{
+	vector<string> response = Utils::SplitString(result, ";");
+	shared_ptr<GameModel> gameModel;
+
+	Helpers::Enums::ModeGameEnum ModeGame;
+	std::shared_ptr<Model::CardDeckModel> GameCardDeck;
+	std::map<int, std::shared_ptr<Model::PlayerModel>> Players;
+	wstring gameCardDeck = L"";
+	wstring players = L"";
+
+	int count = 0;
+	for (auto& value : response)
+	{
+		count++;
+		switch (count)
+		{
+		case 1:
+			gameModel->SetId(value);
+			continue;
+		case 2:
+			gameModel->SetPlayGame((value.compare("true") == 0) ? true : false);
+			continue;
+		case 3:
+			gameModel->SetTurnPlayer(stoi(value));
+			continue;
+		case 4:
+			if (value.compare(modeGameEnumString[ModeGameEnum::INDIVIDUAL]) == 0)
+			{
+				gameModel->SetModeGame(ModeGameEnum::INDIVIDUAL);
+			}
+			else
+			{
+				gameModel->SetModeGame(ModeGameEnum::PAIR);
+			}
+			continue;
+		case 5:
+			if (gameCardDeck.compare(L"") != 0)
+			{
+				DatabaseUtils::Get(ConvertStringToWString(value), L"GameCardDeckCopy", gameCardDeck);
+
+				gameModel->SetGameCardDeck(ConvertStringToGameCardDeckModel(ConvertWStringToString(gameCardDeck)));
+			}
+			continue;
+		case 6:
+			if (players.compare(L"") != 0)
+			{
+				DatabaseUtils::Get(ConvertStringToWString(value), L"PlayersCopy", players);
+
+				gameModel->SetPlayers(ConvertStringToPlayerModelMap(ConvertWStringToString(players)));
+			}
+			continue;
+		case 7:
+			gameModel->SetHandPoints(stoi(value));
+			continue;
+		case 8:
+			gameModel->SetFirstRound((value.compare("true") == 0) ? true : false);
+			continue;
+		case 9:
+			gameModel->SetPlayerOneDiscardCardKey(stoi(value));
+			continue;
+		case 10:
+			gameModel->SetPlayerTwoDiscardCardKey(stoi(value));
+			continue;
+		case 11:
+			gameModel->SetPlayerThreeDiscardCardKey(stoi(value));
+			continue;
+		case 12:
+			gameModel->SetPlayerFourDiscardCardKey(stoi(value));
+			continue;
+		}
+	}
+
+	return gameModel;
+}
+
+string Serialize::ConvertGameModelToString(const shared_ptr<GameModel>& result)
+{
+	string GUID = result->GetId();
+	string playGame = result->GetPlayGame() ? "true" : "false";
+	string turnPlayer = to_string(result->GetTurnPlayer());
+	string modeGame = modeGameEnumString[result->GetModeGame()];
+	string gameCardDeck = GUID;
+	string players = GUID;
+	string handPoints = to_string(result->GetHandPoints());
+	string firstRound = result->GetFirstRound() ? "true" : "false";
+	string playerOneDiscardCardKey = to_string(result->GetPlayerOneDiscardCardKey());
+	string playerTwoDiscardCardKey = to_string(result->GetPlayerTwoDiscardCardKey());
+	string playerThreeDiscardCardKey = to_string(result->GetPlayerThreeDiscardCardKey());
+	string playerFourDiscardCardKey = to_string(result->GetPlayerFourDiscardCardKey());
+
+	if (result->GetGameCardDeck() != nullptr)
+	{
+		DatabaseUtils::Set(ConvertStringToWString(GUID), L"GameCardDeckCopy", ConvertStringToWString(ConvertGameCardDeckModelToString(result->GetGameCardDeck())));
+	}
+
+	DatabaseUtils::Set(ConvertStringToWString(GUID), L"PlayersCopy", ConvertStringToWString(ConvertPlayerModelMapToString(result->GetPlayers(), GUID)));
+
+	string resultString = GUID + ";" + playGame + ";" + turnPlayer + ";" + modeGame + ";" + gameCardDeck + ";" + players + ";" + handPoints + ";" + firstRound + ";"
+		+ playerOneDiscardCardKey + ";" + playerTwoDiscardCardKey + ";" + playerThreeDiscardCardKey + ";" + playerFourDiscardCardKey;
+
+	return resultString;
+}
+
 string Serialize::ConvertGameCardDeckModelToString(const shared_ptr<CardDeckModel>& cardDeckModel)
 {
 	return ConvertPlayingCardModelVectorToString(cardDeckModel->GetCardDeck());
