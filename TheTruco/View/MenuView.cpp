@@ -1,5 +1,10 @@
 #include "pch.h"
 #include <MenuView.h>
+<<<<<<< HEAD
+=======
+#include <MenuControllerFake.h>
+#include <MenuController.h>
+>>>>>>> a1765d0a1e34f955603ef2e6b72d0383e356cbd7
 #include <DisplayHelper.h>
 #include <GeneralHelper.h>
 
@@ -10,7 +15,24 @@ MenuView::MenuView(CWnd* parentWindow, std::shared_ptr<MenuController> menuContr
 	_parentWindow(parentWindow),
 	_menuController(menuController)
 {
+<<<<<<< HEAD
 	
+=======
+	_gameModel = make_shared<GameModelFake>();
+	_controller = make_shared<MenuControllerFake>(_gameModel);
+
+	//EXEMPLO DE VALIDAÇÃO DOS MÉTODOS
+	
+	//auto testeconexao = make_shared<Communication::CommunicationService>();
+	//auto teste = make_shared<Controller::MenuController>(testeconexao);
+	//auto teste2 = make_shared<Controller::MenuController>(testeconexao);
+
+	//teste->NewGame("ARTHUR");
+	//teste2->JoinGame("JOAO", teste->GetGameModel().GetId());
+	//teste->RecoverLastGame("LAURA");
+	//teste->GetUserModel().SetOnCurrentGame(false);
+	//teste->RecoverLastGame("ARTHUR");
+>>>>>>> a1765d0a1e34f955603ef2e6b72d0383e356cbd7
 }
 
 void MenuView::Create()
