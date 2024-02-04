@@ -36,6 +36,8 @@ namespace Controller
 		void ValidationUserAndGame();
 		void CreateConnection(const bool& createGame);
 		void ConnectionChannel(const bool& joinGame);
+		void StartGame(const bool& messageSuccessfuly);
+		void StartGameJoinGame(Communication::StructMessage response);
 	};
 }
 
