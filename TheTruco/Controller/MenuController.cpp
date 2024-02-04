@@ -10,17 +10,14 @@ using namespace Controller;
 using namespace Helpers;
 using namespace Communication;
 
-MenuController::MenuController(const shared_ptr<CommunicationService>& communicationService): 
-	_communicationService(communicationService)
+MenuController::MenuController(const std::shared_ptr<Controller::ContentProvider>& contentProvider):
+	_communicationService(contentProvider->CommunicationServiceInstance)
 {
-	auto gameRepository = GameRepository();
-	auto userRepository = UserRepository();
+	_gameService = contentProvider->GameServiceInstance;
+	_userService = contentProvider->UserServiceInstance;
 
-	_gameService = make_shared<GameService>(gameRepository);
-	_userService = make_shared<UserService>(userRepository);
-
-	_gameModel = make_shared<GameModel>();
-	_userModel = make_shared<UserModel>();
+	_gameModel = contentProvider->GameModelInstance;
+	_userModel = contentProvider->UserModelInstance;
 }	
 
 void MenuController::NewGame()
@@ -99,13 +96,13 @@ void MenuController::StartJoinGame()
 {
 	try
 	{
-		ConnectionChannel(true);
+		//ConnectionChannel(true);
 
-		StructMessage sendValue;
-		sendValue.MessageSuccessfuly = true;
-		_communicationService->SendDataToPipe(sendValue); //Envia para o player a resposta que deu certo entra no game
-		StructMessage receivedValue = _communicationService->ReceiveDataFromPipe();
-		StartGameJoinGame(receivedValue);
+		//StructMessage sendValue;
+		//sendValue.MessageSuccessfuly = true;
+		//_communicationService->SendDataToPipe(sendValue); //Envia para o player a resposta que deu certo entra no game
+		//StructMessage receivedValue = _communicationService->ReceiveDataFromPipe();
+		//StartGameJoinGame(receivedValue);
 	}
 	catch (std::overflow_error& ex)
 	{

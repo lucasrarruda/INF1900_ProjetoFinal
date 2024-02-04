@@ -6,14 +6,14 @@
 using namespace std;
 using namespace Model;
 
-Controller::GameController::GameController(const std::shared_ptr<Communication::CommunicationService>& communicationService): 
-	_communicationService(communicationService)
+Controller::GameController::GameController(const std::shared_ptr<Controller::ContentProvider>& contentProvider):
+	CommunicationService(contentProvider->CommunicationServiceInstance)
 {
-	//auto gameRepository = GameRepository();
-	//auto userRepository = UserRepository();
+	_gameService = contentProvider->GameServiceInstance;
+	_userService = contentProvider->UserServiceInstance;
 
-	//_gameService = make_shared<GameService>(gameRepository);
-	//_userService = make_shared<UserService>(userRepository);
+    _userModel = contentProvider->UserModelInstance;
+    _gameModel = contentProvider->GameModelInstance;
 }
 
 void Controller::GameController::CopyGameCodetoClipboard(const wstring& gameCode)
@@ -50,4 +50,8 @@ void Controller::GameController::CopyGameCodetoClipboard(const wstring& gameCode
         // TODO: tratar exceção na interface
         std::cerr << "Falha ao abrir a área de transferência." << std::endl;
     }
+}
+
+void Controller::GameController::LeaveGame()
+{
 }

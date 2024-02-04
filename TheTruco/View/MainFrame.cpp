@@ -22,12 +22,9 @@ END_MESSAGE_MAP()
 
 MainFrame::MainFrame()
 {
-	_communicationService = make_shared<CommunicationService>();
-
-	_menuController = make_shared<MenuController>(_communicationService);
-	_gameController = make_shared<GameController>(_communicationService);
-	_gameController->SetUserModel(_menuController->GetUserModel());
-	_gameController->SetGameModel(_menuController->GetGameModel());
+	_contentProvider = make_shared<ContentProvider>();
+	_menuController = make_shared<MenuController>(_contentProvider);
+	_gameController = make_shared<GameController>(_contentProvider);
 
 	_menuView = make_shared<MenuView>(this, _menuController);
 	_joinGameView = make_shared<JoinGameView>(this, _menuController);

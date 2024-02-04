@@ -1,19 +1,14 @@
 #pragma once
 
 #include <Interfaces/ControllerBase.h>
-#include <MenuController.h>
-#include <Services/GameService.h>
-#include <Services/UserService.h>
-#include <GameModel.h>
-#include <UserModel.h>
-#include <Communication/CommunicationService.h>
+#include <ContentProvider.h>
 
 namespace Controller
 {
 	class MenuController : public Interfaces::ControllerBase
 	{
 	public:
-		MenuController(const std::shared_ptr<Communication::CommunicationService>& communicationService);
+		MenuController(const std::shared_ptr<Controller::ContentProvider>& contentProvider);
 		~MenuController() = default;
 
 		inline std::shared_ptr<Model::GameModel> GetGameModel() const { return _gameModel; }

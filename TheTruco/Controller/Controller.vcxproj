@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ContentProvider.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="GameController.h" />
     <ClInclude Include="MenuController.h" />

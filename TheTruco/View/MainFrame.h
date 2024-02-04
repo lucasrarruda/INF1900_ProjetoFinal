@@ -6,6 +6,7 @@
 #include <tuple>
 #include <memory>
 #include <MenuController.h>
+#include <ContentProvider.h>
 
 class MainFrame : public CFrameWnd
 {
@@ -33,7 +34,7 @@ private:
 	std::shared_ptr<MenuView> _menuView;
 	std::shared_ptr<JoinGameView> _joinGameView;
 	std::shared_ptr<GameView> _gameView;
-	std::shared_ptr<Communication::CommunicationService> _communicationService;
+	std::shared_ptr<Controller::ContentProvider> _contentProvider;
 	std::shared_ptr<Controller::MenuController> _menuController;
 	std::shared_ptr<Controller::GameController> _gameController;
 
