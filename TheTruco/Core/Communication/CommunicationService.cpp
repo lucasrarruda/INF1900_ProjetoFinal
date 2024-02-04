@@ -1,6 +1,6 @@
 #include "pch.h"
 #include <random>
-#include "CommunicationService.h"
+#include <Communication/CommunicationService.h>
 
 using namespace Communication;
 using namespace Helpers;
@@ -69,6 +69,14 @@ std::wstring CommunicationService::CreateConnectionKey() {
 bool CommunicationService::OpenCommunicationChannel(const std::wstring& password) {
     if (!_pipeManager->IsPipeConnected()) {
         return _pipeManager->CreateConnectionToPipe(password);
+    }
+    return true;
+}
+
+bool Communication::CommunicationService::ConnectChannel(const std::wstring& password)
+{
+    if (!_pipeManager->IsPipeConnected()) {
+        return _pipeManager->ConnectToPipe(password);
     }
     return true;
 }

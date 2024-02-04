@@ -15,6 +15,7 @@ namespace Controller
 		inline std::shared_ptr<Model::GameModel> GetGameModel() const { return _gameModel; }
 		inline std::shared_ptr<Model::UserModel> GetUserModel() const { return _userModel; }
 
+		void WaitConnetion();
 		void CopyGameCodetoClipboard(const std::wstring& gameCode);
 		// TODO: implementar saída do jogo
 		void LeaveGame();

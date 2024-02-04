@@ -16,7 +16,7 @@ namespace Controller
 
 		void NewGame();
 		void JoinGame();
-		void StartJoinGame();
+		void StartJoinGame(const std::string& gameCode);
 		void RecoverLastGame();
 		void Back();
 	private:

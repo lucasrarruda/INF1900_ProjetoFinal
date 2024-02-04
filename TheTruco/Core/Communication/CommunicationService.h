@@ -18,6 +18,7 @@ namespace Communication {
 		bool SendDataToPipe(const StructMessage& data);
 		StructMessage ReceiveDataFromPipe();
 		bool OpenCommunicationChannel(const std::wstring& password);
+		bool ConnectChannel(const std::wstring& password);
 
 	private:
 		std::unique_ptr<NamedPipeManager> _pipeManager;

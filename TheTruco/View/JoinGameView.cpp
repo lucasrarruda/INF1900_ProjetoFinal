@@ -101,9 +101,8 @@ void JoinGameView::StartJoinGame()
 {
 	CString gameCode;
 	_gameCodeBox.GetWindowTextW(gameCode);
-	string a = GeneralHelper::CStringToString(gameCode);
-	// TODO: send to GameController
-	_menuController->StartJoinGame();
+	string currentGameCode = GeneralHelper::CStringToString(gameCode);
+	_menuController->StartJoinGame(currentGameCode);
 }
 
 void JoinGameView::BackCommand()

@@ -16,6 +16,10 @@ Controller::GameController::GameController(const std::shared_ptr<Controller::Con
     _gameModel = contentProvider->GameModelInstance;
 }
 
+void Controller::GameController::WaitConnetion()
+{
+}
+
 void Controller::GameController::CopyGameCodetoClipboard(const wstring& gameCode)
 {
     if (OpenClipboard(nullptr)) {
