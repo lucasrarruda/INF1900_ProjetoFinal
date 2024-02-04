@@ -78,7 +78,7 @@ void UserService::RemoveUser(shared_ptr<Model::UserModel> user)
     }
 }
 
-shared_ptr<Model::UserModel> UserService::GetConflictingUser(shared_ptr<Model::UserModel> user)
+shared_ptr<Model::UserModel> UserService::GetUserByNickname(shared_ptr<Model::UserModel> user)
 {
     UserDTO userConflictngDTO = _userRepository.GetConflictingUser(ToUserDTO(user));
 

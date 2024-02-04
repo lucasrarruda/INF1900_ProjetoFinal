@@ -36,8 +36,7 @@ void MenuController::NewGame()
 {
 	try
 	{
-		// TODO: Removi pra poder não perder a referencia do UserModel
-		//ValidationUserAndGame(_userModel->GetNickName());
+		ValidationUserAndGame();
 
 		auto playerHost = make_shared<Model::PlayerModel>();
 		playerHost->SetNickName(_userModel->GetNickName());
@@ -68,7 +67,7 @@ void MenuController::JoinGame()
 {
 	try
 	{
-		ValidationUserAndGame(_userModel->GetNickName());
+		ValidationUserAndGame();
 
 		auto player = make_shared<Model::PlayerModel>();
 		player->SetNickName(_userModel->GetNickName());
@@ -113,7 +112,7 @@ void MenuController::RecoverLastGame()
 {
 	try
 	{
-		ValidationUserAndGame(_userModel->GetNickName());
+		ValidationUserAndGame();
 
 		_gameModel = _gameService->RecoverLastGame(_userModel->GetCurrentGameID());
 
@@ -163,18 +162,17 @@ void MenuController::RecoverLastGame()
 	}
 }
 
-void MenuController::ValidationUserAndGame(const string& nickName)
+void MenuController::ValidationUserAndGame()
 {
-	_userModel->SetNickName(nickName);
 	auto userModelConflicting = _userService->GetConflictingUser(_userModel);
 
-	if (userModelConflicting->GetNickName().compare(nickName) == 0)
+	if (userModelConflicting->GetNickName().compare(_userModel->GetNickName()) == 0)
 	{
-		_userModel = userModelConflicting;
+		_userModel->CopyFrom(userModelConflicting);
 	}
 	else
 	{
-		_userModel = _userService->SaveUser(_userModel);
+		_userModel->CopyFrom(_userService->SaveUser(_userModel));
 	}
 
 	if (_userModel->GetCurrentGameID().compare("") != 0)

@@ -49,6 +49,19 @@ namespace Model
             Notify();
         };
 
+        inline void CopyFrom(const std::shared_ptr<UserModel> other)
+        {
+            if (this != other.get())
+            {
+                _id = other->_id;
+                _nickName = other->_nickName;
+                _gamesWin = other->_gamesWin;
+                _gamesLose = other->_gamesLose;
+                _currentGameID = other->_currentGameID;
+                _onCurrentGame = other->_onCurrentGame;
+            }
+        }
+
     private:
         std::string _id = "";
         std::string _nickName = "";
