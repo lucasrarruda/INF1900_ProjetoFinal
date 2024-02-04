@@ -17,7 +17,10 @@ namespace Controller
 		~GameController() = default;
 
 		inline std::shared_ptr<Model::GameModel> GetGameModel() const { return _gameModel; }
+		inline void SetGameModel(std::shared_ptr<Model::GameModel> model) { _gameModel = model; }
+
 		inline std::shared_ptr<Model::UserModel> GetUserModel() const { return _userModel; }
+		inline void SetUserModel(std::shared_ptr<Model::UserModel> model) { _userModel = model; }
 
 		void CopyGameCodetoClipboard(const std::wstring& gameCode);
 

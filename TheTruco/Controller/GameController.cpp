@@ -14,9 +14,6 @@ Controller::GameController::GameController(const std::shared_ptr<Communication::
 
 	//_gameService = make_shared<GameService>(gameRepository);
 	//_userService = make_shared<UserService>(userRepository);
-
-	_gameModel = make_shared<GameModel>();
-	_userModel = make_shared<UserModel>();
 }
 
 void Controller::GameController::CopyGameCodetoClipboard(const wstring& gameCode)

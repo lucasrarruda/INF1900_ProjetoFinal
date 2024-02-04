@@ -21,7 +21,7 @@ MenuController::MenuController(const shared_ptr<CommunicationService>& communica
 
 	_gameModel = make_shared<GameModel>();
 	_userModel = make_shared<UserModel>();
-}
+}	
 
 void MenuController::NewGame()
 {
@@ -43,12 +43,12 @@ void MenuController::NewGame()
 
 		// Nessa Etapa o usuário fica esperando a resposta do client (do usuário do JoinGame) para poder começar a partida
 		// Precisamos mexer aqui para validação dessa resposta
-		StructMessage receivedValue = _communicationService->ReceiveDataFromPipe();
-		StartGame(receivedValue.MessageSuccessfuly); //Resposta do player que acabou de entrar na partida
-		StructMessage sendValue;
-		receivedValue.MessageSuccessfuly = true;
-		sendValue.Content = Serialize::ConvertGameModelToString(_gameModel); //Enviar alguma coisa aqui
-		_communicationService->SendDataToPipe(sendValue); //Envia para o player a resposta que deu certo a criação do game
+		//StructMessage receivedValue = _communicationService->ReceiveDataFromPipe();
+		//StartGame(receivedValue.MessageSuccessfuly); //Resposta do player que acabou de entrar na partida
+		//StructMessage sendValue;
+		//receivedValue.MessageSuccessfuly = true;
+		//sendValue.Content = Serialize::ConvertGameModelToString(_gameModel); //Enviar alguma coisa aqui
+		//_communicationService->SendDataToPipe(sendValue); //Envia para o player a resposta que deu certo a criação do game
 	}
 	catch (const std::exception& ex)
 	{
@@ -191,7 +191,7 @@ void MenuController::ValidationUserAndGame()
 {
 	auto userModelConflicting = _userService->GetUserByNickname(_userModel);
 
-	if (_userModel->GetNickName().compare("") != 0)
+	if (_userModel->GetNickName().compare("") == 0)
 	{
 		throw std::exception("O usuário não pode criar um jogo com Nickname vazio!");
 	}

@@ -10,10 +10,13 @@ GameView::GameView(CWnd* parentWindow, std::shared_ptr<Controller::GameControlle
 	_parentWindow(parentWindow),
 	_gameController(gameController)
 {
+	_userModel = _gameController->GetUserModel();
 }
 
 void GameView::Create()
 {
+	_userModel->Attach(shared_from_this());
+
 	CreateGameControls();
 	CreateGameScore();
 	CreateGameCards();
@@ -21,7 +24,8 @@ void GameView::Create()
 
 void GameView::Update()
 {
-	// Update UI with new model values
+	CString gameCode = GeneralHelper::StringToCString(_userModel->GetCurrentGameID());
+	_gameCode.SetWindowTextW(gameCode);
 }
 
 void GameView::Show()

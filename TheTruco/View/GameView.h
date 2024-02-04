@@ -2,7 +2,7 @@
 #include <Interfaces/ViewBase.h>
 #include <GameController.h>
 
-class GameView : public Interfaces::ViewBase, public CFrameWnd
+class GameView : public Interfaces::ViewBase, public CFrameWnd, public std::enable_shared_from_this<GameView>
 {
 public:
 	GameView(CWnd* parentWindow, std::shared_ptr<Controller::GameController> gameController);
@@ -22,6 +22,7 @@ public:
 
 private:
 	std::shared_ptr<Controller::GameController> _gameController;
+	std::shared_ptr<Model::UserModel> _userModel;
 
 	CWnd* _parentWindow;
 	CStatic _labelGameScore;

@@ -26,6 +26,8 @@ MainFrame::MainFrame()
 
 	_menuController = make_shared<MenuController>(_communicationService);
 	_gameController = make_shared<GameController>(_communicationService);
+	_gameController->SetUserModel(_menuController->GetUserModel());
+	_gameController->SetGameModel(_menuController->GetGameModel());
 
 	_menuView = make_shared<MenuView>(this, _menuController);
 	_joinGameView = make_shared<JoinGameView>(this, _menuController);
