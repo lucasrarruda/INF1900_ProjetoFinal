@@ -23,7 +23,7 @@ MainFrame::MainFrame()
 	_menuController = make_shared<Controller::MenuController>(_communicationService);
 	_menuView = make_shared<MenuView>(this, _menuController);
 
-	_newGameView = make_shared<NewGameView>(this);
+	_newGameView = make_shared<NewGameView>(this, _menuController);
 	_joinGameView = make_shared<JoinGameView>(this);
 	_gameView = make_shared<GameView>(this);
 }

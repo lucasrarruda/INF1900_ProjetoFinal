@@ -10,5 +10,11 @@ namespace GeneralHelper
 		CT2CA convertedContent(content);
 		return std::string(convertedContent);
 	}
+
+	inline CString StringToCString(std::string content)
+	{
+		CString convertedContent(content.c_str());
+		return convertedContent;
+	}
 };
 

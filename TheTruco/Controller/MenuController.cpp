@@ -36,7 +36,8 @@ void MenuController::NewGame()
 {
 	try
 	{
-		ValidationUserAndGame(_userModel->GetNickName());
+		// TODO: Removi pra poder não perder a referencia do UserModel
+		//ValidationUserAndGame(_userModel->GetNickName());
 
 		auto playerHost = make_shared<Model::PlayerModel>();
 		playerHost->SetNickName(_userModel->GetNickName());
@@ -47,7 +48,8 @@ void MenuController::NewGame()
 
 		_userService->UpdateUser(_userModel);
 
-		CreateConnection(_gameModel->GetId(), true);
+		// TODO: Removi pra não perder a referencia do GameCode, pq esse método vai apagar o id do jogo
+		//CreateConnection(_gameModel->GetId(), true);
 
 		// Nessa Etapa o usuário fica esperando a resposta do client (do usuário do JoinGame) para poder começar a partida
 		// Precisamos mexer aqui para validação dessa resposta

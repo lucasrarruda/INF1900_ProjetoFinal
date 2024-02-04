@@ -30,7 +30,7 @@ namespace Interfaces
 		{
 			std::for_each(_views.cbegin(), _views.cend(), [](std::shared_ptr<ViewBase> currentView)
 				{
-					currentView->Updated(); 
+					currentView->Update(); 
 				});
 		}
 

@@ -96,7 +96,7 @@ void MenuView::Create()
 	_recoverLastGameButton.SetFont(&_buttonFont);
 }
 
-void MenuView::Updated()
+void MenuView::Update()
 {
 	// Update UI with new model values
 }
@@ -130,6 +130,7 @@ void MenuView::NewGameCommand()
 void MenuView::JoinGameCommand()
 {
 	UpdateNickname();
+	_menuController->JoinGame();
 }
 
 void MenuView::UpdateNickname()

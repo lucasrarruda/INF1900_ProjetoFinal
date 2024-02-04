@@ -1,15 +1,22 @@
 #include "pch.h"
 #include <NewGameView.h>
 #include <DisplayHelper.h>
+#include <GeneralHelper.h>
 
 using namespace std;
 
-NewGameView::NewGameView(CWnd* parentWindow) : Interfaces::ViewBase(), _parentWindow(parentWindow)
+NewGameView::NewGameView(CWnd* parentWindow, std::shared_ptr<Controller::MenuController> menuController) : 
+	Interfaces::ViewBase(), 
+	_parentWindow(parentWindow),
+	_menuController(menuController)
 {
+	_userModel = _menuController->GetUserModel();
 }
 
 void NewGameView::Create()
 {
+	_userModel->Attach(shared_from_this());
+
 	auto [dpiX, dpiY] = DisplayHelper::GetMonitorDpi();
 
 	_titleFont.CreatePointFont(static_cast<int>(380 * dpiX), _T("Arial"));
@@ -26,9 +33,9 @@ void NewGameView::Create()
 	_labelFont.CreatePointFont(static_cast<int>(120 * dpiX), _T("Arial"));
 	CRect labelGameCodeRect
 	{
-		static_cast<int>(330 * dpiX),
+		static_cast<int>(250 * dpiX),
 		static_cast<int>(500 * dpiY),
-		static_cast<int>(810 * dpiX),
+		static_cast<int>(890 * dpiX),
 		static_cast<int>(530 * dpiY)
 	};
 	_labelGameCode.Create(_T("Game code:"), WS_CHILD | WS_VISIBLE | SS_CENTER | BS_CENTER, labelGameCodeRect, _parentWindow);
@@ -37,9 +44,9 @@ void NewGameView::Create()
 	_gameCodeFont.CreatePointFont(static_cast<int>(170 * dpiX), _T("Arial"));
 	CRect gameCodeRect
 	{
-		static_cast<int>(330 * dpiX),
+		static_cast<int>(250 * dpiX),
 		static_cast<int>(540 * dpiY),
-		static_cast<int>(810 * dpiX),
+		static_cast<int>(890 * dpiX),
 		static_cast<int>(590 * dpiY)
 	};
 	_gameCode.Create(_T("xYr489"), WS_CHILD | WS_VISIBLE | SS_CENTER | BS_CENTER, gameCodeRect, _parentWindow);
@@ -73,9 +80,11 @@ void NewGameView::Create()
 	_backMenuButton.Create(_T("Back"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, backMenuRect, _parentWindow, IDC_BACK_BUTTON_NEW_GAME);
 }
 
-void NewGameView::Updated()
+void NewGameView::Update()
 {
 	// Update UI with new model values
+	auto a = GeneralHelper::StringToCString(_userModel->GetCurrentGameID());
+	_gameCode.SetWindowTextW(a);
 }
 
 void NewGameView::Show()

@@ -12,7 +12,7 @@ namespace Interfaces
 		virtual ~ViewBase() = default;
 
 		virtual void Create() = 0;
-		virtual void Updated() = 0;
+		virtual void Update() = 0;
 		virtual void Show() = 0;
 		virtual void Hide() = 0;
 

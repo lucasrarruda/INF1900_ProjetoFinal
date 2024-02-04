@@ -8,7 +8,7 @@ public:
 	~JoinGameView() = default;
 
 	void Create();
-	void Updated();
+	void Update();
 	void Show();
 	void Hide();
 
