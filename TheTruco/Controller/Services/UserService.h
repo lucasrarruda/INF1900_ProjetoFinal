@@ -18,7 +18,7 @@ namespace Service
         std::shared_ptr<Model::UserModel> SaveUser(std::shared_ptr<Model::UserModel> user);
         void UpdateUser(std::shared_ptr<Model::UserModel> user);
         void RemoveUser(std::shared_ptr<Model::UserModel> user);
-        std::shared_ptr<Model::UserModel> GetConflictingUser(std::shared_ptr<Model::UserModel> user);
+        std::shared_ptr<Model::UserModel> GetUserByNickname(std::shared_ptr<Model::UserModel> user);
 
     private: 
         Repository::UserRepository _userRepository;

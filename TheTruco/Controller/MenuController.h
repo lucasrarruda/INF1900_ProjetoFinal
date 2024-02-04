@@ -21,8 +21,11 @@ namespace Controller
 		inline std::shared_ptr<Model::UserModel> GetUserModel() const { return _userModel; }
 
 		void NewGame();
+		// TODO: void StartGame();
 		void JoinGame();
+		// TODO: void StartJoinGame();
 		void RecoverLastGame();
+		// TODO: void Back();
 	private:
 		std::shared_ptr<Service::GameService> _gameService;
 		std::shared_ptr<Service::UserService> _userService;
@@ -32,7 +35,7 @@ namespace Controller
 
 		std::shared_ptr<Communication::CommunicationService> _communicationService;
 
-		void ValidationUserAndGame(const std::string& nickName);
+		void ValidationUserAndGame();
 		void CreateConnection(const std::string& id, const bool& createGame);
 		void ConnectionChannel(const std::string& id, const bool& joinGame);
 	};
