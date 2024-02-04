@@ -15,8 +15,9 @@ public:
 	BOOL PreCreateWindow(CREATESTRUCT& cs);
 	BOOL Create();
 
-	void NavigateNewGame();
-	void NavigateJoinGame();
+	void CreateNewGame();
+	void JoinGame();
+	void StartJoinGame();
 	void NavigateRecoverLastGame();
 	void NavigatePlayGame();
 	void NavigateMenu();

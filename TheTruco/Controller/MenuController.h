@@ -21,7 +21,6 @@ namespace Controller
 		inline std::shared_ptr<Model::UserModel> GetUserModel() const { return _userModel; }
 
 		void NewGame();
-		// TODO: void StartGame();
 		void JoinGame();
 		// TODO: void StartJoinGame();
 		void RecoverLastGame();

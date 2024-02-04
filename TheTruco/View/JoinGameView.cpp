@@ -4,12 +4,18 @@
 
 using namespace std;
 
-JoinGameView::JoinGameView(CWnd* parentWindow) : Interfaces::ViewBase(), _parentWindow(parentWindow)
+JoinGameView::JoinGameView(CWnd* parentWindow, std::shared_ptr<Controller::MenuController> menuController) : 
+	Interfaces::ViewBase(), 
+	_parentWindow(parentWindow),
+	_menuController(menuController)
 {
+	_userModel = _menuController->GetUserModel();
 }
 
 void JoinGameView::Create()
 {
+	_userModel->Attach(shared_from_this());
+
 	auto [dpiX, dpiY] = DisplayHelper::GetMonitorDpi();
 
 	_titleFont.CreatePointFont(static_cast<int>(380 * dpiX), _T("Arial"));
@@ -88,4 +94,8 @@ void JoinGameView::Hide()
 	_gameCodeBox.ShowWindow(SW_HIDE);
 	_joinGameButton.ShowWindow(SW_HIDE);
 	_backMenuButton.ShowWindow(SW_HIDE);
+}
+
+void JoinGameView::StartJoinGameCommand()
+{
 }
