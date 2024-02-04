@@ -3,6 +3,8 @@
 #include <DisplayHelper.h>
 
 using namespace std;
+using namespace Communication;
+using namespace Controller;
 
 BEGIN_MESSAGE_MAP(MainFrame, CFrameWnd)
 	ON_COMMAND(IDC_NEW_GAME_BUTTON, CreateNewGame)
@@ -10,20 +12,24 @@ BEGIN_MESSAGE_MAP(MainFrame, CFrameWnd)
 	ON_COMMAND(IDC_START_JOIN_GAME_BUTTON, StartJoinGame)
 	ON_COMMAND(IDC_LEAVE_GAME_BUTTON, LeaveGame)
 	ON_COMMAND(IDC_BACK_BUTTON_JOIN_GAME, BackToMenu)
+	ON_COMMAND(IDC_COPY_TO_CLIPBOARD_BUTTON, CopyGameCodeToClipboard)
 	ON_COMMAND(IDC_YOUR_CARD_ONE_BUTTON, DropCardOne)
 	ON_COMMAND(IDC_YOUR_CARD_TWO_BUTTON, DropCardTwo)
 	ON_COMMAND(IDC_YOUR_CARD_THREE_BUTTON, DropCardThree)
 	ON_COMMAND(IDC_TRUCO_BUTTON, NotifyTruco)
-	ON_COMMAND(IDC_RECOVER_LAST_GAME_BUTTON, NavigateRecoverLastGame)
+	ON_COMMAND(IDC_RECOVER_LAST_GAME_BUTTON, RecoverLastGame)
 END_MESSAGE_MAP()
 
 MainFrame::MainFrame()
 {
-	_communicationService = make_shared<Communication::CommunicationService>();
-	_menuController = make_shared<Controller::MenuController>(_communicationService);
+	_communicationService = make_shared<CommunicationService>();
+
+	_menuController = make_shared<MenuController>(_communicationService);
+	_gameController = make_shared<GameController>(_communicationService);
+
 	_menuView = make_shared<MenuView>(this, _menuController);
 	_joinGameView = make_shared<JoinGameView>(this, _menuController);
-	_gameView = make_shared<GameView>(this);
+	_gameView = make_shared<GameView>(this, _gameController);
 }
 
 BOOL MainFrame::PreCreateWindow(CREATESTRUCT& cs)
@@ -85,7 +91,7 @@ void MainFrame::StartJoinGame()
 	UpdateFrame();
 }
 
-void MainFrame::NavigateRecoverLastGame()
+void MainFrame::RecoverLastGame()
 {
 	HideAllViews();
 	_menuView->RecoverLast();
@@ -107,6 +113,11 @@ void MainFrame::BackToMenu()
 	_joinGameView->BackCommand();
 	_menuView->Show();
 	UpdateFrame();
+}
+
+void MainFrame::CopyGameCodeToClipboard()
+{
+	_gameView->CopyGameCodeToClipboard();
 }
 
 

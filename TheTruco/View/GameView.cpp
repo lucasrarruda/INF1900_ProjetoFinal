@@ -1,10 +1,14 @@
 #include "pch.h"
 #include <GameView.h>
 #include <DisplayHelper.h>
+#include <GeneralHelper.h>
 
 using namespace std;
 
-GameView::GameView(CWnd* parentWindow) : Interfaces::ViewBase(), _parentWindow(parentWindow)
+GameView::GameView(CWnd* parentWindow, std::shared_ptr<Controller::GameController> gameController) :
+	Interfaces::ViewBase(), 
+	_parentWindow(parentWindow),
+	_gameController(gameController)
 {
 }
 
@@ -82,6 +86,14 @@ void GameView::Hide()
 	_labelGameCode.ShowWindow(SW_HIDE);
 	_gameCode.ShowWindow(SW_HIDE);
 	_copyToClipboardButton.ShowWindow(SW_HIDE);
+}
+
+void GameView::CopyGameCodeToClipboard()
+{
+	// TODO: incluir game code no model
+	CString gameCode;
+	_gameCode.GetWindowTextW(gameCode);
+	_gameController->CopyGameCodetoClipboard(GeneralHelper::CStringToWstring(gameCode));
 }
 
 void GameView::DropCardOne()

@@ -18,10 +18,10 @@ public:
 	void CreateNewGame();
 	void JoinGame();
 	void StartJoinGame();
-	void NavigateRecoverLastGame();
+	void RecoverLastGame();
 	void LeaveGame();
 	void BackToMenu();
-
+	void CopyGameCodeToClipboard();
 	void DropCardOne();
 	void DropCardTwo();
 	void DropCardThree();
@@ -35,6 +35,7 @@ private:
 	std::shared_ptr<GameView> _gameView;
 	std::shared_ptr<Communication::CommunicationService> _communicationService;
 	std::shared_ptr<Controller::MenuController> _menuController;
+	std::shared_ptr<Controller::GameController> _gameController;
 
 	void HideAllViews();
 	void UpdateFrame();

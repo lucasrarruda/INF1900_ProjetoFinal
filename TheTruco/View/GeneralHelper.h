@@ -16,5 +16,17 @@ namespace GeneralHelper
 		CString convertedContent(content.c_str());
 		return convertedContent;
 	}
+
+	inline std::wstring CStringToWstring(CString content)
+	{
+		std::wstring convertedContent(content);
+		return convertedContent;
+	}
+
+	inline CString WstringToCString(std::wstring content)
+	{
+		CString convertedContent(content.c_str());
+		return convertedContent;
+	}
 };
 

@@ -10,10 +10,9 @@ using namespace Controller;
 using namespace Helpers;
 using namespace Communication;
 
-MenuController::MenuController(const shared_ptr<CommunicationService>& communicationService)
+MenuController::MenuController(const shared_ptr<CommunicationService>& communicationService): 
+	_communicationService(communicationService)
 {
-	_communicationService = communicationService;
-
 	auto gameRepository = GameRepository();
 	auto userRepository = UserRepository();
 
@@ -22,14 +21,6 @@ MenuController::MenuController(const shared_ptr<CommunicationService>& communica
 
 	_gameModel = make_shared<GameModel>();
 	_userModel = make_shared<UserModel>();
-}
-
-MenuController::MenuController(const MenuController& other): 
-	_gameService(other._gameService), _userService(other._userService),
-	_gameModel(other._gameModel), _userModel(other._userModel),
-	_communicationService(other._communicationService)
-{
-
 }
 
 void MenuController::NewGame()

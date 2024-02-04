@@ -1,10 +1,11 @@
 #pragma once
 #include <Interfaces/ViewBase.h>
+#include <GameController.h>
 
 class GameView : public Interfaces::ViewBase, public CFrameWnd
 {
 public:
-	GameView(CWnd* parentWindo/*, shared_ptr<Controller::GameController> gameCotnroller*/);
+	GameView(CWnd* parentWindow, std::shared_ptr<Controller::GameController> gameController);
 	~GameView() = default;
 
 	void Create();
@@ -12,6 +13,7 @@ public:
 	void Show();
 	void Hide();
 
+	void CopyGameCodeToClipboard();
 	void DropCardOne();
 	void DropCardTwo();
 	void DropCardThree();
@@ -19,6 +21,8 @@ public:
 	void LeaveGame();
 
 private:
+	std::shared_ptr<Controller::GameController> _gameController;
+
 	CWnd* _parentWindow;
 	CStatic _labelGameScore;
 	CStatic _labelGamePoints;
