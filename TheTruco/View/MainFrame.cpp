@@ -8,8 +8,8 @@ BEGIN_MESSAGE_MAP(MainFrame, CFrameWnd)
 	ON_COMMAND(IDC_NEW_GAME_BUTTON, CreateNewGame)
 	ON_COMMAND(IDC_JOIN_GAME_BUTTON, JoinGame)
 	ON_COMMAND(IDC_START_JOIN_GAME_BUTTON, StartJoinGame)
-	ON_COMMAND(IDC_LEAVE_GAME_BUTTON, NavigateMenu)
-	ON_COMMAND(IDC_BACK_BUTTON_JOIN_GAME, NavigateMenu)
+	ON_COMMAND(IDC_LEAVE_GAME_BUTTON, LeaveGame)
+	ON_COMMAND(IDC_BACK_BUTTON_JOIN_GAME, BackToMenu)
 	ON_COMMAND(IDC_YOUR_CARD_ONE_BUTTON, DropCardOne)
 	ON_COMMAND(IDC_YOUR_CARD_TWO_BUTTON, DropCardTwo)
 	ON_COMMAND(IDC_YOUR_CARD_THREE_BUTTON, DropCardThree)
@@ -64,7 +64,7 @@ BOOL MainFrame::Create()
 void MainFrame::CreateNewGame()
 {
 	HideAllViews();
-	_menuView->NewGameCommand();
+	_menuView->NewGame();
 	_gameView->Show();
 	UpdateFrame();
 }
@@ -72,7 +72,7 @@ void MainFrame::CreateNewGame()
 void MainFrame::JoinGame()
 {
 	HideAllViews();
-	_menuView->JoinGameCommand();
+	_menuView->JoinGame();
 	_joinGameView->Show();
 	UpdateFrame();
 }
@@ -80,7 +80,7 @@ void MainFrame::JoinGame()
 void MainFrame::StartJoinGame()
 {
 	HideAllViews();
-	_joinGameView->StartJoinGameCommand();
+	_joinGameView->StartJoinGame();
 	_gameView->Show();
 	UpdateFrame();
 }
@@ -88,7 +88,7 @@ void MainFrame::StartJoinGame()
 void MainFrame::NavigateRecoverLastGame()
 {
 	HideAllViews();
-	_menuView->RecoverLastGame();
+	_menuView->RecoverLast();
 	_gameView->Show();
 	UpdateFrame();
 }
@@ -100,9 +100,18 @@ void MainFrame::NavigatePlayGame()
 	UpdateFrame();
 }
 
-void MainFrame::NavigateMenu()
+void MainFrame::LeaveGame()
 {
 	HideAllViews();
+	_gameView->LeaveGame();
+	_menuView->Show();
+	UpdateFrame();
+}
+
+void MainFrame::BackToMenu()
+{
+	HideAllViews();
+	_joinGameView->BackCommand();
 	_menuView->Show();
 	UpdateFrame();
 }

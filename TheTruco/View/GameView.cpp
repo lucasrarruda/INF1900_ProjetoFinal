@@ -107,6 +107,10 @@ void GameView::NotifyTruco()
 	_gameConsole.SetWindowTextW(_T("Truco!"));
 }
 
+void GameView::LeaveGame()
+{
+}
+
 void GameView::CreateGameControls()
 {
 	auto [dpiX, dpiY] = DisplayHelper::GetMonitorDpi();

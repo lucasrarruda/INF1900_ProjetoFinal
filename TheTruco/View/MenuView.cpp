@@ -110,21 +110,21 @@ void MenuView::Hide()
 	_recoverLastGameButton.ShowWindow(SW_HIDE);
 }
 
-void MenuView::NewGameCommand()
+void MenuView::NewGame()
 {
 	// TODO: incluir validação para quando o nickname não estiver definido
 	UpdateNickname();
 	_menuController->NewGame();
 }
 
-void MenuView::JoinGameCommand()
+void MenuView::JoinGame()
 {
 	// TODO: incluir validação para quando o nickname não estiver definido
 	UpdateNickname();
 	_menuController->JoinGame();
 }
 
-void MenuView::RecoverLastGame()
+void MenuView::RecoverLast()
 {
 	// TODO: incluir validação para quando o nickname não estiver definido
 	// TODO: incluir validação para quando o nickname não for igual ao último jogo

@@ -20,7 +20,8 @@ public:
 	void StartJoinGame();
 	void NavigateRecoverLastGame();
 	void NavigatePlayGame();
-	void NavigateMenu();
+	void LeaveGame();
+	void BackToMenu();
 
 	void DropCardOne();
 	void DropCardTwo();

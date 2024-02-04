@@ -13,7 +13,8 @@ public:
 	void Show();
 	void Hide();
 
-	void StartJoinGameCommand();
+	void StartJoinGame();
+	void BackCommand();
 
 private:
 	std::shared_ptr<Controller::MenuController> _menuController;

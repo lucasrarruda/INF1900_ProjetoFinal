@@ -16,6 +16,7 @@ public:
 	void DropCardTwo();
 	void DropCardThree();
 	void NotifyTruco();
+	void LeaveGame();
 
 private:
 	CWnd* _parentWindow;

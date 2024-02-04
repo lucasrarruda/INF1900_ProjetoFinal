@@ -22,9 +22,9 @@ namespace Controller
 
 		void NewGame();
 		void JoinGame();
-		// TODO: void StartJoinGame();
+		void StartJoinGame();
 		void RecoverLastGame();
-		// TODO: void Back();
+		void Back();
 	private:
 		std::shared_ptr<Service::GameService> _gameService;
 		std::shared_ptr<Service::UserService> _userService;

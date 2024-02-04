@@ -96,6 +96,12 @@ void JoinGameView::Hide()
 	_backMenuButton.ShowWindow(SW_HIDE);
 }
 
-void JoinGameView::StartJoinGameCommand()
+void JoinGameView::StartJoinGame()
 {
+	_menuController->StartJoinGame();
+}
+
+void JoinGameView::BackCommand()
+{
+	_menuController->Back();
 }

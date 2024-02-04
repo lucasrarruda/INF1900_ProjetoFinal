@@ -108,6 +108,10 @@ void MenuController::JoinGame()
 	}
 }
 
+void Controller::MenuController::StartJoinGame()
+{
+}
+
 void MenuController::RecoverLastGame()
 {
 	try
@@ -160,6 +164,10 @@ void MenuController::RecoverLastGame()
 		_userModel->SetOnCurrentGame(false);
 		_userService->UpdateUser(_userModel);
 	}
+}
+
+void Controller::MenuController::Back()
+{
 }
 
 void MenuController::ValidationUserAndGame()
