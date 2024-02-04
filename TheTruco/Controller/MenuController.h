@@ -4,7 +4,7 @@
 #include <MenuController.h>
 #include <Services/GameService.h>
 #include <Services/UserService.h>
-#include <GameModel.h>00
+#include <GameModel.h>
 #include <UserModel.h>
 #include <Communication/CommunicationService.h>
 
@@ -21,8 +21,11 @@ namespace Controller
 		inline std::shared_ptr<Model::UserModel> GetUserModel() const { return _userModel; }
 
 		void NewGame();
+		// TODO: void StartGame();
 		void JoinGame();
+		// TODO: void StartJoinGame();
 		void RecoverLastGame();
+		// TODO: void Back();
 	private:
 		std::shared_ptr<Service::GameService> _gameService;
 		std::shared_ptr<Service::UserService> _userService;
