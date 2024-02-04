@@ -14,18 +14,16 @@ namespace Controller
 	{
 	public:
 		MenuController(const std::shared_ptr<Communication::CommunicationService>& communicationService);
-		MenuController(const MenuController& other);
 		~MenuController() = default;
 
 		inline std::shared_ptr<Model::GameModel> GetGameModel() const { return _gameModel; }
 		inline std::shared_ptr<Model::UserModel> GetUserModel() const { return _userModel; }
 
 		void NewGame();
-		// TODO: void StartGame();
 		void JoinGame();
-		// TODO: void StartJoinGame();
+		void StartJoinGame();
 		void RecoverLastGame();
-		// TODO: void Back();
+		void Back(bool const& newGame, bool const& joinGame);
 	private:
 		std::shared_ptr<Service::GameService> _gameService;
 		std::shared_ptr<Service::UserService> _userService;
@@ -38,6 +36,8 @@ namespace Controller
 		void ValidationUserAndGame();
 		void CreateConnection(const std::string& id, const bool& createGame);
 		void ConnectionChannel(const std::string& id, const bool& joinGame);
+		void StartGame(const bool& messageSuccessfuly);
+		void StartGameJoinGame(Communication::StructMessage response);
 	};
 }
 

@@ -35,6 +35,7 @@ namespace Model
         inline void SetGameCardDeck(const std::shared_ptr<Model::CardDeckModel>& gameCardDeck) { _gameCardDeck = gameCardDeck; };
 
         inline std::map<int, std::shared_ptr<PlayerModel>> GetPlayers() const { return _players; }
+        inline void SetPlayers(const std::map<int, std::shared_ptr<PlayerModel>>& players) { _players = players; };
 
         inline Helpers::Enums::ModeGameEnum GetModeGame() const { return _modeGame; }
         inline void SetModeGame(const Helpers::Enums::ModeGameEnum& modeGame) { _modeGame = modeGame; };
