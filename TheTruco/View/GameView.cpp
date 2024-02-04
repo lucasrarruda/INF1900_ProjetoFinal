@@ -10,42 +10,9 @@ GameView::GameView(CWnd* parentWindow) : Interfaces::ViewBase(), _parentWindow(p
 
 void GameView::Create()
 {
-	auto [dpiX, dpiY] = DisplayHelper::GetMonitorDpi();
-	
+	CreateGameControls();
 	CreateGameScore();
 	CreateGameCards();
-	
-	_labelFont.CreatePointFont(static_cast<int>(120 * dpiX), _T("Arial"));
-	CRect gameConsoleRect
-	{
-		static_cast<int>(20 * dpiX),
-		static_cast<int>(970 * dpiY),
-		static_cast<int>(300 * dpiX),
-		static_cast<int>(1090 * dpiY)
-	};
-	_gameConsole.Create(_T("output messages goes here..."), WS_CHILD | WS_VISIBLE | SS_LEFT, gameConsoleRect, _parentWindow);
-	_gameConsole.SetFont(&_labelFont);
-
-	_trucoButtonFont.CreatePointFont(150, _T("Arial"));
-	CRect trucoButtonRect
-	{
-		static_cast<int>(950 * dpiX),
-		static_cast<int>(970 * dpiY),
-		static_cast<int>(1100 * dpiX),
-		static_cast<int>(1080 * dpiY)
-	};
-	_trucoButton.Create(_T("Truco!"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, trucoButtonRect, _parentWindow, IDC_TRUCO_BUTTON);
-	_trucoButton.SetFont(&_trucoButtonFont);	
-
-	CRect leaveGameButtonRect
-	{
-		static_cast<int>(950 * dpiX),
-		static_cast<int>(20 * dpiY),
-		static_cast<int>(1100 * dpiX),
-		static_cast<int>(50 * dpiY)
-	};
-	_leaveGameButton.Create(_T("Leave Game"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, leaveGameButtonRect, _parentWindow, IDC_TRUCO_BUTTON);
-	_leaveGameButton.SetFont(&_labelFont);
 }
 
 void GameView::Update()
@@ -80,6 +47,9 @@ void GameView::Show()
 	_yourCardCoverOne.ShowWindow(SW_SHOW);
 	_yourCardCoverTwo.ShowWindow(SW_SHOW);
 	_yourCardCoverThree.ShowWindow(SW_SHOW);
+	_labelGameCode.ShowWindow(SW_SHOW);
+	_gameCode.ShowWindow(SW_SHOW);
+	_copyToClipboardButton.ShowWindow(SW_SHOW);
 }
 
 void GameView::Hide()
@@ -109,6 +79,9 @@ void GameView::Hide()
 	_yourCardCoverOne.ShowWindow(SW_HIDE);
 	_yourCardCoverTwo.ShowWindow(SW_HIDE);
 	_yourCardCoverThree.ShowWindow(SW_HIDE);
+	_labelGameCode.ShowWindow(SW_HIDE);
+	_gameCode.ShowWindow(SW_HIDE);
+	_copyToClipboardButton.ShowWindow(SW_HIDE);
 }
 
 void GameView::DropCardOne()
@@ -132,6 +105,74 @@ void GameView::DropCardThree()
 void GameView::NotifyTruco()
 {
 	_gameConsole.SetWindowTextW(_T("Truco!"));
+}
+
+void GameView::CreateGameControls()
+{
+	auto [dpiX, dpiY] = DisplayHelper::GetMonitorDpi();
+
+	_labelFont.CreatePointFont(static_cast<int>(120 * dpiX), _T("Arial"));
+
+	CRect labelGameCodeRect
+	{
+		static_cast<int>(20 * dpiX),
+		static_cast<int>(880 * dpiY),
+		static_cast<int>(340 * dpiX),
+		static_cast<int>(900 * dpiY)
+	};
+	_labelGameCode.Create(_T("Game Code: "), WS_CHILD | WS_VISIBLE | SS_LEFT | BS_CENTER, labelGameCodeRect, _parentWindow);
+	_labelGameCode.SetFont(&_labelFont);
+
+	CRect gameCodeRect
+	{
+		static_cast<int>(20 * dpiX),
+		static_cast<int>(905 * dpiY),
+		static_cast<int>(340 * dpiX),
+		static_cast<int>(925 * dpiY)
+	};
+	_gameCode.Create(_T("{00000000-0000-0000-0000-000000000000}"), WS_CHILD | WS_VISIBLE | SS_CENTER | BS_CENTER, gameCodeRect, _parentWindow);
+	_gameCode.SetFont(&_labelFont);
+
+	CRect copyGameCodeButtonRect
+	{
+		static_cast<int>(20 * dpiX),
+		static_cast<int>(930 * dpiY),
+		static_cast<int>(340 * dpiX),
+		static_cast<int>(960 * dpiY)
+	};
+	_copyToClipboardButton.Create(_T("Copy To Clipboard"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, copyGameCodeButtonRect, _parentWindow, IDC_COPY_TO_CLIPBOARD_BUTTON);
+	_copyToClipboardButton.SetFont(&_labelFont);
+
+	CRect gameConsoleRect
+	{
+		static_cast<int>(20 * dpiX),
+		static_cast<int>(970 * dpiY),
+		static_cast<int>(340 * dpiX),
+		static_cast<int>(1090 * dpiY)
+	};
+	_gameConsole.Create(_T("output messages goes here..."), WS_CHILD | WS_VISIBLE | SS_LEFT, gameConsoleRect, _parentWindow);
+	_gameConsole.SetFont(&_labelFont);
+
+	_trucoButtonFont.CreatePointFont(150, _T("Arial"));
+	CRect trucoButtonRect
+	{
+		static_cast<int>(950 * dpiX),
+		static_cast<int>(970 * dpiY),
+		static_cast<int>(1100 * dpiX),
+		static_cast<int>(1080 * dpiY)
+	};
+	_trucoButton.Create(_T("Truco!"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, trucoButtonRect, _parentWindow, IDC_TRUCO_BUTTON);
+	_trucoButton.SetFont(&_trucoButtonFont);
+
+	CRect leaveGameButtonRect
+	{
+		static_cast<int>(950 * dpiX),
+		static_cast<int>(20 * dpiY),
+		static_cast<int>(1100 * dpiX),
+		static_cast<int>(50 * dpiY)
+	};
+	_leaveGameButton.Create(_T("Leave Game"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, leaveGameButtonRect, _parentWindow, IDC_LEAVE_GAME_BUTTON);
+	_leaveGameButton.SetFont(&_labelFont);
 }
 
 void GameView::CreateGameScore()

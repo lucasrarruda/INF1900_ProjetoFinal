@@ -1,9 +1,8 @@
 #pragma once
 #include <afxwin.h>
 #include <MenuView.h>
-#include <GameView.h>
 #include <JoinGameView.h>
-#include <NewGameView.h>
+#include <GameView.h>
 #include <tuple>
 #include <memory>
 #include <MenuController.h>
@@ -31,9 +30,8 @@ public:
 
 private:
 	std::shared_ptr<MenuView> _menuView;
-	std::shared_ptr<GameView> _gameView;
-	std::shared_ptr<NewGameView> _newGameView;
 	std::shared_ptr<JoinGameView> _joinGameView;
+	std::shared_ptr<GameView> _gameView;
 	std::shared_ptr<Communication::CommunicationService> _communicationService;
 	std::shared_ptr<Controller::MenuController> _menuController;
 

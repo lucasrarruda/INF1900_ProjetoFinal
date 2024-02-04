@@ -7,10 +7,8 @@ using namespace std;
 BEGIN_MESSAGE_MAP(MainFrame, CFrameWnd)
 	ON_COMMAND(IDC_NEW_GAME_BUTTON, NavigateNewGame)
 	ON_COMMAND(IDC_JOIN_GAME_BUTTON, NavigateJoinGame)
+	ON_COMMAND(IDC_LEAVE_GAME_BUTTON, NavigateMenu)
 	ON_COMMAND(IDC_BACK_BUTTON_JOIN_GAME, NavigateMenu)
-	ON_COMMAND(IDC_BACK_BUTTON_NEW_GAME, NavigateMenu)
-	ON_COMMAND(IDC_START_NEW_GAME_BUTTON, NavigatePlayGame)
-	ON_COMMAND(IDC_START_JOIN_GAME_BUTTON, NavigatePlayGame)
 	ON_COMMAND(IDC_YOUR_CARD_ONE_BUTTON, DropCardOne)
 	ON_COMMAND(IDC_YOUR_CARD_TWO_BUTTON, DropCardTwo)
 	ON_COMMAND(IDC_YOUR_CARD_THREE_BUTTON, DropCardThree)
@@ -23,8 +21,6 @@ MainFrame::MainFrame()
 	_communicationService = make_shared<Communication::CommunicationService>();
 	_menuController = make_shared<Controller::MenuController>(_communicationService);
 	_menuView = make_shared<MenuView>(this, _menuController);
-
-	_newGameView = make_shared<NewGameView>(this, _menuController);
 	_joinGameView = make_shared<JoinGameView>(this);
 	_gameView = make_shared<GameView>(this);
 }
@@ -55,11 +51,8 @@ BOOL MainFrame::Create()
 	UpdateWindow();
 
 	_menuView->Create();
-
-	_newGameView->Create();
 	_joinGameView->Create();
 	_gameView->Create();
-	_newGameView->Hide();
 	_joinGameView->Hide();
 	_gameView->Hide();
 	UpdateFrame();
@@ -71,7 +64,7 @@ void MainFrame::NavigateNewGame()
 {
 	HideAllViews();
 	_menuView->NewGameCommand();
-	_newGameView->Show();
+	_gameView->Show();
 	UpdateFrame();
 }
 
@@ -87,7 +80,7 @@ void MainFrame::NavigateRecoverLastGame()
 {
 	HideAllViews();
 	_menuView->RecoverLastGame();
-	_newGameView->Show();
+	_gameView->Show();
 	UpdateFrame();
 }
 
@@ -133,9 +126,8 @@ void MainFrame::NotifyTruco()
 void MainFrame::HideAllViews()
 {
 	_menuView->Hide();
-	_gameView->Hide();
-	_newGameView->Hide();
 	_joinGameView->Hide();
+	_gameView->Hide();
 }
 
 void MainFrame::UpdateFrame()

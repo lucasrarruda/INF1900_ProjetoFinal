@@ -4,7 +4,7 @@
 class GameView : public Interfaces::ViewBase, public CFrameWnd
 {
 public:
-	GameView(CWnd* parentWindow);
+	GameView(CWnd* parentWindo/*, shared_ptr<Controller::GameController> gameCotnroller*/);
 	~GameView() = default;
 
 	void Create();
@@ -27,9 +27,12 @@ private:
 	CStatic _yourPoints;
 	CStatic _theirScore;
 	CStatic _theirPoints;
+	CStatic _labelGameCode;
+	CStatic _gameCode;
 	CStatic _gameConsole;
 	CButton _trucoButton;
 	CButton _leaveGameButton;
+	CButton _copyToClipboardButton;
 	CFont _trucoButtonFont;
 	CFont _labelFont;
 	CFont _scoresFont;
@@ -52,6 +55,7 @@ private:
 	CButton _yourCardCoverTwo;
 	CButton _yourCardCoverThree;
 
+	void CreateGameControls();
 	void CreateGameScore();
 	void CreateGameCards();
 };
