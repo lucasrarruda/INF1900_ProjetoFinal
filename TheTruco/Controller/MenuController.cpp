@@ -71,7 +71,7 @@ void MenuController::JoinGame()
 
 		auto player = make_shared<Model::PlayerModel>();
 		player->SetNickName(_userModel->GetNickName());
-		_gameModel = _gameService->JoinGame(_userModel->GetId(), player);
+		_gameModel->CopyFrom(_gameService->JoinGame(_userModel->GetId(), player));
 
 		if (_gameModel->GetId().compare("{00000000-0000-0000-0000-000000000000}") == 0)
 		{
@@ -164,7 +164,7 @@ void MenuController::RecoverLastGame()
 
 void MenuController::ValidationUserAndGame()
 {
-	auto userModelConflicting = _userService->GetConflictingUser(_userModel);
+	auto userModelConflicting = _userService->GetUserByNickname(_userModel);
 
 	if (userModelConflicting->GetNickName().compare(_userModel->GetNickName()) == 0)
 	{

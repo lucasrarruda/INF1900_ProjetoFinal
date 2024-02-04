@@ -60,6 +60,25 @@ namespace Model
         void AddPlayerToGame(const std::shared_ptr<PlayerModel>& player);
         void RemovePlayerFromGame(const int& playerkey);
 
+        inline void CopyFrom(const std::shared_ptr<GameModel> other)
+        {
+            if (this != other.get())
+            {
+                _id = other->_id;
+                _playGame = other->_playGame;
+                _turnPlayer = other->_turnPlayer;
+                _modeGame = other->_modeGame;
+                _handPoints = other->_handPoints;
+                _firstRound = other->_firstRound;
+                _playerOneDiscardCardKey = other->_playerOneDiscardCardKey;
+                _playerTwoDiscardCardKey = other->_playerTwoDiscardCardKey;
+                _playerThreeDiscardCardKey = other->_playerThreeDiscardCardKey;
+                _playerFourDiscardCardKey = other->_playerFourDiscardCardKey;
+                _gameCardDeck = other->_gameCardDeck;
+                _players = other->_players;
+            }
+        }
+
     private:
         std::string _id = "";
         bool _playGame = false;
