@@ -10,11 +10,11 @@ using namespace Repository::DTOs;
 using namespace std;
 using namespace Helpers::Constants;
 
-vector<UserModel> UserService::GetAllUsers()
+vector<shared_ptr<UserModel>> UserService::GetAllUsers()
 {
     vector<UserDTO> usersDTO = _userRepository.GetAll(DATABASE_USERS);
 
-    vector<UserModel> users;
+    vector<shared_ptr<UserModel>> users;
     int count = 0;
 	for (auto& user : usersDTO)
 	{
@@ -25,70 +25,88 @@ vector<UserModel> UserService::GetAllUsers()
     return users;
 }
 
-UserModel UserService::GetUserById(const string& id)
+shared_ptr<Model::UserModel> UserService::GetUserById(const string& id)
 {
     UserDTO user = _userRepository.GetById(DATABASE_USERS, id);
 
     return ToUserModel(user);
 }
 
-Model::UserModel UserService::SaveUser(const UserModel& user)
+shared_ptr<Model::UserModel> UserService::SaveUser(shared_ptr<Model::UserModel> user)
 {
     UserDTO userNew;
 
-    userNew = ToUserDTO(UserModel(user.GetId(), user.GetNickName(), user.GetGamesWin(), user.GetGamesLose(), user.GetCurrentGameID(), user.GetOnCurrentGame()));
+    userNew = ToUserDTO(
+        make_shared<UserModel>(
+            user->GetId(), 
+            user->GetNickName(), 
+            user->GetGamesWin(), 
+            user->GetGamesLose(), 
+            user->GetCurrentGameID(), 
+            user->GetOnCurrentGame()));
     return ToUserModel(_userRepository.Save(DATABASE_USERS, userNew.NickName, userNew));
 }
 
-void UserService::UpdateUser(const UserModel& user)
+void UserService::UpdateUser(shared_ptr<Model::UserModel> user)
 {
     UserDTO userNew;
 
-    if (user.GetId().compare("") != 0)
+    if (user->GetId().compare("") != 0)
     {
-        userNew = _userRepository.GetById(DATABASE_USERS, user.GetId());
+        userNew = _userRepository.GetById(DATABASE_USERS, user->GetId());
     }
 
     if (userNew.NickName.compare("") != 0)
     {
-        userNew.NickName = user.GetNickName();
-        userNew.GamesWin = user.GetGamesWin();
-        userNew.GamesLose = user.GetGamesLose();
-        userNew.CurrentGameID = user.GetCurrentGameID();
-        userNew.OnCurrentGame = user.GetOnCurrentGame();
+        userNew.NickName = user->GetNickName();
+        userNew.GamesWin = user->GetGamesWin();
+        userNew.GamesLose = user->GetGamesLose();
+        userNew.CurrentGameID = user->GetCurrentGameID();
+        userNew.OnCurrentGame = user->GetOnCurrentGame();
 
         _userRepository.Update(DATABASE_USERS, userNew.NickName, userNew);
     }
 }
 
-void UserService::RemoveUser(const UserModel& user)
+void UserService::RemoveUser(shared_ptr<Model::UserModel> user)
 {
-    auto userByid = _userRepository.GetById(DATABASE_USERS, user.GetId());
+    auto userById = _userRepository.GetById(DATABASE_USERS, user->GetId());
     
-    if (userByid.NickName.compare("") != 0)
+    if (userById.NickName.compare("") != 0)
     {
-        _userRepository.Remove(DATABASE_USERS, userByid.NickName);
+        _userRepository.Remove(DATABASE_USERS, userById.NickName);
     }
 }
 
-UserModel UserService::GetConflictingUser(UserModel& user)
+shared_ptr<Model::UserModel> UserService::GetConflictingUser(shared_ptr<Model::UserModel> user)
 {
     UserDTO userConflictngDTO = _userRepository.GetConflictingUser(ToUserDTO(user));
 
     if (userConflictngDTO.NickName.compare("") == 0)
-        return UserModel();
+        return make_shared<UserModel>();
 
-    UserModel userConflictng = ToUserModel(userConflictngDTO);
+    shared_ptr<UserModel> userConflictng = ToUserModel(userConflictngDTO);
 
     return userConflictng;
 }
 
-UserDTO UserService::ToUserDTO(UserModel userModel)
+UserDTO UserService::ToUserDTO(shared_ptr<Model::UserModel> userModel)
 {
-    return UserDTO(userModel.GetNickName(), userModel.GetGamesWin(), userModel.GetGamesLose(), userModel.GetCurrentGameID(), userModel.GetOnCurrentGame());
+    return UserDTO(
+        userModel->GetNickName(), 
+        userModel->GetGamesWin(), 
+        userModel->GetGamesLose(), 
+        userModel->GetCurrentGameID(), 
+        userModel->GetOnCurrentGame());
 }
 
-UserModel UserService::ToUserModel(UserDTO userDTO)
+shared_ptr<Model::UserModel> UserService::ToUserModel(UserDTO userDTO)
 {
-    return UserModel(Serialize::ConvertGUIDToString(userDTO.Id), userDTO.NickName, userDTO.GamesWin, userDTO.GamesLose, userDTO.CurrentGameID, userDTO.OnCurrentGame);
+    return make_shared<UserModel>(
+        Serialize::ConvertGUIDToString(userDTO.Id), 
+        userDTO.NickName, 
+        userDTO.GamesWin, 
+        userDTO.GamesLose, 
+        userDTO.CurrentGameID, 
+        userDTO.OnCurrentGame);
 }

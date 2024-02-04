@@ -19,7 +19,8 @@ END_MESSAGE_MAP()
 
 MainFrame::MainFrame()
 {
-	_menuController = make_shared<MenuController>();
+	_communicationService = make_shared<Communication::CommunicationService>();
+	_menuController = make_shared<Controller::MenuController>(_communicationService);
 	_menuView = make_shared<MenuView>(this, _menuController);
 
 	_newGameView = make_shared<NewGameView>(this);

@@ -20,26 +20,34 @@ MenuController::MenuController(const shared_ptr<CommunicationService>& communica
 	_gameService = make_shared<GameService>(gameRepository);
 	_userService = make_shared<UserService>(userRepository);
 
-	_gameModel = GameModel();
-	_userModel = UserModel();
+	_gameModel = make_shared<GameModel>();
+	_userModel = make_shared<UserModel>();
 }
 
-void MenuController::NewGame(const string& nickName)
+MenuController::MenuController(const MenuController& other): 
+	_gameService(other._gameService), _userService(other._userService),
+	_gameModel(other._gameModel), _userModel(other._userModel),
+	_communicationService(other._communicationService)
+{
+
+}
+
+void MenuController::NewGame()
 {
 	try
 	{
-		ValidationUserAndGame(nickName);
+		ValidationUserAndGame(_userModel->GetNickName());
 
 		auto playerHost = make_shared<Model::PlayerModel>();
-		playerHost->SetNickName(_userModel.GetNickName());
+		playerHost->SetNickName(_userModel->GetNickName());
 		_gameModel = _gameService->NewGame(playerHost);
 		
-		_userModel.SetCurrentGameID(_gameModel.GetId());
-		_userModel.SetOnCurrentGame(true);
+		_userModel->SetCurrentGameID(_gameModel->GetId());
+		_userModel->SetOnCurrentGame(true);
 
 		_userService->UpdateUser(_userModel);
 
-		CreateConnection(_gameModel.GetId(), true);
+		CreateConnection(_gameModel->GetId(), true);
 
 		// Nessa Etapa o usuário fica esperando a resposta do client (do usuário do JoinGame) para poder começar a partida
 		// Precisamos mexer aqui para validação dessa resposta
@@ -47,79 +55,79 @@ void MenuController::NewGame(const string& nickName)
 	}
 	catch (const std::exception& ex)
 	{
-		_userModel.SetCurrentGameID("");
-		_userModel.SetOnCurrentGame(false);
+		_userModel->SetCurrentGameID("");
+		_userModel->SetOnCurrentGame(false);
 		_userService->UpdateUser(_userModel);
 		_gameService->RemoveGame(_gameModel);
 	}
 }
 
-void MenuController::JoinGame(const string& nickName, const string& id)
+void MenuController::JoinGame()
 {
 	try
 	{
-		ValidationUserAndGame(nickName);
+		ValidationUserAndGame(_userModel->GetNickName());
 
 		auto player = make_shared<Model::PlayerModel>();
-		player->SetNickName(_userModel.GetNickName());
-		_gameModel = _gameService->JoinGame(id, player);
+		player->SetNickName(_userModel->GetNickName());
+		_gameModel = _gameService->JoinGame(_userModel->GetId(), player);
 
-		if (_gameModel.GetId().compare("{00000000-0000-0000-0000-000000000000}") == 0)
+		if (_gameModel->GetId().compare("{00000000-0000-0000-0000-000000000000}") == 0)
 		{
 			//Coloquei isso para exemplificar as diferentes formas de exceções e validações que podem existir
 			throw std::invalid_argument("O usuário atualmente tem uma partida em andamento, finalize a partida para poder criar outra!");
 		}
 
-		_userModel.SetCurrentGameID(_gameModel.GetId());
-		_userModel.SetOnCurrentGame(true);
+		_userModel->SetCurrentGameID(_gameModel->GetId());
+		_userModel->SetOnCurrentGame(true);
 
 		_userService->UpdateUser(_userModel);
 
-		ConnectionChannel(_gameModel.GetId(), true);
+		ConnectionChannel(_gameModel->GetId(), true);
 	}
 	catch (std::invalid_argument& e)
 	{
-		_userModel.SetCurrentGameID("");
-		_userModel.SetOnCurrentGame(false);
+		_userModel->SetCurrentGameID("");
+		_userModel->SetOnCurrentGame(false);
 		_userService->UpdateUser(_userModel);
 		_gameService->RemoveGame(_gameModel);
 	}
 	catch (std::overflow_error& ex)
 	{
-		_userModel.SetCurrentGameID("");
-		_userModel.SetOnCurrentGame(false);
+		_userModel->SetCurrentGameID("");
+		_userModel->SetOnCurrentGame(false);
 		_userService->UpdateUser(_userModel);
-		_gameService->LeaveGame(_gameModel, _userModel.GetNickName());
+		_gameService->LeaveGame(_gameModel, _userModel->GetNickName());
 	}
 	catch (std::exception& ex)
 	{
-		_userModel.SetCurrentGameID("");
-		_userModel.SetOnCurrentGame(false);
+		_userModel->SetCurrentGameID("");
+		_userModel->SetOnCurrentGame(false);
 		_userService->UpdateUser(_userModel);
 	}
 }
 
-void MenuController::RecoverLastGame(const string& nickName)
+void MenuController::RecoverLastGame()
 {
 	try
 	{
-		ValidationUserAndGame(nickName);
+		ValidationUserAndGame(_userModel->GetNickName());
 
-		_gameModel = _gameService->RecoverLastGame(_userModel.GetCurrentGameID());
+		_gameModel = _gameService->RecoverLastGame(_userModel->GetCurrentGameID());
 
-		if (_gameModel.GetId().compare("{00000000-0000-0000-0000-000000000000}") == 0)
+		if (_gameModel->GetId().compare("{00000000-0000-0000-0000-000000000000}") == 0)
 		{
 			throw std::invalid_argument("O usuário atualmente tem uma partida em andamento, finalize a partida para poder criar outra!");
 		}
 
-		_userModel.SetOnCurrentGame(true);
+		_userModel->SetOnCurrentGame(true);
 
 		_userService->UpdateUser(_userModel);
 
 		auto playerHost = false;
-		for (auto& player : _gameModel.GetPlayers())
+		for (auto& player : _gameModel->GetPlayers())
 		{
-			if (player.second->GetNickName().compare(_userModel.GetNickName()) == 0)
+			if (player.second->GetNickName().compare(_userModel->GetNickName()) == 0)
 			{
 				playerHost = player.second->GetHostPlayer();
 				break;
@@ -128,7 +136,7 @@ void MenuController::RecoverLastGame(const string& nickName)
 
 		if (playerHost)
 		{
-			CreateConnection(_gameModel.GetId(), false);
+			CreateConnection(_gameModel->GetId(), false);
 
 			// Nessa Etapa o usuário fica esperando a resposta do client (do usuário do JoinGame) para poder começar a partida
 			// Precisamos mexer aqui para validação dessa resposta
@@ -137,28 +145,28 @@ void MenuController::RecoverLastGame(const string& nickName)
 		else 
 		{
 			bool teste;
-			ConnectionChannel(_gameModel.GetId(), false);
+			ConnectionChannel(_gameModel->GetId(), false);
 		}
 	}
 	catch (std::invalid_argument& e)
 	{
-		_userModel.SetOnCurrentGame(false);
+		_userModel->SetOnCurrentGame(false);
 		_userService->UpdateUser(_userModel);
 		_gameService->RemoveGame(_gameModel);
 	}
 	catch (const std::exception& ex)
 	{
-		_userModel.SetOnCurrentGame(false);
+		_userModel->SetOnCurrentGame(false);
 		_userService->UpdateUser(_userModel);
 	}
 }
 
 void MenuController::ValidationUserAndGame(const string& nickName)
 {
-	_userModel.SetNickName(nickName);
+	_userModel->SetNickName(nickName);
 	auto userModelConflicting = _userService->GetConflictingUser(_userModel);
 
-	if (userModelConflicting.GetNickName().compare(nickName) == 0)
+	if (userModelConflicting->GetNickName().compare(nickName) == 0)
 	{
 		_userModel = userModelConflicting;
 	}
@@ -167,12 +175,12 @@ void MenuController::ValidationUserAndGame(const string& nickName)
 		_userModel = _userService->SaveUser(_userModel);
 	}
 
-	if (_userModel.GetCurrentGameID().compare("") != 0)
+	if (_userModel->GetCurrentGameID().compare("") != 0)
 	{
 		throw std::exception("O usuário atualmente tem uma partida em andamento, finalize a partida para poder criar outra!");
 	}
 
-	if (_userModel.GetOnCurrentGame())
+	if (_userModel->GetOnCurrentGame())
 	{
 		throw std::exception("O usuário está atualmente ativo em uma partida!");
 	}
@@ -192,10 +200,10 @@ void MenuController::CreateConnection(const string& id, const bool& createGame)
 	{
 		if (createGame)
 		{
-			_userModel.SetCurrentGameID("");
+			_userModel->SetCurrentGameID("");
 		}
 
-		_userModel.SetOnCurrentGame(false);
+		_userModel->SetOnCurrentGame(false);
 		_userService->UpdateUser(_userModel);
 
 		if (createGame)
@@ -218,15 +226,15 @@ void MenuController::ConnectionChannel(const string& id, const bool& joinGame)
 	{
 		if (joinGame)
 		{
-			_userModel.SetCurrentGameID("");
+			_userModel->SetCurrentGameID("");
 		}
 
-		_userModel.SetOnCurrentGame(false);
+		_userModel->SetOnCurrentGame(false);
 		_userService->UpdateUser(_userModel);
 
 		if (joinGame)
 		{
-			_gameService->LeaveGame(_gameModel, _userModel.GetNickName());
+			_gameService->LeaveGame(_gameModel, _userModel->GetNickName());
 		}
 
 		throw std::overflow_error("Ocorreu um problema ao entrar no game, tente novamente!");

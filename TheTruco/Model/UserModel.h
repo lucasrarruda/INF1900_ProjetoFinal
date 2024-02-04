@@ -15,11 +15,7 @@ namespace Model
         inline std::string GetId() const { return _id; }
 
         inline std::string GetNickName() const { return _nickName; }
-<<<<<<< HEAD
-        inline void SetNickName(const std::string& nickname) { _nickName = nickname; }
-=======
         inline void SetNickName(const std::string& nickName) { _nickName = nickName; };
->>>>>>> a1765d0a1e34f955603ef2e6b72d0383e356cbd7
 
         inline int GetGamesWin() const { return _gamesWin; }
         inline void SetGamesWin() { _gamesWin++; };

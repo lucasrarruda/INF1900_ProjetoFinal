@@ -33,7 +33,8 @@ private:
 	std::shared_ptr<GameView> _gameView;
 	std::shared_ptr<NewGameView> _newGameView;
 	std::shared_ptr<JoinGameView> _joinGameView;
-	std::shared_ptr<MenuController> _menuController;
+	std::shared_ptr<Communication::CommunicationService> _communicationService;
+	std::shared_ptr<Controller::MenuController> _menuController;
 
 	void HideAllViews();
 	void UpdateFrame();

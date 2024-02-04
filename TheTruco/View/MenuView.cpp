@@ -1,26 +1,17 @@
 #include "pch.h"
 #include <MenuView.h>
-<<<<<<< HEAD
-=======
-#include <MenuControllerFake.h>
 #include <MenuController.h>
->>>>>>> a1765d0a1e34f955603ef2e6b72d0383e356cbd7
 #include <DisplayHelper.h>
 #include <GeneralHelper.h>
 
 using namespace std;
 
-MenuView::MenuView(CWnd* parentWindow, std::shared_ptr<MenuController> menuController) :
+MenuView::MenuView(CWnd* parentWindow, std::shared_ptr<Controller::MenuController> menuController) :
 	Interfaces::ViewBase(), 
 	_parentWindow(parentWindow),
 	_menuController(menuController)
 {
-<<<<<<< HEAD
-	
-=======
-	_gameModel = make_shared<GameModelFake>();
-	_controller = make_shared<MenuControllerFake>(_gameModel);
-
+	_userModel = _menuController->GetUserModel();
 	//EXEMPLO DE VALIDAÇÃO DOS MÉTODOS
 	
 	//auto testeconexao = make_shared<Communication::CommunicationService>();
@@ -32,12 +23,11 @@ MenuView::MenuView(CWnd* parentWindow, std::shared_ptr<MenuController> menuContr
 	//teste->RecoverLastGame("LAURA");
 	//teste->GetUserModel().SetOnCurrentGame(false);
 	//teste->RecoverLastGame("ARTHUR");
->>>>>>> a1765d0a1e34f955603ef2e6b72d0383e356cbd7
 }
 
 void MenuView::Create()
 {
-	InitializeController();
+	_userModel->Attach(shared_from_this());
 
 	auto [dpiX, dpiY] = DisplayHelper::GetMonitorDpi();
 
@@ -140,14 +130,6 @@ void MenuView::NewGameCommand()
 void MenuView::JoinGameCommand()
 {
 	UpdateNickname();
-}
-
-
-
-void MenuView::InitializeController()
-{
-	_userModel = _menuController->GetUserModel();
-	_userModel->Attach(shared_from_this());
 }
 
 void MenuView::UpdateNickname()
