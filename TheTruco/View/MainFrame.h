@@ -19,7 +19,6 @@ public:
 	void JoinGame();
 	void StartJoinGame();
 	void NavigateRecoverLastGame();
-	void NavigatePlayGame();
 	void LeaveGame();
 	void BackToMenu();
 

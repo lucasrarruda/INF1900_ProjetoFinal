@@ -93,13 +93,6 @@ void MainFrame::NavigateRecoverLastGame()
 	UpdateFrame();
 }
 
-void MainFrame::NavigatePlayGame()
-{
-	HideAllViews();
-	_gameView->Show();
-	UpdateFrame();
-}
-
 void MainFrame::LeaveGame()
 {
 	HideAllViews();

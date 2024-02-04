@@ -1,6 +1,7 @@
 #include "pch.h"
 #include <JoinGameView.h>
 #include <DisplayHelper.h>
+#include <GeneralHelper.h>
 
 using namespace std;
 
@@ -98,6 +99,10 @@ void JoinGameView::Hide()
 
 void JoinGameView::StartJoinGame()
 {
+	CString gameCode;
+	_gameCodeBox.GetWindowTextW(gameCode);
+	string a = GeneralHelper::CStringToString(gameCode);
+	// TODO: send to GameController
 	_menuController->StartJoinGame();
 }
 
