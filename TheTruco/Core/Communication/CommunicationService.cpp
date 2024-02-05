@@ -73,10 +73,15 @@ bool CommunicationService::OpenCommunicationChannel(const std::wstring& password
     return true;
 }
 
-bool Communication::CommunicationService::ConnectChannel(const std::wstring& password)
+bool CommunicationService::ConnectChannel(const std::wstring& password)
 {
     if (!_pipeManager->IsPipeConnected()) {
         return _pipeManager->ConnectToPipe(password);
     }
     return true;
+}
+
+void CommunicationService::SetPipePassword(const std::wstring& password)
+{
+    _pipeManager->SetPipePassword(password);
 }

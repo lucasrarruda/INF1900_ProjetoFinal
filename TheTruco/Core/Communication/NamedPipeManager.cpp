@@ -20,6 +20,11 @@ bool NamedPipeManager::IsPipeConnected() const {
     return _connectedToPipe;
 }
 
+void NamedPipeManager::SetPipePassword(const std::wstring& password)
+{
+    _pipePassword = password;
+}
+
 bool NamedPipeManager::ConnectToPipe(const std::wstring& password) {
     if (_connectedToPipe == false){
         if (password == _pipePassword) {

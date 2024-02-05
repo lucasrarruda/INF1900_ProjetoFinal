@@ -17,6 +17,7 @@ namespace Communication {
 		void CloseConnection();
 		StructMessage ReceiveMessage();
 		bool IsPipeConnected() const;
+		void SetPipePassword(const std::wstring& password);
 
 	private:
 		HANDLE _hPipe = INVALID_HANDLE_VALUE;

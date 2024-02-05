@@ -217,9 +217,9 @@ void MenuController::CreateConnection(const bool& createGame)
 {
 	wstring valuePassword = Serialize::ConvertStringToWString(_gameModel->GetId());
 
-	thread gameConnection = thread([&]()
+	thread gameConnection = thread([&](const wstring& aValuePassowrd)
 		{
-			auto getOpenedChannel = _communicationService->OpenCommunicationChannel(valuePassword);
+			auto getOpenedChannel = _communicationService->OpenCommunicationChannel(aValuePassowrd);
 
 			if (!getOpenedChannel)
 			{
@@ -238,7 +238,7 @@ void MenuController::CreateConnection(const bool& createGame)
 
 				throw std::exception("Ocorreu um problema na criação do game, tente novamente!");
 			}
-		});
+		}, valuePassword);
 
 	_gameService->SetGameConnectionThread(gameConnection);
 }
@@ -249,9 +249,10 @@ void MenuController::ConnectionChannel(const bool& joinGame)
 	// Precisamos mexer aqui para criar o client e enviar a resposta para o servidor
 	wstring valuePassword = Serialize::ConvertStringToWString(_gameModel->GetId());
 
-	thread gameConnection = thread([&]()
+	thread gameConnection = thread([&](const wstring& aValuePassowrd)
 		{
-			bool getConnectChannel = _communicationService->ConnectChannel(valuePassword);
+			_communicationService->SetPipePassword(aValuePassowrd);
+			bool getConnectChannel = _communicationService->ConnectChannel(aValuePassowrd);
 
 			if (!getConnectChannel)
 			{
@@ -268,9 +269,9 @@ void MenuController::ConnectionChannel(const bool& joinGame)
 					_gameService->LeaveGame(_gameModel, _userModel->GetNickName());
 				}
 
-				throw std::overflow_error("Ocorreu um problema ao entrar no game, tente novamente!");
+				//throw std::overflow_error("Ocorreu um problema ao entrar no game, tente novamente!");
 			}
-		});
+		}, valuePassword);
 
 	
 }
