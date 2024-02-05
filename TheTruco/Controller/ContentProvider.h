@@ -5,6 +5,7 @@
 #include <Services/UserService.h>
 #include <UserModel.h>
 #include <GameModel.h>
+#include <PlayerModel.h>
 #include <memory>
 
 namespace Controller
@@ -24,6 +25,7 @@ namespace Controller
 
 			GameModelInstance = std::make_shared<Model::GameModel>();
 			UserModelInstance = std::make_shared<Model::UserModel>();
+			CurrentPlayerModel = std::make_shared <Model::PlayerModel>();
 		}
 		~ContentProvider() = default;
 
@@ -32,6 +34,7 @@ namespace Controller
 		std::shared_ptr<Service::UserService> UserServiceInstance;
 		std::shared_ptr<Model::GameModel> GameModelInstance;
 		std::shared_ptr<Model::UserModel> UserModelInstance;
+		std::shared_ptr<Model::PlayerModel> CurrentPlayerModel;
 	};
 }
 

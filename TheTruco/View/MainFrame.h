@@ -26,6 +26,9 @@ public:
 	void DropCardOne();
 	void DropCardTwo();
 	void DropCardThree();
+	void DropCoveredCardOne();
+	void DropCoveredCardTwo();
+	void DropCoveredCardThree();
 	void NotifyTruco();
 
 	DECLARE_MESSAGE_MAP()

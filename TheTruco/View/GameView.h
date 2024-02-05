@@ -17,12 +17,16 @@ public:
 	void DropCardOne();
 	void DropCardTwo();
 	void DropCardThree();
+	void DropCoveredCardOne();
+	void DropCoveredCardTwo();
+	void DropCoveredCardThree();
 	void NotifyTruco();
 	void LeaveGame();
 
 private:
 	std::shared_ptr<Controller::GameController> _gameController;
 	std::shared_ptr<Model::UserModel> _userModel;
+	std::shared_ptr<Model::PlayerModel> _currentPlayerModel;
 
 	CWnd* _parentWindow;
 	CStatic _labelGameScore;

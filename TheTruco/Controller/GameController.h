@@ -14,11 +14,14 @@ namespace Controller
 
 		inline std::shared_ptr<Model::GameModel> GetGameModel() const { return _gameModel; }
 		inline std::shared_ptr<Model::UserModel> GetUserModel() const { return _userModel; }
+		inline std::shared_ptr<Model::PlayerModel> GetCurrentPlayerModel() const { return _currentPlayerModel; }
 
 		void WaitConnetion();
 		void CopyGameCodetoClipboard(const std::wstring& gameCode);
-		// TODO: implementar saída do jogo
+		void NotifyTruco();
 		void LeaveGame();
+		void PlayCard(const int& id);
+		void PlayCoveredCard(const int& id);
 
 	private:
 		std::shared_ptr<Service::GameService> _gameService;
@@ -26,6 +29,7 @@ namespace Controller
 
 		std::shared_ptr<Model::GameModel> _gameModel;
 		std::shared_ptr<Model::UserModel> _userModel;
+		std::shared_ptr<Model::PlayerModel> _currentPlayerModel;
 
 		std::shared_ptr<Communication::CommunicationService> CommunicationService;
     };

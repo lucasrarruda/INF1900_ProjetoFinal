@@ -7,6 +7,7 @@
 #include <iostream>
 #include <ctime>
 #include <algorithm>
+#include <thread>
 
 using namespace Service;
 using namespace Model;
@@ -15,6 +16,21 @@ using namespace Repository::DTOs;
 using namespace std;
 using namespace Helpers::Constants;
 using namespace Helpers::Enums;
+
+void Service::GameService::MonitoringPartnerConnection(shared_future<bool> isPartnerConnected)
+{
+    _gameThread = thread([this, isPartnerConnected]()
+        {
+            if (isPartnerConnected.get())
+            {
+                // TODO: conectado
+            }
+            else
+            {
+                // TODO: não conectado
+            }
+        });
+}
 
 vector<std::shared_ptr<Model::GameModel>> GameService::GetAllGames()
 {

@@ -14,6 +14,7 @@ Controller::GameController::GameController(const std::shared_ptr<Controller::Con
 
     _userModel = contentProvider->UserModelInstance;
     _gameModel = contentProvider->GameModelInstance;
+    _currentPlayerModel = contentProvider->CurrentPlayerModel;
 }
 
 void Controller::GameController::WaitConnetion()
@@ -56,6 +57,22 @@ void Controller::GameController::CopyGameCodetoClipboard(const wstring& gameCode
     }
 }
 
+void Controller::GameController::NotifyTruco()
+{
+    _gameService->Truco(_gameModel);
+}
+
 void Controller::GameController::LeaveGame()
 {
+    // TODO:
+}
+
+void Controller::GameController::PlayCard(const int& id)
+{
+    _gameService->PlayCard(_gameModel, _userModel->GetNickName(), id);
+}
+
+void Controller::GameController::PlayCoveredCard(const int& id)
+{
+    _gameService->HideCard(_gameModel, _userModel->GetNickName(), id);
 }

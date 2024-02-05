@@ -1,6 +1,7 @@
 #include "pch.h"
 #include <MenuController.h>
 #include <stdexcept>
+#include <future>
 
 using namespace std;
 using namespace Service;
@@ -217,9 +218,9 @@ void MenuController::CreateConnection(const bool& createGame)
 {
 	wstring valuePassword = Serialize::ConvertStringToWString(_gameModel->GetId());
 
-	thread gameConnection = thread([&](const wstring& aValuePassowrd)
+	shared_future<bool> isPartnerConnected = async(launch::async, [this, valuePassword, createGame]()
 		{
-			auto getOpenedChannel = _communicationService->OpenCommunicationChannel(aValuePassowrd);
+			bool getOpenedChannel = _communicationService->OpenCommunicationChannel(valuePassword);
 
 			if (!getOpenedChannel)
 			{
@@ -238,9 +239,10 @@ void MenuController::CreateConnection(const bool& createGame)
 
 				throw std::exception("Ocorreu um problema na criação do game, tente novamente!");
 			}
-		}, valuePassword);
+			return getOpenedChannel;
+		});
 
-	_gameService->SetGameConnectionThread(gameConnection);
+	_gameService->MonitoringPartnerConnection(isPartnerConnected);
 }
 
 void MenuController::ConnectionChannel(const bool& joinGame)
@@ -249,10 +251,10 @@ void MenuController::ConnectionChannel(const bool& joinGame)
 	// Precisamos mexer aqui para criar o client e enviar a resposta para o servidor
 	wstring valuePassword = Serialize::ConvertStringToWString(_gameModel->GetId());
 
-	thread gameConnection = thread([&](const wstring& aValuePassowrd)
+	shared_future<bool> isPartnerConnected = async(launch::async, [this, valuePassword, joinGame]()
 		{
-			_communicationService->SetPipePassword(aValuePassowrd);
-			bool getConnectChannel = _communicationService->ConnectChannel(aValuePassowrd);
+			_communicationService->SetPipePassword(valuePassword);
+			bool getConnectChannel = _communicationService->ConnectChannel(valuePassword);
 
 			if (!getConnectChannel)
 			{
@@ -271,9 +273,11 @@ void MenuController::ConnectionChannel(const bool& joinGame)
 
 				//throw std::overflow_error("Ocorreu um problema ao entrar no game, tente novamente!");
 			}
-		}, valuePassword);
 
-	
+			return getConnectChannel;
+		});
+
+	_gameService->MonitoringPartnerConnection(isPartnerConnected);
 }
 
 void MenuController::StartGame(const bool& messageSuccessfuly)
