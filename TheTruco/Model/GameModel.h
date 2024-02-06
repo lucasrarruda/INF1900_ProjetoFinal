@@ -93,7 +93,7 @@ namespace Model
         int _playerThreeDiscardCardKey = 0;
         int _playerFourDiscardCardKey = 0;
 
-        std::shared_ptr<Model::CardDeckModel> _gameCardDeck;
+        std::shared_ptr<Model::CardDeckModel> _gameCardDeck = std::make_shared<Model::CardDeckModel>();
         std::map<int, std::shared_ptr<PlayerModel>> _players;
     };
 }

@@ -145,6 +145,7 @@ void GameView::NotifyTruco()
 
 void GameView::LeaveGame()
 {
+	_gameController->LeaveGame();
 }
 
 void GameView::CreateGameControls()

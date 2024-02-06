@@ -216,8 +216,7 @@ void MenuController::CreateConnection(const bool& createGame)
 			StructMessage receivedvalue = _communicationService->ReceiveDataFromPipe();
 			if (receivedvalue.MessageSuccessfuly)
 			{
-				//Tá dando Erro aqui!!!
-				//StartGame(receivedvalue.MessageSuccessfuly, _gameService, _gameModel);
+				StartGame(receivedvalue.MessageSuccessfuly, _gameService, _gameModel);
 
 				StructMessage messageSender;
 				messageSender.MessageSuccessfuly = true;
