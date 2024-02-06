@@ -10,7 +10,6 @@ namespace Communication {
 	class CommunicationService
 	{
 	public:
-		explicit CommunicationService(const std::wstring& password);
 		CommunicationService();
 		~CommunicationService() = default;
 		std::wstring GetConnectionKey() const;
@@ -20,6 +19,9 @@ namespace Communication {
 		bool OpenCommunicationChannel(const std::wstring& password);
 		bool ConnectChannel(const std::wstring& password);
 		void SetPipePassword(const std::wstring& password);
+		void SetClientSide();
+		bool SendMessageClient(const StructMessage& message);
+		StructMessage ReceiveMessageClient();
 
 
 	private:
