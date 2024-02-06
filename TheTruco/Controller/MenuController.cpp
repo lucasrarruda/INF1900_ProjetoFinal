@@ -189,84 +189,93 @@ void MenuController::CreateConnection(const bool& createGame)
 {
 	wstring valuePassword = Serialize::ConvertStringToWString(_gameModel->GetId());
 
-	thread gameConnection = thread([&](const wstring& aValuePassowrd)
-	{
-		_communicationService->SetPipePassword(aValuePassowrd);
-		auto getOpenedChannel = _communicationService->OpenCommunicationChannel(aValuePassowrd);
-
-		if (!getOpenedChannel)
+	shared_future<bool> isPartnerConnected = async(launch::async, [this, valuePassword, createGame]()
 		{
-			if (createGame)
+			_communicationService->SetPipePassword(valuePassword);
+			bool getOpenedChannel = _communicationService->OpenCommunicationChannel(valuePassword);
+
+			if (!getOpenedChannel)
 			{
-				_userModel->SetCurrentGameID("");
+				if (createGame)
+				{
+					_userModel->SetCurrentGameID("");
+				}
+
+				_userModel->SetOnCurrentGame(false);
+				_userService->UpdateUser(_userModel);
+
+				if (createGame)
+				{
+					_gameService->RemoveGame(_gameModel);
+				}
+
+				throw std::exception("Ocorreu um problema na criação do game, tente novamente!");
 			}
 
-			_userModel->SetOnCurrentGame(false);
-			_userService->UpdateUser(_userModel);
-
-			if (createGame)
+			StructMessage receivedvalue = _communicationService->ReceiveDataFromPipe();
+			if (receivedvalue.MessageSuccessfuly)
 			{
-				_gameService->RemoveGame(_gameModel);
+				//Tá dando Erro aqui!!!
+				//StartGame(receivedvalue.MessageSuccessfuly, _gameService, _gameModel);
+
+				StructMessage messageSender;
+				messageSender.MessageSuccessfuly = true;
+				messageSender.Content = Serialize::ConvertGameModelToString(_gameModel);
+				_communicationService->SendDataToPipe(messageSender);
+
+				return getOpenedChannel;
 			}
 
-			//throw GameInvalid("Ocorreu um problema na criação do game, tente novamente!");
-		}
+			return false;
+		});
 
-		StructMessage receivedvalue = _communicationService->ReceiveDataFromPipe();
-		if (receivedvalue.MessageSuccessfuly) 
-		{
-			//StartGame(receivedvalue.MessageSuccessfuly, _gameService, _gameModel);
-
-			StructMessage messageSender;
-			messageSender.MessageSuccessfuly = true;
-			messageSender.Content = Serialize::ConvertGameModelToString(_gameModel);
-			_communicationService->SendDataToPipe(messageSender);
-		}
-	}, valuePassword);
-
-	_gameService->SetGameConnectionThread(gameConnection);
+	_gameService->MonitoringPartnerConnection(isPartnerConnected);
 }
 
 void MenuController::ConnectionChannel(const bool& joinGame)
 {
 	wstring valuePassword = Serialize::ConvertStringToWString(_gameModel->GetId());
 
-	thread gameConnection = thread([&](const wstring& aValuePassowrd)
-	{
-		_communicationService->SetPipePassword(aValuePassowrd);
-		bool getConnectChannel = _communicationService->ConnectChannel(aValuePassowrd);
-
-		if (!getConnectChannel)
+	shared_future<bool> isPartnerConnected = async(launch::async, [this, valuePassword, joinGame]()
 		{
-			if (joinGame)
+			_communicationService->SetPipePassword(valuePassword);
+			bool getConnectChannel = _communicationService->ConnectChannel(valuePassword);
+
+			if (!getConnectChannel)
 			{
-				_userModel->SetCurrentGameID("");
+				if (joinGame)
+				{
+					_userModel->SetCurrentGameID("");
+				}
+
+				_userModel->SetOnCurrentGame(false);
+				_userService->UpdateUser(_userModel);
+
+				if (joinGame)
+				{
+					_gameService->LeaveGame(_gameModel, _userModel->GetNickName());
+				}
+
+				//throw std::overflow_error("Ocorreu um problema ao entrar no game, tente novamente!");
+			}
+			StructMessage message;
+			message.MessageSuccessfuly = true;
+			message.Content = "Successfuly Client Connect?";
+			bool messageSent = _communicationService->SendMessageClient(message);
+
+			if (messageSent)
+			{
+				StructMessage messageReceived = _communicationService->ReceiveMessageClient();
+				//Tá dando Erro aqui!!!
+				//StartGameJoinGame(messageReceived, _gameModel);
+
+				return getConnectChannel;
 			}
 
-			_userModel->SetOnCurrentGame(false);
-			_userService->UpdateUser(_userModel);
+			return false;
+		});
 
-			if (joinGame)
-			{
-				_gameService->LeaveGame(_gameModel, _userModel->GetNickName());
-			}
-
-			//throw GameInvalid("Ocorreu um problema ao entrar no game, tente novamente!");
-		}
-
-		StructMessage message;
-		message.MessageSuccessfuly = true;
-		message.Content = "Successfuly Client Connect?";
-		bool messageSent = _communicationService->SendMessageClient(message);
-
-		if (messageSent)
-		{
-			StructMessage messageReceived = _communicationService->ReceiveMessageClient();
-			//StartGameJoinGame(messageReceived, _gameModel);
-		}
-	}, valuePassword);
-
-	_gameService->SetGameConnectionThread(gameConnection);
+	_gameService->MonitoringPartnerConnection(isPartnerConnected);
 }
 
 void MenuController::StartGame(const bool& messageSuccessfuly, shared_ptr<GameService>& gameService, shared_ptr<GameModel>& gameModel)

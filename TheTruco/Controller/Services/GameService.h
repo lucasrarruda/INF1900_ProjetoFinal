@@ -4,6 +4,7 @@
 #include <GameModel.h>
 #include <PlayerModel.h>
 #include <thread>
+#include <future>
 
 namespace Service
 {
@@ -14,7 +15,7 @@ namespace Service
         explicit GameService(const Repository::GameRepository& gameRepository) : _gameRepository(gameRepository) {};
         ~GameService() = default;
 
-        inline void SetGameConnectionThread(std::thread& connectionThread) { _gameConnectionThread = std::move(connectionThread); }
+        void MonitoringPartnerConnection(std::shared_future<bool> isPartnerConnected);
 
         std::vector<std::shared_ptr<Model::GameModel>> GetAllGames();
         std::shared_ptr<Model::GameModel> GetGameById(const std::string& id);
@@ -44,7 +45,7 @@ namespace Service
 
     private:
         Repository::GameRepository _gameRepository;
-        std::thread _gameConnectionThread;
+        std::thread _gameThread;
 
         Repository::DTOs::GameDTO ToGameDTO(std::shared_ptr<Model::GameModel> gameModel);
         std::shared_ptr<Model::GameModel> ToGameModel(Repository::DTOs::GameDTO gameDTO);
