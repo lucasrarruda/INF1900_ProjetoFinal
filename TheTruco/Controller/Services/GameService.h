@@ -46,7 +46,6 @@ namespace Service
     private:
         std::thread _gameThread;
         Repository::GameRepository _gameRepository;
-        std::thread _gameThread;
 
         Repository::DTOs::GameDTO ToGameDTO(std::shared_ptr<Model::GameModel> gameModel);
         std::shared_ptr<Model::GameModel> ToGameModel(Repository::DTOs::GameDTO gameDTO);
