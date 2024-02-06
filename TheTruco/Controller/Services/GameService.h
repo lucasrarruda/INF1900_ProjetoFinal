@@ -44,6 +44,7 @@ namespace Service
         void FinishedHand(std::shared_ptr<Model::GameModel>& currentGame);
 
     private:
+        std::thread _gameThread;
         Repository::GameRepository _gameRepository;
         std::thread _gameThread;
 

@@ -11,11 +11,13 @@ GameView::GameView(CWnd* parentWindow, std::shared_ptr<Controller::GameControlle
 	_gameController(gameController)
 {
 	_userModel = _gameController->GetUserModel();
+	_currentPlayerModel = _gameController->GetCurrentPlayerModel();
 }
 
 void GameView::Create()
 {
 	_userModel->Attach(shared_from_this());
+	_currentPlayerModel->Attach(shared_from_this());
 
 	CreateGameControls();
 	CreateGameScore();
@@ -94,7 +96,6 @@ void GameView::Hide()
 
 void GameView::CopyGameCodeToClipboard()
 {
-	// TODO: incluir game code no model
 	CString gameCode;
 	_gameCode.GetWindowTextW(gameCode);
 	_gameController->CopyGameCodetoClipboard(GeneralHelper::CStringToWstring(gameCode));
@@ -103,24 +104,43 @@ void GameView::CopyGameCodeToClipboard()
 void GameView::DropCardOne()
 {
 	_yourDroppedCard.ShowWindow(SW_SHOW);
-	_partnerDroppedCard.ShowWindow(SW_SHOW);
+	_gameController->PlayCard(1);
 }
 
 void GameView::DropCardTwo()
 {
 	_yourDroppedCard.ShowWindow(SW_SHOW);
-	_opponentLeftDroppedCard.ShowWindow(SW_SHOW);
+	_gameController->PlayCard(2);
 }
 
 void GameView::DropCardThree()
 {
 	_yourDroppedCard.ShowWindow(SW_SHOW);
-	_opponentRightDroppedCard.ShowWindow(SW_SHOW);
+	_gameController->PlayCard(3);
+}
+
+void GameView::DropCoveredCardOne()
+{
+	_yourDroppedCard.ShowWindow(SW_SHOW);
+	_gameController->PlayCoveredCard(1);
+}
+
+void GameView::DropCoveredCardTwo()
+{
+	_yourDroppedCard.ShowWindow(SW_SHOW);
+	_gameController->PlayCoveredCard(2);
+}
+
+void GameView::DropCoveredCardThree()
+{
+	_yourDroppedCard.ShowWindow(SW_SHOW);
+	_gameController->PlayCoveredCard(3);
 }
 
 void GameView::NotifyTruco()
 {
 	_gameConsole.SetWindowTextW(_T("Truco!"));
+	_gameController->NotifyTruco();
 }
 
 void GameView::LeaveGame()

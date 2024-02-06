@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <Exceptions/MatchInProgress.h>
 #include <Exceptions/GameInvalid.h>
+#include <future>
 
 using namespace std;
 using namespace Service;
@@ -73,7 +74,7 @@ void MenuController::StartJoinGame(const std::string& gameCode)
 
 		if (_gameModel->GetId().compare("{00000000-0000-0000-0000-000000000000}") == 0)
 		{
-			throw MatchInProgress("O usuário atualmente tem uma partida em andamento, finalize a partida para poder criar outra!");
+			throw MatchInProgress("O usuï¿½rio atualmente tem uma partida em andamento, finalize a partida para poder criar outra!");
 		}
 
 		_userModel->SetCurrentGameID(_gameModel->GetId());
@@ -109,7 +110,7 @@ void MenuController::RecoverLastGame()
 
 		if (_gameModel->GetId().compare("{00000000-0000-0000-0000-000000000000}") == 0)
 		{
-			throw MatchInProgress("O usuário atualmente tem uma partida em andamento, finalize a partida para poder criar outra!");
+			throw MatchInProgress("O usuï¿½rio atualmente tem uma partida em andamento, finalize a partida para poder criar outra!");
 		}
 
 		_userModel->SetOnCurrentGame(true);
@@ -162,7 +163,7 @@ void MenuController::ValidationUserAndGame()
 
 	if (_userModel->GetNickName().compare("") == 0)
 	{
-		throw GameInvalid("O usuário não pode criar um jogo com Nickname vazio!");
+		throw GameInvalid("O usuï¿½rio nï¿½o pode criar um jogo com Nickname vazio!");
 	}
 
 	if (userModelConflicting->GetNickName().compare(_userModel->GetNickName()) == 0)
@@ -176,12 +177,12 @@ void MenuController::ValidationUserAndGame()
 
 	if (_userModel->GetCurrentGameID().compare("") != 0)
 	{
-		throw GameInvalid("O usuário atualmente tem uma partida em andamento, finalize a partida para poder criar outra!");
+		throw GameInvalid("O usuï¿½rio atualmente tem uma partida em andamento, finalize a partida para poder criar outra!");
 	}
 
 	if (_userModel->GetOnCurrentGame())
 	{
-		throw GameInvalid("O usuário está atualmente ativo em uma partida!");
+		throw GameInvalid("O usuï¿½rio estï¿½ atualmente ativo em uma partida!");
 	}
 }
 
@@ -209,13 +210,13 @@ void MenuController::CreateConnection(const bool& createGame)
 					_gameService->RemoveGame(_gameModel);
 				}
 
-				throw std::exception("Ocorreu um problema na criação do game, tente novamente!");
+				throw std::exception("Ocorreu um problema na criaÃ§Ã£o do game, tente novamente!");
 			}
 
 			StructMessage receivedvalue = _communicationService->ReceiveDataFromPipe();
 			if (receivedvalue.MessageSuccessfuly)
 			{
-				//Tá dando Erro aqui!!!
+				//TÃ¡ dando Erro aqui!!!
 				//StartGame(receivedvalue.MessageSuccessfuly, _gameService, _gameModel);
 
 				StructMessage messageSender;
@@ -266,7 +267,7 @@ void MenuController::ConnectionChannel(const bool& joinGame)
 			if (messageSent)
 			{
 				StructMessage messageReceived = _communicationService->ReceiveMessageClient();
-				//Tá dando Erro aqui!!!
+				//TÃ¡ dando Erro aqui!!!
 				//StartGameJoinGame(messageReceived, _gameModel);
 
 				return getConnectChannel;
@@ -287,7 +288,7 @@ void MenuController::StartGame(const bool& messageSuccessfuly, shared_ptr<GameSe
 	}
 	else
 	{
-		throw GameInvalid("O jogador não conseguiu se conectar na partida!");
+		throw GameInvalid("O jogador nï¿½o conseguiu se conectar na partida!");
 	}
 }
 
@@ -300,6 +301,6 @@ void MenuController::StartGameJoinGame(StructMessage response, shared_ptr<GameMo
 	}
 	else
 	{
-		throw GameInvalid("O host não conseguiu inicializar a partida!");
+		throw GameInvalid("O host nï¿½o conseguiu inicializar a partida!");
 	}
 }

@@ -7,6 +7,7 @@
 #include <iostream>
 #include <ctime>
 #include <algorithm>
+#include <thread>
 
 using namespace Service;
 using namespace Model;

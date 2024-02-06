@@ -16,6 +16,9 @@ BEGIN_MESSAGE_MAP(MainFrame, CFrameWnd)
 	ON_COMMAND(IDC_YOUR_CARD_ONE_BUTTON, DropCardOne)
 	ON_COMMAND(IDC_YOUR_CARD_TWO_BUTTON, DropCardTwo)
 	ON_COMMAND(IDC_YOUR_CARD_THREE_BUTTON, DropCardThree)
+	ON_COMMAND(IDC_YOUR_CARD_COVER_ONE_BUTTON, DropCoveredCardOne)
+	ON_COMMAND(IDC_YOUR_CARD_COVER_TWO_BUTTON, DropCoveredCardTwo)
+	ON_COMMAND(IDC_YOUR_CARD_COVER_THREE_BUTTON, DropCoveredCardThree)
 	ON_COMMAND(IDC_TRUCO_BUTTON, NotifyTruco)
 	ON_COMMAND(IDC_RECOVER_LAST_GAME_BUTTON, RecoverLastGame)
 END_MESSAGE_MAP()
@@ -135,6 +138,24 @@ void MainFrame::DropCardTwo()
 void MainFrame::DropCardThree()
 {
 	_gameView->DropCardThree();
+	UpdateFrame();
+}
+
+void MainFrame::DropCoveredCardOne()
+{
+	_gameView->DropCoveredCardOne();
+	UpdateFrame();
+}
+
+void MainFrame::DropCoveredCardTwo()
+{
+	_gameView->DropCoveredCardTwo();
+	UpdateFrame();
+}
+
+void MainFrame::DropCoveredCardThree()
+{
+	_gameView->DropCoveredCardThree();
 	UpdateFrame();
 }
 
