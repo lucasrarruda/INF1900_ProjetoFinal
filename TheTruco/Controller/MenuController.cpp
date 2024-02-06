@@ -210,7 +210,7 @@ void MenuController::CreateConnection(const bool& createGame)
 					_gameService->RemoveGame(_gameModel);
 				}
 
-				throw std::exception("Ocorreu um problema na criação do game, tente novamente!");
+				throw GameInvalid("Ocorreu um problema na criação do game, tente novamente!");
 			}
 
 			StructMessage receivedvalue = _communicationService->ReceiveDataFromPipe();
@@ -257,7 +257,7 @@ void MenuController::ConnectionChannel(const bool& joinGame)
 					_gameService->LeaveGame(_gameModel, _userModel->GetNickName());
 				}
 
-				//throw std::overflow_error("Ocorreu um problema ao entrar no game, tente novamente!");
+				//throw GameInvalid("Ocorreu um problema ao entrar no game, tente novamente!");
 			}
 			StructMessage message;
 			message.MessageSuccessfuly = true;
