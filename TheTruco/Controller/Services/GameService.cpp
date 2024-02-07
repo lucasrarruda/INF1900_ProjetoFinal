@@ -23,7 +23,7 @@ using namespace Communication;
 void Service::GameService::MonitoringPartnerConnection(shared_future<bool> isPartnerConnected, 
     std::shared_ptr<Model::GameModel>& currentGame)
 {
-    _gameThread = thread([this, isPartnerConnected, &currentGame]()
+    thread connectionThread([this, isPartnerConnected, &currentGame]()
         {
             if (isPartnerConnected.get())
             {
@@ -39,6 +39,7 @@ void Service::GameService::MonitoringPartnerConnection(shared_future<bool> isPar
                 // TODO: não conectado
             }
         });
+    connectionThread.detach();
 }
 
 vector<std::shared_ptr<Model::GameModel>> GameService::GetAllGames()
@@ -105,7 +106,7 @@ void GameService::UpdateGame(std::shared_ptr<Model::GameModel> game)
     }
 }
 
-void Service::GameService::UpdateOtherPlayers(std::shared_ptr<Model::GameModel> game)
+void Service::GameService::UpdateOtherPlayers(std::shared_ptr<Model::GameModel>& game)
 {
     StructMessage message;
     message.MessageSuccessfuly = true;
@@ -115,6 +116,12 @@ void Service::GameService::UpdateOtherPlayers(std::shared_ptr<Model::GameModel> 
         _communicationService->SendMessageAsHost(message);
     else
         _communicationService->SendMessageAsClient(message);
+
+    thread waitingThread([this, &game]()
+        {
+            WaitTurn(game);
+        });
+    waitingThread.detach();
 }
 
 void GameService::RemoveGame(std::shared_ptr<Model::GameModel> game)
@@ -154,8 +161,8 @@ std::shared_ptr<Model::GameModel> GameService::NewGame(shared_ptr<PlayerModel>& 
     auto gameModel = make_shared<GameModel>("{ChaveAleatorio}", ModeGameEnum::PAIR);
     
     srand(time(0));
-    int turnPlayer = rand() % 3;
-    gameModel->SetTurnPlayer(turnPlayer + 1);
+    //int turnPlayer = rand() % 3;
+    gameModel->SetTurnPlayer(/*turnPlayer + */1);
     gameModel->SetPlayGame(false);
 
     gameModel->AddPlayerToGame(playerHost);
@@ -649,6 +656,10 @@ void Service::GameService::ConnectGameAsHost(std::shared_ptr<Model::GameModel>& 
         throw Exceptions::GameInvalid("O jogador no conseguiu se conectar na partida!");
     }
 
+    auto clientGameModel = Serialize::ConvertStringToGameModel(receivedConfirmation.Content);
+    
+    currentGame->AddPlayerToGame(clientGameModel->GetPlayers()[0]);
+
     StartGame(currentGame);
     Hand(currentGame);
 
@@ -656,19 +667,13 @@ void Service::GameService::ConnectGameAsHost(std::shared_ptr<Model::GameModel>& 
     gameMessage.MessageSuccessfuly = true;
     gameMessage.Content = Serialize::ConvertGameModelToString(currentGame);
     _communicationService->SendMessageAsHost(gameMessage);
-        
-    StructMessage receivedMessage;
-    while (true)
-    {
-        receivedMessage = _communicationService->ReceiveMessageHost();
-    }
 }
 
 void Service::GameService::ConnectGameAsClient(std::shared_ptr<Model::GameModel>& currentGame, std::shared_ptr<Model::UserModel>& currentUser)
 {
     StructMessage message;
     message.MessageSuccessfuly = true;
-    message.Content = "Successfuly Client Connect?";
+    message.Content = Serialize::ConvertGameModelToString(currentGame);
     bool messageSent = _communicationService->SendMessageAsClient(message);
 
     if (!messageSent)
@@ -681,13 +686,24 @@ void Service::GameService::ConnectGameAsClient(std::shared_ptr<Model::GameModel>
     if (receivedGameMessage.MessageSuccessfuly)
         currentGame->CopyFrom(Serialize::ConvertStringToGameModel(receivedGameMessage.Content));
 
-    /*StructMessage receivedMessage;
-    while (true)
-    {
-        receivedMessage = _communicationService->ReceiveMessageClient();
-    }*/
+    WaitTurn(currentGame);
 }
 
-void Service::GameService::WaitTurn()
+void Service::GameService::WaitTurn(std::shared_ptr<Model::GameModel>& currentGame)
 {
+    bool isPlayerHost = currentGame->IsHostPlayer(_userModel->GetNickName());
+
+    StructMessage receivedMessage;
+    if (isPlayerHost)
+    {
+        receivedMessage = _communicationService->ReceiveMessageHost();
+        // TODO: resolver jogada
+        currentGame->CopyFrom(Serialize::ConvertStringToGameModel(receivedMessage.Content));
+    }
+    else
+    {
+        receivedMessage = _communicationService->ReceiveMessageClient();
+        // TODO: resolver jogada
+        currentGame->CopyFrom(Serialize::ConvertStringToGameModel(receivedMessage.Content));
+    }
 }

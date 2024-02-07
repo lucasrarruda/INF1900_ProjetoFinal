@@ -27,6 +27,7 @@ private:
 	std::shared_ptr<Controller::GameController> _gameController;
 	std::shared_ptr<Model::UserModel> _userModel;
 	std::shared_ptr<Model::PlayerModel> _currentPlayerModel;
+	std::shared_ptr<Model::GameModel> _gameModel;
 
 	CWnd* _parentWindow;
 	CStatic _labelGameScore;

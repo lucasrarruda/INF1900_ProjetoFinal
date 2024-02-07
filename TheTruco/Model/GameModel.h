@@ -22,6 +22,8 @@ namespace Model
             _playerThreeDiscardCardKey(playerThreeDiscardCardKey), _playerFourDiscardCardKey(playerFourDiscardCardKey) {}
         ~GameModel() = default;
 
+        inline void SwitchTurn() { Notify(); }
+
         inline std::string GetId() const { return _id; }
         inline void SetId(const std::string& id) { _id = id; };
 
@@ -78,6 +80,7 @@ namespace Model
                 _gameCardDeck = other->_gameCardDeck;
                 _players = other->_players;
             }
+            Notify();
         }
 
         inline bool IsHostPlayer(const std::string& nickname)
@@ -87,6 +90,21 @@ namespace Model
                 if (player.second->GetNickName().compare(nickname) == 0)
                 {
                     return player.second->IsHostPlayer();
+                }
+            }
+            return false;
+        }
+
+        inline bool IsMyTurn(const std::string& nickname)
+        {
+            for (auto& player : GetPlayers())
+            {
+                if (player.second->GetNickName().compare(nickname) == 0)
+                {
+                    if (player.second->GetNumberPlayer() == _turnPlayer)
+                        return true;
+                    return false;
+                    
                 }
             }
             return false;

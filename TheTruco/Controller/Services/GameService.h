@@ -30,7 +30,7 @@ namespace Service
         std::shared_ptr<Model::GameModel> GetGameById(const std::string& id);
         std::shared_ptr<Model::GameModel> SaveGame(std::shared_ptr<Model::GameModel> game);
         void UpdateGame(std::shared_ptr<Model::GameModel> game);
-        void UpdateOtherPlayers(std::shared_ptr<Model::GameModel> game);
+        void UpdateOtherPlayers(std::shared_ptr<Model::GameModel>& game);
         void RemoveGame(std::shared_ptr<Model::GameModel> game);
         std::shared_ptr<Model::GameModel> GetConflictingGame(std::shared_ptr<Model::GameModel> game);
 
@@ -54,7 +54,6 @@ namespace Service
         void FinishedHand(std::shared_ptr<Model::GameModel>& currentGame);
 
     private:
-        std::thread _gameThread;
         Repository::GameRepository _gameRepository;
         std::shared_ptr<Communication::CommunicationService> _communicationService;
         std::shared_ptr<Model::UserModel> _userModel;
@@ -69,6 +68,6 @@ namespace Service
         void ConnectGameAsHost(std::shared_ptr<Model::GameModel>& currentGame, std::shared_ptr<Model::UserModel>& currentUser);
         void ConnectGameAsClient(std::shared_ptr<Model::GameModel>& currentGame, std::shared_ptr<Model::UserModel>& currentUser);
 
-        void WaitTurn();
+        void WaitTurn(std::shared_ptr<Model::GameModel>& currentGame);
     };
 }

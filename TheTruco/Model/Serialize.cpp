@@ -211,6 +211,7 @@ shared_ptr<GameModel> Serialize::ConvertStringToGameModel(const string& result)
 			}
 			continue;
 		case 5:
+			// TODO: erro aqui, está vazio!
 			if (gameCardDeck.compare(L"") != 0)
 			{
 				DatabaseUtils::Get(ConvertStringToWString(value), L"GameCardDeckCopy", gameCardDeck);
@@ -219,7 +220,7 @@ shared_ptr<GameModel> Serialize::ConvertStringToGameModel(const string& result)
 			}
 			continue;
 		case 6:
-			if (players.compare(L"") != 0)
+			if (players.compare(L"") == 0)
 			{
 				DatabaseUtils::Get(ConvertStringToWString(value), L"PlayersCopy", players);
 
@@ -414,6 +415,9 @@ string Serialize::ConvertPlayingCardModelVectorToString(const vector<pair<int, s
 
 vector<pair<int, shared_ptr<PlayingCardModel>>> Serialize::ConvertStringToPlayingCardModelVector(const string& playingCardModelVector)
 {
+	if (playingCardModelVector.empty())
+		return vector<pair<int, shared_ptr<PlayingCardModel>>>();
+
 	vector<string> response = Utils::SplitString(playingCardModelVector, "|");
 	auto playingCardVector = vector<pair<int, shared_ptr<PlayingCardModel>>>();
 

@@ -10,12 +10,14 @@ GameView::GameView(CWnd* parentWindow, std::shared_ptr<Controller::GameControlle
 	_parentWindow(parentWindow),
 	_gameController(gameController)
 {
+	_gameModel = _gameController->GetGameModel();
 	_userModel = _gameController->GetUserModel();
 	_currentPlayerModel = _gameController->GetCurrentPlayerModel();
 }
 
 void GameView::Create()
 {
+	_gameModel->Attach(shared_from_this());
 	_userModel->Attach(shared_from_this());
 	_currentPlayerModel->Attach(shared_from_this());
 
@@ -26,6 +28,17 @@ void GameView::Create()
 
 void GameView::Update()
 {
+	if (_gameModel->IsMyTurn(_userModel->GetNickName()))
+	{
+		// TODO: enable controls
+		_trucoButton.EnableWindow(TRUE);
+	}
+	else
+	{
+		// TODO: disable controls
+		_trucoButton.EnableWindow(FALSE);
+	}
+
 	CString gameCode = GeneralHelper::StringToCString(_userModel->GetCurrentGameID());
 	_gameCode.SetWindowTextW(gameCode);
 }
