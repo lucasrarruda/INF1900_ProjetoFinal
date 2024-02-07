@@ -8,6 +8,8 @@
 #include <ctime>
 #include <algorithm>
 #include <thread>
+#include <Communication/StructMessage.h>
+#include <Exceptions/GameInvalid.h>
 
 using namespace Service;
 using namespace Model;
@@ -16,14 +18,21 @@ using namespace Repository::DTOs;
 using namespace std;
 using namespace Helpers::Constants;
 using namespace Helpers::Enums;
+using namespace Communication;
 
-void Service::GameService::MonitoringPartnerConnection(shared_future<bool> isPartnerConnected)
+void Service::GameService::MonitoringPartnerConnection(shared_future<bool> isPartnerConnected, 
+    std::shared_ptr<Model::GameModel>& currentGame)
 {
-    _gameThread = thread([this, isPartnerConnected]()
+    _gameThread = thread([this, isPartnerConnected, &currentGame]()
         {
             if (isPartnerConnected.get())
             {
-                // TODO: conectado
+                bool isPlayerHost = currentGame->IsHostPlayer(_userModel->GetNickName());
+
+                if (isPlayerHost)
+                    ConnectGameAsHost(currentGame, _userModel);
+                else
+                    ConnectGameAsClient(currentGame, _userModel);
             }
             else
             {
@@ -94,6 +103,18 @@ void GameService::UpdateGame(std::shared_ptr<Model::GameModel> game)
 
         _gameRepository.Update(DATABASE_GAMES, Serialize::ConvertGUIDToString(gameNew.Id), gameNew);
     }
+}
+
+void Service::GameService::UpdateOtherPlayers(std::shared_ptr<Model::GameModel> game)
+{
+    StructMessage message;
+    message.MessageSuccessfuly = true;
+    message.Content = Serialize::ConvertGameModelToString(game);
+ 
+    if (game->IsHostPlayer(_userModel->GetNickName()))
+        _communicationService->SendMessageAsHost(message);
+    else
+        _communicationService->SendMessageAsClient(message);
 }
 
 void GameService::RemoveGame(std::shared_ptr<Model::GameModel> game)
@@ -618,4 +639,55 @@ bool GameService::ElevenHand(const int& totalPoints)
     }
 
     return false;
+}
+
+void Service::GameService::ConnectGameAsHost(std::shared_ptr<Model::GameModel>& currentGame, std::shared_ptr<Model::UserModel>& currentUser)
+{
+    StructMessage receivedConfirmation = _communicationService->ReceiveMessageHost();
+    if (!receivedConfirmation.MessageSuccessfuly)
+    {
+        throw Exceptions::GameInvalid("O jogador no conseguiu se conectar na partida!");
+    }
+
+    StartGame(currentGame);
+    Hand(currentGame);
+
+    StructMessage gameMessage;
+    gameMessage.MessageSuccessfuly = true;
+    gameMessage.Content = Serialize::ConvertGameModelToString(currentGame);
+    _communicationService->SendMessageAsHost(gameMessage);
+        
+    StructMessage receivedMessage;
+    while (true)
+    {
+        receivedMessage = _communicationService->ReceiveMessageHost();
+    }
+}
+
+void Service::GameService::ConnectGameAsClient(std::shared_ptr<Model::GameModel>& currentGame, std::shared_ptr<Model::UserModel>& currentUser)
+{
+    StructMessage message;
+    message.MessageSuccessfuly = true;
+    message.Content = "Successfuly Client Connect?";
+    bool messageSent = _communicationService->SendMessageAsClient(message);
+
+    if (!messageSent)
+    {
+        throw Exceptions::GameInvalid("O host nao conseguiu inicializar a partida!");
+    }
+
+    StructMessage receivedGameMessage;
+    receivedGameMessage = _communicationService->ReceiveMessageClient();
+    if (receivedGameMessage.MessageSuccessfuly)
+        currentGame->CopyFrom(Serialize::ConvertStringToGameModel(receivedGameMessage.Content));
+
+    /*StructMessage receivedMessage;
+    while (true)
+    {
+        receivedMessage = _communicationService->ReceiveMessageClient();
+    }*/
+}
+
+void Service::GameService::WaitTurn()
+{
 }

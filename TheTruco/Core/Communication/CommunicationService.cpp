@@ -18,26 +18,26 @@ void CommunicationService::SetConnectionPassword(const std::wstring_view& passwo
     _currentPassword = password;
 }
 
-bool CommunicationService::SendDataToPipe(const StructMessage& data) {
+bool CommunicationService::SendMessageAsHost(const StructMessage& data) {
     if (_pipeManager->IsPipeConnected()) {
         return _pipeManager->SendMessageW(data);
     }
     else {
         _pipeManager->ConnectToPipe(_currentPassword);
-        SendDataToPipe(data);
+        SendMessageAsHost(data);
         if (_isCurrentServer) {
             _pipeManager->ConnectToPipe(_currentPassword);
-            SendDataToPipe(data);
+            SendMessageAsHost(data);
         }
         else {
             _pipeManager->CreateClientConnection(_currentPassword);
-            SendDataToPipe(data);
+            SendMessageAsHost(data);
         }
     }
     return false;
 }
 
-StructMessage CommunicationService::ReceiveDataFromPipe() {
+StructMessage CommunicationService::ReceiveMessageHost() {
     if (_pipeManager->IsPipeConnected()) {
         return _pipeManager->ReceiveMessage();
     }
@@ -95,7 +95,7 @@ void CommunicationService::SetClientSide()
     _isCurrentServer = false;
 }
 
-bool CommunicationService::SendMessageClient(const StructMessage& message)
+bool CommunicationService::SendMessageAsClient(const StructMessage& message)
 {
     return _pipeManager->SendMessageW(message);
 }

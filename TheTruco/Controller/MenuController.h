@@ -31,7 +31,6 @@ namespace Controller
 		void ValidationUserAndGame();
 		void CreateConnection(const bool& createGame);
 		void ConnectionChannel(const bool& joinGame);
-		void StartGame(const bool& messageSuccessfuly, std::shared_ptr<Service::GameService>& gameService, std::shared_ptr<Model::GameModel>& gameModel);
 		void StartGameJoinGame(Communication::StructMessage response, std::shared_ptr<Model::GameModel>& gameModel);
 	};
 }

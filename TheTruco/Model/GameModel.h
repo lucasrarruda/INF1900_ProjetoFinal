@@ -80,6 +80,18 @@ namespace Model
             }
         }
 
+        inline bool IsHostPlayer(const std::string& nickname)
+        {
+            for (auto& player : GetPlayers())
+            {
+                if (player.second->GetNickName().compare(nickname) == 0)
+                {
+                    return player.second->IsHostPlayer();
+                }
+            }
+            return false;
+        }
+
     private:
         std::string _id = "";
         bool _playGame = false;

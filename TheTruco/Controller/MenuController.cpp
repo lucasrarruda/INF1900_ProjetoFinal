@@ -117,17 +117,9 @@ void MenuController::RecoverLastGame()
 
 		_userService->UpdateUser(_userModel);
 
-		auto playerHost = false;
-		for (auto& player : _gameModel->GetPlayers())
-		{
-			if (player.second->GetNickName().compare(_userModel->GetNickName()) == 0)
-			{
-				playerHost = player.second->IsHostPlayer();
-				break;
-			}
-		}
+		bool isPlayerHost = _gameModel->IsHostPlayer(_userModel->GetNickName());
 
-		if (playerHost)
+		if (isPlayerHost)
 		{
 			CreateConnection(false);
 		}
@@ -213,23 +205,10 @@ void MenuController::CreateConnection(const bool& createGame)
 				throw GameInvalid("Ocorreu um problema na criação do game, tente novamente!");
 			}
 
-			StructMessage receivedvalue = _communicationService->ReceiveDataFromPipe();
-			if (receivedvalue.MessageSuccessfuly)
-			{
-				StartGame(receivedvalue.MessageSuccessfuly, _gameService, _gameModel);
-
-				StructMessage messageSender;
-				messageSender.MessageSuccessfuly = true;
-				messageSender.Content = Serialize::ConvertGameModelToString(_gameModel);
-				_communicationService->SendDataToPipe(messageSender);
-
-				return getOpenedChannel;
-			}
-
-			return false;
+			return getOpenedChannel;
 		});
 
-	_gameService->MonitoringPartnerConnection(isPartnerConnected);
+	_gameService->MonitoringPartnerConnection(isPartnerConnected, _gameModel);
 }
 
 void MenuController::ConnectionChannel(const bool& joinGame)
@@ -258,48 +237,9 @@ void MenuController::ConnectionChannel(const bool& joinGame)
 
 				//throw GameInvalid("Ocorreu um problema ao entrar no game, tente novamente!");
 			}
-			StructMessage message;
-			message.MessageSuccessfuly = true;
-			message.Content = "Successfuly Client Connect?";
-			bool messageSent = _communicationService->SendMessageClient(message);
 
-			if (messageSent)
-			{
-				StructMessage messageReceived = _communicationService->ReceiveMessageClient();
-				//Tá dando Erro aqui!!!
-				//StartGameJoinGame(messageReceived, _gameModel);
-
-				return getConnectChannel;
-			}
-
-			return false;
+			return getConnectChannel;
 		});
 
-	_gameService->MonitoringPartnerConnection(isPartnerConnected);
-}
-
-void MenuController::StartGame(const bool& messageSuccessfuly, shared_ptr<GameService>& gameService, shared_ptr<GameModel>& gameModel)
-{
-	if (messageSuccessfuly)
-	{
-		gameService->StartGame(gameModel);
-		gameService->Hand(gameModel);
-	}
-	else
-	{
-		throw GameInvalid("O jogador n�o conseguiu se conectar na partida!");
-	}
-}
-
-void MenuController::StartGameJoinGame(StructMessage response, shared_ptr<GameModel>& gameModel)
-{
-	if (response.MessageSuccessfuly)
-	{
-		std::cout << response.Content << std::endl;
-		gameModel->CopyFrom(Serialize::ConvertStringToGameModel(response.Content));
-	}
-	else
-	{
-		throw GameInvalid("O host n�o conseguiu inicializar a partida!");
-	}
+	_gameService->MonitoringPartnerConnection(isPartnerConnected, _gameModel);
 }

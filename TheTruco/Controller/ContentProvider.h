@@ -20,12 +20,12 @@ namespace Controller
 			auto gameRepository = Repository::GameRepository();
 			auto userRepository = Repository::UserRepository();
 
-			GameServiceInstance = std::make_shared<Service::GameService>(gameRepository);
-			UserServiceInstance = std::make_shared<Service::UserService>(userRepository);
-
 			GameModelInstance = std::make_shared<Model::GameModel>();
 			UserModelInstance = std::make_shared<Model::UserModel>();
 			CurrentPlayerModel = std::make_shared <Model::PlayerModel>();
+
+			GameServiceInstance = std::make_shared<Service::GameService>(gameRepository, CommunicationServiceInstance,UserModelInstance);
+			UserServiceInstance = std::make_shared<Service::UserService>(userRepository);
 		}
 		~ContentProvider() = default;
 

@@ -178,10 +178,9 @@ string Serialize::ConvertGameDTOToString(const GameDTO& result)
 shared_ptr<GameModel> Serialize::ConvertStringToGameModel(const string& result)
 {
 	vector<string> response = Utils::SplitString(result, ";");
-	shared_ptr<GameModel> gameModel;
+	shared_ptr<GameModel> gameModel = make_shared<GameModel>();
 
 	Helpers::Enums::ModeGameEnum ModeGame;
-	std::shared_ptr<Model::CardDeckModel> GameCardDeck;
 	std::map<int, std::shared_ptr<Model::PlayerModel>> Players;
 	wstring gameCardDeck = L"";
 	wstring players = L"";

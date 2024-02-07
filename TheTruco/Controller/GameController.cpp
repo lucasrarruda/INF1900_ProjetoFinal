@@ -60,6 +60,7 @@ void Controller::GameController::CopyGameCodetoClipboard(const wstring& gameCode
 void Controller::GameController::NotifyTruco()
 {
     _gameService->Truco(_gameModel);
+    _gameService->UpdateOtherPlayers(_gameModel);
 }
 
 void Controller::GameController::LeaveGame()
