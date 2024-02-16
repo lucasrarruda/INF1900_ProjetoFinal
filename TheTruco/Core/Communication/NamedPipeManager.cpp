@@ -71,14 +71,14 @@ bool NamedPipeManager::CreatePipeServer(const std::wstring& password) {
 
 	_hPipe = CreateNamedPipeW(
 		_pipeName,
-		PIPE_ACCESS_DUPLEX,
+		PIPE_ACCESS_DUPLEX | FILE_FLAG_OVERLAPPED,
 		PIPE_TYPE_MESSAGE |
 		PIPE_READMODE_MESSAGE |
 		PIPE_WAIT,
 		4,
 		BUFSIZE,
 		BUFSIZE,
-		PIPE_UNLIMITED_INSTANCES,
+		NMPWAIT_USE_DEFAULT_WAIT,
 		NULL);
 
 	if (_hPipe == INVALID_HANDLE_VALUE)
@@ -195,8 +195,33 @@ StructMessage NamedPipeManager::ReceiveMessage()
 	}
 }
 
-void NamedPipeManager::CloseConnection() {
-	FlushFileBuffers(_hPipe);
-	DisconnectNamedPipe(_hPipe);
-	CloseHandle(_hPipe);
+void NamedPipeManager::CloseConnection() 
+{
+	if (_hPipe != INVALID_HANDLE_VALUE)
+	{
+		//OVERLAPPED overlapped = {};
+		//overlapped.hEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr);
+		//if (overlapped.hEvent) {
+		//	BOOL success = ConnectNamedPipe(_hPipe, &overlapped);
+		//	if (!success) {
+		//		DWORD dwError = GetLastError();
+		//		if (dwError == ERROR_IO_PENDING) {
+		//			if (!CancelIoEx(_hPipe, &overlapped)) {}
+		//		}
+		//		else 
+		//		{
+		//			CloseHandle(overlapped.hEvent);
+		//			FlushFileBuffers(_hPipe);
+
+		//			return;
+		//		}
+		//	}
+
+		//	CloseHandle(overlapped.hEvent);
+		//}
+
+		FlushFileBuffers(_hPipe);
+		DisconnectNamedPipe(_hPipe);
+		CloseHandle(_hPipe);
+	}
 }

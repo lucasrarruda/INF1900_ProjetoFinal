@@ -28,15 +28,26 @@ void GameView::Create()
 
 void GameView::Update()
 {
-	if (_gameModel->IsMyTurn(_userModel->GetNickName()))
+	if (!_gameModel->GetLeaveGame())
 	{
-		// TODO: enable controls
-		_trucoButton.EnableWindow(TRUE);
+		if (_gameModel->IsMyTurn(_userModel->GetNickName()))
+		{
+			// TODO: enable controls
+			_trucoButton.EnableWindow(TRUE);
+			_leaveGameButton.EnableWindow(TRUE);
+		}
+		else
+		{
+			// TODO: disable controls
+			_trucoButton.EnableWindow(FALSE);
+			_leaveGameButton.EnableWindow(FALSE);
+		}
 	}
 	else
 	{
-		// TODO: disable controls
-		_trucoButton.EnableWindow(FALSE);
+		_userModel->SetOnCurrentGameAndCurrentGameID(false, "");
+		_gameController->LeaveGame(true);
+		_showMenuGameButton.SendMessage(BM_CLICK, 0, 0);
 	}
 
 	CString gameCode = GeneralHelper::StringToCString(_userModel->GetCurrentGameID());
@@ -158,7 +169,7 @@ void GameView::NotifyTruco()
 
 void GameView::LeaveGame()
 {
-	_gameController->LeaveGame();
+	_gameController->LeaveGame(false);
 }
 
 void GameView::CreateGameControls()
@@ -227,6 +238,8 @@ void GameView::CreateGameControls()
 	};
 	_leaveGameButton.Create(_T("Leave Game"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, leaveGameButtonRect, _parentWindow, IDC_LEAVE_GAME_BUTTON);
 	_leaveGameButton.SetFont(&_labelFont);
+
+	_showMenuGameButton.Create(_T("Show Menu Game"), WS_CHILD | BS_PUSHBUTTON, leaveGameButtonRect, _parentWindow, IDC_SHOW_MENU_GAME_BUTTON);
 }
 
 void GameView::CreateGameScore()

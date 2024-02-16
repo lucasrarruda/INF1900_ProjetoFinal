@@ -105,3 +105,8 @@ StructMessage CommunicationService::ReceiveMessageClient()
     return _pipeManager->ReceiveMessage();
 }
 
+void Communication::CommunicationService::CloseConnection()
+{
+    _pipeManager->CloseConnection();
+}
+

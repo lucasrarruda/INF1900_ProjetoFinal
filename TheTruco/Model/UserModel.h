@@ -49,6 +49,12 @@ namespace Model
             Notify();
         };
 
+        inline void SetOnCurrentGameAndCurrentGameID(const bool& onCurrentGame, const std::string& currentGameID)
+        {
+            _onCurrentGame = onCurrentGame;
+            _currentGameID = currentGameID;
+        };
+
         inline void CopyFrom(const std::shared_ptr<UserModel> other)
         {
             if (this != other.get())

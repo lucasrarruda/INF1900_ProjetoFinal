@@ -12,6 +12,7 @@ BEGIN_MESSAGE_MAP(MainFrame, CFrameWnd)
 	ON_COMMAND(IDC_START_JOIN_GAME_BUTTON, StartJoinGame)
 	ON_COMMAND(IDC_LEAVE_GAME_BUTTON, LeaveGame)
 	ON_COMMAND(IDC_BACK_BUTTON_JOIN_GAME, BackToMenu)
+	ON_COMMAND(IDC_SHOW_MENU_GAME_BUTTON, ShowMenu)
 	ON_COMMAND(IDC_COPY_TO_CLIPBOARD_BUTTON, CopyGameCodeToClipboard)
 	ON_COMMAND(IDC_YOUR_CARD_ONE_BUTTON, DropCardOne)
 	ON_COMMAND(IDC_YOUR_CARD_TWO_BUTTON, DropCardTwo)
@@ -117,11 +118,17 @@ void MainFrame::BackToMenu()
 	UpdateFrame();
 }
 
+void MainFrame::ShowMenu()
+{
+	HideAllViews();
+	_menuView->Show();
+	UpdateFrame();
+}
+
 void MainFrame::CopyGameCodeToClipboard()
 {
 	_gameView->CopyGameCodeToClipboard();
 }
-
 
 void MainFrame::DropCardOne()
 {

@@ -22,6 +22,7 @@ public:
 	void RecoverLastGame();
 	void LeaveGame();
 	void BackToMenu();
+	void ShowMenu();
 	void CopyGameCodeToClipboard();
 	void DropCardOne();
 	void DropCardTwo();

@@ -48,6 +48,7 @@ private:
 	CFont _labelFont;
 	CFont _scoresFont;
 	CFont _buttonFont;
+	CButton _showMenuGameButton;
 
 	CStatic _cardsDeck;
 	CStatic _yourDroppedCard;

@@ -160,6 +160,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ContentProvider.h" />
+    <ClInclude Include="Exceptions\ErrorMemoryGlobal.h" />
     <ClInclude Include="Exceptions\MatchInProgress.h" />
     <ClInclude Include="Exceptions\GameInvalid.h" />
     <ClInclude Include="framework.h" />

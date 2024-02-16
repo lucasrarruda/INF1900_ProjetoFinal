@@ -60,6 +60,9 @@ namespace Model
         inline int GetPlayerFourDiscardCardKey() const { return _playerFourDiscardCardKey; }
         inline void SetPlayerFourDiscardCardKey(const int& playerFourDiscardCardKey) { _playerFourDiscardCardKey = playerFourDiscardCardKey; };
 
+        inline bool GetLeaveGame() const { return _leaveGame; }
+        inline void SetLeaveGame(const bool& leaveGame) { _leaveGame = leaveGame; };
+
         void AddPlayerToGame(const std::shared_ptr<PlayerModel>& player);
         void RemovePlayerFromGame(const int& playerkey);
 
@@ -79,6 +82,7 @@ namespace Model
                 _playerFourDiscardCardKey = other->_playerFourDiscardCardKey;
                 _gameCardDeck = other->_gameCardDeck;
                 _players = other->_players;
+                _leaveGame = other->_leaveGame;
             }
             Notify();
         }
@@ -122,6 +126,8 @@ namespace Model
         int _playerTwoDiscardCardKey = 0;
         int _playerThreeDiscardCardKey = 0;
         int _playerFourDiscardCardKey = 0;
+
+        bool _leaveGame = false;
 
         std::shared_ptr<Model::CardDeckModel> _gameCardDeck = std::make_shared<Model::CardDeckModel>();
         std::map<int, std::shared_ptr<PlayerModel>> _players;

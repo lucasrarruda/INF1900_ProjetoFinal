@@ -22,6 +22,7 @@ namespace Communication {
 		void SetClientSide();
 		bool SendMessageAsClient(const StructMessage& message);
 		StructMessage ReceiveMessageClient();
+		void CloseConnection();
 
 	private:
 		std::unique_ptr<NamedPipeManager> _pipeManager;

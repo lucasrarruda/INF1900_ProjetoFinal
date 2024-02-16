@@ -245,6 +245,9 @@ shared_ptr<GameModel> Serialize::ConvertStringToGameModel(const string& result)
 		case 12:
 			gameModel->SetPlayerFourDiscardCardKey(stoi(value));
 			continue;
+		case 13:
+			gameModel->SetLeaveGame((value.compare("true") == 0) ? true : false);
+			continue;
 		}
 	}
 
@@ -265,6 +268,7 @@ string Serialize::ConvertGameModelToString(const shared_ptr<GameModel>& result)
 	string playerTwoDiscardCardKey = to_string(result->GetPlayerTwoDiscardCardKey());
 	string playerThreeDiscardCardKey = to_string(result->GetPlayerThreeDiscardCardKey());
 	string playerFourDiscardCardKey = to_string(result->GetPlayerFourDiscardCardKey());
+	string leaveGame = result->GetLeaveGame() ? "true" : "false";
 
 	if (result->GetGameCardDeck() != nullptr)
 	{
@@ -274,7 +278,7 @@ string Serialize::ConvertGameModelToString(const shared_ptr<GameModel>& result)
 	DatabaseUtils::Set(ConvertStringToWString(GUID), L"PlayersCopy", ConvertStringToWString(ConvertPlayerModelMapToString(result->GetPlayers(), GUID)));
 
 	string resultString = GUID + ";" + playGame + ";" + turnPlayer + ";" + modeGame + ";" + gameCardDeck + ";" + players + ";" + handPoints + ";" + firstRound + ";"
-		+ playerOneDiscardCardKey + ";" + playerTwoDiscardCardKey + ";" + playerThreeDiscardCardKey + ";" + playerFourDiscardCardKey;
+		+ playerOneDiscardCardKey + ";" + playerTwoDiscardCardKey + ";" + playerThreeDiscardCardKey + ";" + playerFourDiscardCardKey + ";" + leaveGame;
 
 	return resultString;
 }

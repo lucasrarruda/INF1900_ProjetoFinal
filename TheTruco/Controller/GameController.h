@@ -16,12 +16,12 @@ namespace Controller
 		inline std::shared_ptr<Model::UserModel> GetUserModel() const { return _userModel; }
 		inline std::shared_ptr<Model::PlayerModel> GetCurrentPlayerModel() const { return _currentPlayerModel; }
 
-		void WaitConnetion();
 		void CopyGameCodetoClipboard(const std::wstring& gameCode);
 		void NotifyTruco();
-		void LeaveGame();
+		void LeaveGame(const bool& otherPlayer);
 		void PlayCard(const int& id);
 		void PlayCoveredCard(const int& id);
+		void LeaveClient();
 
 	private:
 		std::shared_ptr<Service::GameService> _gameService;

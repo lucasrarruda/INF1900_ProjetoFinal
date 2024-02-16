@@ -74,7 +74,7 @@ void MenuController::StartJoinGame(const std::string& gameCode)
 
 		if (_gameModel->GetId().compare("{00000000-0000-0000-0000-000000000000}") == 0)
 		{
-			throw MatchInProgress("O usu�rio atualmente tem uma partida em andamento, finalize a partida para poder criar outra!");
+			throw MatchInProgress("O usuario atualmente tem uma partida em andamento, finalize a partida para poder criar outra!");
 		}
 
 		_userModel->SetCurrentGameID(_gameModel->GetId());
@@ -110,7 +110,7 @@ void MenuController::RecoverLastGame()
 
 		if (_gameModel->GetId().compare("{00000000-0000-0000-0000-000000000000}") == 0)
 		{
-			throw MatchInProgress("O usu�rio atualmente tem uma partida em andamento, finalize a partida para poder criar outra!");
+			throw MatchInProgress("O usuario atualmente tem uma partida em andamento, finalize a partida para poder criar outra!");
 		}
 
 		_userModel->SetOnCurrentGame(true);
@@ -155,7 +155,7 @@ void MenuController::ValidationUserAndGame()
 
 	if (_userModel->GetNickName().compare("") == 0)
 	{
-		throw GameInvalid("O usu�rio n�o pode criar um jogo com Nickname vazio!");
+		throw GameInvalid("O usuario nao pode criar um jogo com Nickname vazio!");
 	}
 
 	if (userModelConflicting->GetNickName().compare(_userModel->GetNickName()) == 0)
@@ -169,12 +169,12 @@ void MenuController::ValidationUserAndGame()
 
 	if (_userModel->GetCurrentGameID().compare("") != 0)
 	{
-		throw GameInvalid("O usu�rio atualmente tem uma partida em andamento, finalize a partida para poder criar outra!");
+		throw GameInvalid("O usuario atualmente tem uma partida em andamento, finalize a partida para poder criar outra!");
 	}
 
 	if (_userModel->GetOnCurrentGame())
 	{
-		throw GameInvalid("O usu�rio est� atualmente ativo em uma partida!");
+		throw GameInvalid("O usuario esta atualmente ativo em uma partida!");
 	}
 }
 
@@ -184,28 +184,40 @@ void MenuController::CreateConnection(const bool& createGame)
 
 	shared_future<bool> isPartnerConnected = async(launch::async, [this, valuePassword, createGame]()
 		{
-			_communicationService->SetPipePassword(valuePassword);
-			bool getOpenedChannel = _communicationService->OpenCommunicationChannel(valuePassword);
-
-			if (!getOpenedChannel)
+			try
 			{
-				if (createGame)
+				_communicationService->SetPipePassword(valuePassword);
+				bool getOpenedChannel = _communicationService->OpenCommunicationChannel(valuePassword);
+
+				if (!getOpenedChannel)
 				{
-					_userModel->SetCurrentGameID("");
+					if (createGame)
+					{
+						_userModel->SetCurrentGameID("");
+					}
+
+					_userModel->SetOnCurrentGame(false);
+					_userService->UpdateUser(_userModel);
+
+					if (createGame)
+					{
+						_gameService->RemoveGame(_gameModel);
+					}
+
+					throw GameInvalid("Ocorreu um problema na criação do game, tente novamente!");
 				}
 
+				return getOpenedChannel;
+			}
+			catch (const GameInvalid&)
+			{
+				_userModel->SetCurrentGameID("");
 				_userModel->SetOnCurrentGame(false);
 				_userService->UpdateUser(_userModel);
+				_gameService->RemoveGame(_gameModel);
 
-				if (createGame)
-				{
-					_gameService->RemoveGame(_gameModel);
-				}
-
-				throw GameInvalid("Ocorreu um problema na criação do game, tente novamente!");
-			}
-
-			return getOpenedChannel;
+				return false;
+			} 
 		});
 
 	_gameService->MonitoringPartnerConnection(isPartnerConnected, _gameModel);
@@ -217,28 +229,40 @@ void MenuController::ConnectionChannel(const bool& joinGame)
 
 	shared_future<bool> isPartnerConnected = async(launch::async, [this, valuePassword, joinGame]()
 		{
-			_communicationService->SetPipePassword(valuePassword);
-			bool getConnectChannel = _communicationService->ConnectChannel(valuePassword);
-
-			if (!getConnectChannel)
+			try
 			{
-				if (joinGame)
+				_communicationService->SetPipePassword(valuePassword);
+				bool getConnectChannel = _communicationService->ConnectChannel(valuePassword);
+
+				if (!getConnectChannel)
 				{
-					_userModel->SetCurrentGameID("");
+					if (joinGame)
+					{
+						_userModel->SetCurrentGameID("");
+					}
+
+					_userModel->SetOnCurrentGame(false);
+					_userService->UpdateUser(_userModel);
+
+					if (joinGame)
+					{
+						_gameService->LeaveGame(_gameModel, _userModel->GetNickName());
+					}
+
+					throw GameInvalid("Ocorreu um problema ao entrar no game, tente novamente!");
 				}
 
+				return getConnectChannel;
+			}
+			catch (const GameInvalid&)
+			{
+				_userModel->SetCurrentGameID("");
 				_userModel->SetOnCurrentGame(false);
 				_userService->UpdateUser(_userModel);
+				_gameService->LeaveGame(_gameModel, _userModel->GetNickName());
 
-				if (joinGame)
-				{
-					_gameService->LeaveGame(_gameModel, _userModel->GetNickName());
-				}
-
-				//throw GameInvalid("Ocorreu um problema ao entrar no game, tente novamente!");
+				return false;
 			}
-
-			return getConnectChannel;
 		});
 
 	_gameService->MonitoringPartnerConnection(isPartnerConnected, _gameModel);

@@ -26,6 +26,7 @@
 #define IDC_YOUR_CARD_COVER_THREE_BUTTON	9981
 #define IDC_LEAVE_GAME_BUTTON			9980
 #define IDC_COPY_TO_CLIPBOARD_BUTTON	9979
+#define IDC_SHOW_MENU_GAME_BUTTON		9978
 
 // Next default values for new objects
 //

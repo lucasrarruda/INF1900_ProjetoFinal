@@ -26,6 +26,8 @@ namespace Service
         void MonitoringPartnerConnection(std::shared_future<bool> isPartnerConnected, 
             std::shared_ptr<Model::GameModel>& currentGame);
 
+        inline std::shared_ptr<Communication::CommunicationService> GetCommunicationService() { return _communicationService; };
+
         std::vector<std::shared_ptr<Model::GameModel>> GetAllGames();
         std::shared_ptr<Model::GameModel> GetGameById(const std::string& id);
         std::shared_ptr<Model::GameModel> SaveGame(std::shared_ptr<Model::GameModel> game);
@@ -42,6 +44,7 @@ namespace Service
         void StartGame(std::shared_ptr<Model::GameModel>& currentGame);
         void LeaveGame(std::shared_ptr<Model::GameModel>& currentGame, const std::string& nickName);
         void SurrenderGame(std::shared_ptr<Model::GameModel>& currentGame);
+        void ResetGame(std::shared_ptr<Model::GameModel>& currentGame);
       
         void Hand(std::shared_ptr<Model::GameModel>& currentGame);
         void PlayCard(std::shared_ptr<Model::GameModel>& currentGame, const std::string& nickName, const int& cardKey);
@@ -53,10 +56,13 @@ namespace Service
         void FinishedRound(std::shared_ptr<Model::GameModel>& currentGame);
         void FinishedHand(std::shared_ptr<Model::GameModel>& currentGame);
 
+        void KillWaitingThread();
+
     private:
         Repository::GameRepository _gameRepository;
         std::shared_ptr<Communication::CommunicationService> _communicationService;
         std::shared_ptr<Model::UserModel> _userModel;
+        std::thread _waitingThread;
 
         Repository::DTOs::GameDTO ToGameDTO(std::shared_ptr<Model::GameModel> gameModel);
         std::shared_ptr<Model::GameModel> ToGameModel(Repository::DTOs::GameDTO gameDTO);
