@@ -42,6 +42,28 @@ void GameView::Update()
 			_trucoButton.EnableWindow(FALSE);
 			_leaveGameButton.EnableWindow(FALSE);
 		}
+
+		auto cardsHand = _currentPlayerModel->GetCardDeck();
+
+		string currentCardLabel;
+		for (auto card : cardsHand)
+		{
+			currentCardLabel = card.second->GetSuit() + " - " + card.second->GetRealValue();
+			switch (card.first)
+			{
+			case 0:
+				_yourCardOne.SetWindowTextW(GeneralHelper::StringToCString(currentCardLabel));
+				break;
+			case 1:
+				_yourCardTwo.SetWindowTextW(GeneralHelper::StringToCString(currentCardLabel));
+				break;
+			case 2:
+				_yourCardThree.SetWindowTextW(GeneralHelper::StringToCString(currentCardLabel));
+				break;
+			default:
+				break;
+			}
+		}
 	}
 	else
 	{
@@ -410,7 +432,7 @@ void GameView::CreateGameCards()
 		static_cast<int>(500 * dpiX),
 		static_cast<int>(1090 * dpiY)
 	};
-	_yourCardCoverOne.Create(_T("Card One"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, yourCardCoverOneRect, _parentWindow, IDC_YOUR_CARD_COVER_ONE_BUTTON);
+	_yourCardCoverOne.Create(_T("Play Covered"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, yourCardCoverOneRect, _parentWindow, IDC_YOUR_CARD_COVER_ONE_BUTTON);
 	_yourCardCoverOne.SetFont(&_buttonFont);
 
 	CRect yourCardCoverTwoRect
@@ -420,7 +442,7 @@ void GameView::CreateGameCards()
 		static_cast<int>(640 * dpiX),
 		static_cast<int>(1090 * dpiY)
 	};
-	_yourCardCoverTwo.Create(_T("Card Two"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, yourCardCoverTwoRect, _parentWindow, IDC_YOUR_CARD_COVER_TWO_BUTTON);
+	_yourCardCoverTwo.Create(_T("Play Covered"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, yourCardCoverTwoRect, _parentWindow, IDC_YOUR_CARD_COVER_TWO_BUTTON);
 	_yourCardCoverTwo.SetFont(&_buttonFont);
 
 	CRect yourCardCoverThreeRect
@@ -430,7 +452,7 @@ void GameView::CreateGameCards()
 		static_cast<int>(780 * dpiX),
 		static_cast<int>(1090 * dpiY)
 	};
-	_yourCardCoverThree.Create(_T("Card Three"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, yourCardCoverThreeRect, _parentWindow, IDC_YOUR_CARD_COVER_THREE_BUTTON);
+	_yourCardCoverThree.Create(_T("Play Covered"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, yourCardCoverThreeRect, _parentWindow, IDC_YOUR_CARD_COVER_THREE_BUTTON);
 	_yourCardCoverThree.SetFont(&_buttonFont);
 
 	CRect yourDroppedCardRect

@@ -16,10 +16,12 @@ namespace Service
         GameService() = default;
         explicit GameService(const Repository::GameRepository& gameRepository, 
             std::shared_ptr<Communication::CommunicationService> communication,
-            std::shared_ptr<Model::UserModel>& userModel) :
+            std::shared_ptr<Model::UserModel>& userModel,
+            std::shared_ptr<Model::PlayerModel> currentPlayerModel) :
             _gameRepository(gameRepository),
             _communicationService(communication),
-            _userModel(userModel)
+            _userModel(userModel),
+            _currentPlayerModel(currentPlayerModel)
         {};
         ~GameService() = default;
 
@@ -60,6 +62,7 @@ namespace Service
         Repository::GameRepository _gameRepository;
         std::shared_ptr<Communication::CommunicationService> _communicationService;
         std::shared_ptr<Model::UserModel> _userModel;
+        std::shared_ptr<Model::PlayerModel> _currentPlayerModel;
         std::thread _waitingThread;
 
         Repository::DTOs::GameDTO ToGameDTO(std::shared_ptr<Model::GameModel> gameModel);

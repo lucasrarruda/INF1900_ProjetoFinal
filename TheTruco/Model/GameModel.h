@@ -114,6 +114,18 @@ namespace Model
             return false;
         }
 
+        inline std::shared_ptr<Model::PlayerModel> GetCurrentPlayer(const std::string& nickname)
+        {
+            for (auto& player : GetPlayers())
+            {
+                if (player.second->GetNickName().compare(nickname) == 0)
+                {
+                    return player.second;
+                }
+            }
+            return std::shared_ptr<Model::PlayerModel>();
+        }
+
     private:
         std::string _id = "";
         bool _playGame = false;

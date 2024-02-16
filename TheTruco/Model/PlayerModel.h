@@ -41,6 +41,23 @@ namespace Model
         void AddCardToCardDeckPlayer(const std::shared_ptr<PlayingCardModel>& playingCard);
         void RemoveCardFromCardDeckPlayer(const int& cardkey);
 
+        inline void CopyFrom(const std::shared_ptr<PlayerModel> other)
+        {
+            if (this != other.get())
+            {
+                _nickName = other->_nickName;
+                _ready = other->_ready;
+                _numberPlayer = other->_numberPlayer;
+                _hostPlayer = other->_hostPlayer;
+                _handPoints = other->_handPoints;
+                _isBot = other->_isBot;
+                _handPoints = other->_handPoints;
+                _roundPoints = other->_roundPoints;
+                _cardsDeck = other->_cardsDeck;
+            }
+            Notify();
+        }
+
     private:
         std::string _nickName = "";
         bool _ready = false;

@@ -278,6 +278,8 @@ void GameService::Hand(std::shared_ptr<GameModel>& currentGame)
     TurnCard(currentGame);
 
     UpdateGame(currentGame);
+
+    _currentPlayerModel->CopyFrom(currentGame->GetCurrentPlayer(_userModel->GetNickName()));
 }
 
 void GameService::PlayCard(shared_ptr<GameModel>& currentGame, const string& nickName, const int& cardKey)
@@ -582,7 +584,7 @@ void GameService::DistributeCards(shared_ptr<GameModel>& currentGame)
         cardsDealt = 0;
         for (auto& card : currentGame->GetGameCardDeck()->GetCardDeck())
         {
-            if (cardsDealt > 3)
+            if (cardsDealt < 3)
             {
                 if (std::find(cardsRemoved.begin(), cardsRemoved.end(), card.first) == cardsRemoved.end())
                 {
@@ -672,7 +674,7 @@ void GameService::ConnectGameAsHost(shared_ptr<GameModel>& currentGame, shared_p
 
     auto clientGameModel = Serialize::ConvertStringToGameModel(receivedConfirmation.Content);
     
-    currentGame->AddPlayerToGame(clientGameModel->GetPlayers()[0]);
+    currentGame->AddPlayerToGame(clientGameModel->GetPlayers()[3]);
 
     StartGame(currentGame);
     Hand(currentGame);
@@ -698,7 +700,10 @@ void GameService::ConnectGameAsClient(shared_ptr<GameModel>& currentGame, shared
     StructMessage receivedGameMessage;
     receivedGameMessage = _communicationService->ReceiveMessageClient();
     if (receivedGameMessage.MessageSuccessfuly)
+    {
         currentGame->CopyFrom(Serialize::ConvertStringToGameModel(receivedGameMessage.Content));
+        _currentPlayerModel->CopyFrom(currentGame->GetCurrentPlayer(_userModel->GetNickName()));
+    }
 
     WaitTurn(currentGame);
 }
@@ -713,6 +718,7 @@ void GameService::WaitTurn(shared_ptr<GameModel>& currentGame)
         receivedMessage = _communicationService->ReceiveMessageHost();
         // TODO: resolver jogada
         currentGame->CopyFrom(Serialize::ConvertStringToGameModel(receivedMessage.Content));
+        _currentPlayerModel->CopyFrom(currentGame->GetCurrentPlayer(_userModel->GetNickName()));
 
         if (currentGame->GetLeaveGame())
         {
@@ -725,6 +731,7 @@ void GameService::WaitTurn(shared_ptr<GameModel>& currentGame)
         receivedMessage = _communicationService->ReceiveMessageClient();
         // TODO: resolver jogada
         currentGame->CopyFrom(Serialize::ConvertStringToGameModel(receivedMessage.Content));
+        _currentPlayerModel->CopyFrom(currentGame->GetCurrentPlayer(_userModel->GetNickName()));
 
         if (currentGame->GetLeaveGame())
         {
