@@ -1,56 +1,79 @@
 #include "pch.h"
 #include <GameView.h>
 #include <DisplayHelper.h>
+#include <GeneralHelper.h>
 
 using namespace std;
 
-GameView::GameView(CWnd* parentWindow) : Interfaces::ViewBase(), _parentWindow(parentWindow)
+GameView::GameView(CWnd* parentWindow, std::shared_ptr<Controller::GameController> gameController) :
+	Interfaces::ViewBase(), 
+	_parentWindow(parentWindow),
+	_gameController(gameController)
 {
+	_gameModel = _gameController->GetGameModel();
+	_userModel = _gameController->GetUserModel();
+	_currentPlayerModel = _gameController->GetCurrentPlayerModel();
 }
 
 void GameView::Create()
 {
-	auto [dpiX, dpiY] = DisplayHelper::GetMonitorDpi();
-	
+	_gameModel->Attach(shared_from_this());
+	_userModel->Attach(shared_from_this());
+	_currentPlayerModel->Attach(shared_from_this());
+
+	CreateGameControls();
 	CreateGameScore();
 	CreateGameCards();
-	
-	_labelFont.CreatePointFont(static_cast<int>(120 * dpiX), _T("Arial"));
-	CRect gameConsoleRect
-	{
-		static_cast<int>(20 * dpiX),
-		static_cast<int>(970 * dpiY),
-		static_cast<int>(300 * dpiX),
-		static_cast<int>(1090 * dpiY)
-	};
-	_gameConsole.Create(_T("output messages goes here..."), WS_CHILD | WS_VISIBLE | SS_LEFT, gameConsoleRect, _parentWindow);
-	_gameConsole.SetFont(&_labelFont);
-
-	_trucoButtonFont.CreatePointFont(150, _T("Arial"));
-	CRect trucoButtonRect
-	{
-		static_cast<int>(950 * dpiX),
-		static_cast<int>(970 * dpiY),
-		static_cast<int>(1100 * dpiX),
-		static_cast<int>(1080 * dpiY)
-	};
-	_trucoButton.Create(_T("Truco!"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, trucoButtonRect, _parentWindow, IDC_TRUCO_BUTTON);
-	_trucoButton.SetFont(&_trucoButtonFont);	
-
-	CRect leaveGameButtonRect
-	{
-		static_cast<int>(950 * dpiX),
-		static_cast<int>(20 * dpiY),
-		static_cast<int>(1100 * dpiX),
-		static_cast<int>(50 * dpiY)
-	};
-	_leaveGameButton.Create(_T("Leave Game"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, leaveGameButtonRect, _parentWindow, IDC_TRUCO_BUTTON);
-	_leaveGameButton.SetFont(&_labelFont);
 }
 
 void GameView::Update()
 {
-	// Update UI with new model values
+	if (!_gameModel->GetLeaveGame())
+	{
+		if (_gameModel->IsMyTurn(_userModel->GetNickName()))
+		{
+			// TODO: enable controls
+			_trucoButton.EnableWindow(TRUE);
+			_leaveGameButton.EnableWindow(TRUE);
+		}
+		else
+		{
+			// TODO: disable controls
+			_trucoButton.EnableWindow(FALSE);
+			_leaveGameButton.EnableWindow(FALSE);
+		}
+
+		auto cardsHand = _currentPlayerModel->GetCardDeck();
+
+		string currentCardLabel;
+		for (auto card : cardsHand)
+		{
+			currentCardLabel = card.second->GetSuit() + " - " + card.second->GetRealValue();
+			switch (card.first)
+			{
+			case 0:
+				_yourCardOne.SetWindowTextW(GeneralHelper::StringToCString(currentCardLabel));
+				break;
+			case 1:
+				_yourCardTwo.SetWindowTextW(GeneralHelper::StringToCString(currentCardLabel));
+				break;
+			case 2:
+				_yourCardThree.SetWindowTextW(GeneralHelper::StringToCString(currentCardLabel));
+				break;
+			default:
+				break;
+			}
+		}
+	}
+	else
+	{
+		_userModel->SetOnCurrentGameAndCurrentGameID(false, "");
+		_gameController->LeaveGame(true);
+		_showMenuGameButton.SendMessage(BM_CLICK, 0, 0);
+	}
+
+	CString gameCode = GeneralHelper::StringToCString(_userModel->GetCurrentGameID());
+	_gameCode.SetWindowTextW(gameCode);
 }
 
 void GameView::Show()
@@ -80,6 +103,9 @@ void GameView::Show()
 	_yourCardCoverOne.ShowWindow(SW_SHOW);
 	_yourCardCoverTwo.ShowWindow(SW_SHOW);
 	_yourCardCoverThree.ShowWindow(SW_SHOW);
+	_labelGameCode.ShowWindow(SW_SHOW);
+	_gameCode.ShowWindow(SW_SHOW);
+	_copyToClipboardButton.ShowWindow(SW_SHOW);
 }
 
 void GameView::Hide()
@@ -109,29 +135,133 @@ void GameView::Hide()
 	_yourCardCoverOne.ShowWindow(SW_HIDE);
 	_yourCardCoverTwo.ShowWindow(SW_HIDE);
 	_yourCardCoverThree.ShowWindow(SW_HIDE);
+	_labelGameCode.ShowWindow(SW_HIDE);
+	_gameCode.ShowWindow(SW_HIDE);
+	_copyToClipboardButton.ShowWindow(SW_HIDE);
+}
+
+void GameView::CopyGameCodeToClipboard()
+{
+	CString gameCode;
+	_gameCode.GetWindowTextW(gameCode);
+	_gameController->CopyGameCodetoClipboard(GeneralHelper::CStringToWstring(gameCode));
 }
 
 void GameView::DropCardOne()
 {
 	_yourDroppedCard.ShowWindow(SW_SHOW);
-	_partnerDroppedCard.ShowWindow(SW_SHOW);
+	_gameController->PlayCard(1);
 }
 
 void GameView::DropCardTwo()
 {
 	_yourDroppedCard.ShowWindow(SW_SHOW);
-	_opponentLeftDroppedCard.ShowWindow(SW_SHOW);
+	_gameController->PlayCard(2);
 }
 
 void GameView::DropCardThree()
 {
 	_yourDroppedCard.ShowWindow(SW_SHOW);
-	_opponentRightDroppedCard.ShowWindow(SW_SHOW);
+	_gameController->PlayCard(3);
+}
+
+void GameView::DropCoveredCardOne()
+{
+	_yourDroppedCard.ShowWindow(SW_SHOW);
+	_gameController->PlayCoveredCard(1);
+}
+
+void GameView::DropCoveredCardTwo()
+{
+	_yourDroppedCard.ShowWindow(SW_SHOW);
+	_gameController->PlayCoveredCard(2);
+}
+
+void GameView::DropCoveredCardThree()
+{
+	_yourDroppedCard.ShowWindow(SW_SHOW);
+	_gameController->PlayCoveredCard(3);
 }
 
 void GameView::NotifyTruco()
 {
 	_gameConsole.SetWindowTextW(_T("Truco!"));
+	_gameController->NotifyTruco();
+}
+
+void GameView::LeaveGame()
+{
+	_gameController->LeaveGame(false);
+}
+
+void GameView::CreateGameControls()
+{
+	auto [dpiX, dpiY] = DisplayHelper::GetMonitorDpi();
+
+	_labelFont.CreatePointFont(static_cast<int>(120 * dpiX), _T("Arial"));
+
+	CRect labelGameCodeRect
+	{
+		static_cast<int>(20 * dpiX),
+		static_cast<int>(880 * dpiY),
+		static_cast<int>(340 * dpiX),
+		static_cast<int>(900 * dpiY)
+	};
+	_labelGameCode.Create(_T("Game Code: "), WS_CHILD | WS_VISIBLE | SS_LEFT | BS_CENTER, labelGameCodeRect, _parentWindow);
+	_labelGameCode.SetFont(&_labelFont);
+
+	CRect gameCodeRect
+	{
+		static_cast<int>(20 * dpiX),
+		static_cast<int>(905 * dpiY),
+		static_cast<int>(340 * dpiX),
+		static_cast<int>(925 * dpiY)
+	};
+	_gameCode.Create(_T("{00000000-0000-0000-0000-000000000000}"), WS_CHILD | WS_VISIBLE | SS_CENTER | BS_CENTER, gameCodeRect, _parentWindow);
+	_gameCode.SetFont(&_labelFont);
+
+	CRect copyGameCodeButtonRect
+	{
+		static_cast<int>(20 * dpiX),
+		static_cast<int>(930 * dpiY),
+		static_cast<int>(340 * dpiX),
+		static_cast<int>(960 * dpiY)
+	};
+	_copyToClipboardButton.Create(_T("Copy To Clipboard"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, copyGameCodeButtonRect, _parentWindow, IDC_COPY_TO_CLIPBOARD_BUTTON);
+	_copyToClipboardButton.SetFont(&_labelFont);
+
+	CRect gameConsoleRect
+	{
+		static_cast<int>(20 * dpiX),
+		static_cast<int>(970 * dpiY),
+		static_cast<int>(340 * dpiX),
+		static_cast<int>(1090 * dpiY)
+	};
+	_gameConsole.Create(_T("output messages goes here..."), WS_CHILD | WS_VISIBLE | SS_LEFT, gameConsoleRect, _parentWindow);
+	_gameConsole.SetFont(&_labelFont);
+
+	_trucoButtonFont.CreatePointFont(150, _T("Arial"));
+	CRect trucoButtonRect
+	{
+		static_cast<int>(950 * dpiX),
+		static_cast<int>(970 * dpiY),
+		static_cast<int>(1100 * dpiX),
+		static_cast<int>(1080 * dpiY)
+	};
+	_trucoButton.Create(_T("Truco!"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, trucoButtonRect, _parentWindow, IDC_TRUCO_BUTTON);
+	_trucoButton.SetFont(&_trucoButtonFont);
+
+	CRect leaveGameButtonRect
+	{
+		static_cast<int>(950 * dpiX),
+		static_cast<int>(20 * dpiY),
+		static_cast<int>(1100 * dpiX),
+		static_cast<int>(50 * dpiY)
+	};
+	_leaveGameButton.Create(_T("Leave Game"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, leaveGameButtonRect, _parentWindow, IDC_LEAVE_GAME_BUTTON);
+	_leaveGameButton.SetFont(&_labelFont);
+
+	_showMenuGameButton.Create(_T("Show Menu Game"), WS_CHILD | BS_PUSHBUTTON, leaveGameButtonRect, _parentWindow, IDC_SHOW_MENU_GAME_BUTTON);
 }
 
 void GameView::CreateGameScore()
@@ -302,7 +432,7 @@ void GameView::CreateGameCards()
 		static_cast<int>(500 * dpiX),
 		static_cast<int>(1090 * dpiY)
 	};
-	_yourCardCoverOne.Create(_T("Card One"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, yourCardCoverOneRect, _parentWindow, IDC_YOUR_CARD_COVER_ONE_BUTTON);
+	_yourCardCoverOne.Create(_T("Play Covered"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, yourCardCoverOneRect, _parentWindow, IDC_YOUR_CARD_COVER_ONE_BUTTON);
 	_yourCardCoverOne.SetFont(&_buttonFont);
 
 	CRect yourCardCoverTwoRect
@@ -312,7 +442,7 @@ void GameView::CreateGameCards()
 		static_cast<int>(640 * dpiX),
 		static_cast<int>(1090 * dpiY)
 	};
-	_yourCardCoverTwo.Create(_T("Card Two"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, yourCardCoverTwoRect, _parentWindow, IDC_YOUR_CARD_COVER_TWO_BUTTON);
+	_yourCardCoverTwo.Create(_T("Play Covered"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, yourCardCoverTwoRect, _parentWindow, IDC_YOUR_CARD_COVER_TWO_BUTTON);
 	_yourCardCoverTwo.SetFont(&_buttonFont);
 
 	CRect yourCardCoverThreeRect
@@ -322,7 +452,7 @@ void GameView::CreateGameCards()
 		static_cast<int>(780 * dpiX),
 		static_cast<int>(1090 * dpiY)
 	};
-	_yourCardCoverThree.Create(_T("Card Three"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, yourCardCoverThreeRect, _parentWindow, IDC_YOUR_CARD_COVER_THREE_BUTTON);
+	_yourCardCoverThree.Create(_T("Play Covered"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, yourCardCoverThreeRect, _parentWindow, IDC_YOUR_CARD_COVER_THREE_BUTTON);
 	_yourCardCoverThree.SetFont(&_buttonFont);
 
 	CRect yourDroppedCardRect

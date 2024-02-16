@@ -159,13 +159,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ContentProvider.h" />
+    <ClInclude Include="Exceptions\ErrorMemoryGlobal.h" />
+    <ClInclude Include="Exceptions\MatchInProgress.h" />
+    <ClInclude Include="Exceptions\GameInvalid.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="GameController.h" />
     <ClInclude Include="MenuController.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Services\GameService.h" />
     <ClInclude Include="Services\UserService.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GameController.cpp" />
     <ClCompile Include="MenuController.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

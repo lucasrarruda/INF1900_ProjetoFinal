@@ -1,15 +1,11 @@
 #include "pch.h"
 #include <random>
-#include "CommunicationService.h"
+#include <Communication/CommunicationService.h>
 
 using namespace Communication;
 using namespace Helpers;
 
-CommunicationService::CommunicationService(const std::wstring &password){
-    DeserializeCurrentMachineName(password);
-    _pipeManager =std::make_unique<NamedPipeManager>(_currentPassword, _currentMachineName);
-}
-CommunicationService::CommunicationService(): _currentConnectionKey(CreateConnectionKey()),_isCurrentServer(true) {
+CommunicationService::CommunicationService() : _currentConnectionKey(CreateConnectionKey()), _isCurrentServer(true) {
     DeserializeCurrentMachineName(_currentConnectionKey);
     _pipeManager = std::make_unique<NamedPipeManager>(_currentPassword, _currentMachineName);
 }
@@ -18,22 +14,30 @@ std::wstring CommunicationService::GetConnectionKey() const {
     return _currentConnectionKey;
 }
 
-void CommunicationService::SetConnectionPassword(const std::wstring_view &password ) {
+void CommunicationService::SetConnectionPassword(const std::wstring_view& password) {
     _currentPassword = password;
 }
 
-bool CommunicationService::SendDataToPipe(const StructMessage& data) {
+bool CommunicationService::SendMessageAsHost(const StructMessage& data) {
     if (_pipeManager->IsPipeConnected()) {
         return _pipeManager->SendMessageW(data);
     }
     else {
         _pipeManager->ConnectToPipe(_currentPassword);
-        SendDataToPipe(data);
+        SendMessageAsHost(data);
+        if (_isCurrentServer) {
+            _pipeManager->ConnectToPipe(_currentPassword);
+            SendMessageAsHost(data);
+        }
+        else {
+            _pipeManager->CreateClientConnection(_currentPassword);
+            SendMessageAsHost(data);
+        }
     }
     return false;
 }
 
-StructMessage CommunicationService::ReceiveDataFromPipe() {
+StructMessage CommunicationService::ReceiveMessageHost() {
     if (_pipeManager->IsPipeConnected()) {
         return _pipeManager->ReceiveMessage();
     }
@@ -64,11 +68,45 @@ std::wstring CommunicationService::CreateConnectionKey() {
         password.push_back(caracters[distribuicao(generator)]);
     }
     return password;
-} 
+}
 
 bool CommunicationService::OpenCommunicationChannel(const std::wstring& password) {
     if (!_pipeManager->IsPipeConnected()) {
-        return _pipeManager->CreateConnectionToPipe(password);
+        return _pipeManager->CreatePipeServer(password);
     }
     return true;
 }
+
+bool CommunicationService::ConnectChannel(const std::wstring& password)
+{
+    if (!_pipeManager->IsPipeConnected()) {
+        return _pipeManager->CreateClientConnection(password);
+    }
+    return true;
+}
+
+void CommunicationService::SetPipePassword(const std::wstring& password)
+{
+    _pipeManager->SetPipePassword(password);
+}
+
+void CommunicationService::SetClientSide()
+{
+    _isCurrentServer = false;
+}
+
+bool CommunicationService::SendMessageAsClient(const StructMessage& message)
+{
+    return _pipeManager->SendMessageW(message);
+}
+
+StructMessage CommunicationService::ReceiveMessageClient()
+{
+    return _pipeManager->ReceiveMessage();
+}
+
+void Communication::CommunicationService::CloseConnection()
+{
+    _pipeManager->CloseConnection();
+}
+

@@ -10,14 +10,19 @@ namespace Communication {
 	class CommunicationService
 	{
 	public:
-		explicit CommunicationService(const std::wstring& password);
 		CommunicationService();
 		~CommunicationService() = default;
 		std::wstring GetConnectionKey() const;
 		void SetConnectionPassword(const std::wstring_view& password);
-		bool SendDataToPipe(const StructMessage& data);
-		StructMessage ReceiveDataFromPipe();
+		bool SendMessageAsHost(const StructMessage& data);
+		StructMessage ReceiveMessageHost();
 		bool OpenCommunicationChannel(const std::wstring& password);
+		bool ConnectChannel(const std::wstring& password);
+		void SetPipePassword(const std::wstring& password);
+		void SetClientSide();
+		bool SendMessageAsClient(const StructMessage& message);
+		StructMessage ReceiveMessageClient();
+		void CloseConnection();
 
 	private:
 		std::unique_ptr<NamedPipeManager> _pipeManager;

@@ -15,7 +15,7 @@ int main()
     std::wcout << "Current password:" << valuepassword << std::endl;
     auto getopenedchannel = communication.OpenCommunicationChannel(valuepassword);
     std::cout << "Opened channel: " << getopenedchannel << std::endl;
-    StructMessage receivedvalue = communication.ReceiveDataFromPipe(); 
+    StructMessage receivedvalue = communication.ReceiveMessageHost(); 
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

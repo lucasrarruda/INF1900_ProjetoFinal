@@ -27,6 +27,7 @@ void GameRepository::Remove(const string& section, const string& key)
 
     Helpers::DatabaseUtils::Remove(wsection, wkey);
     Helpers::DatabaseUtils::Remove(wkey);
+    Helpers::DatabaseUtils::Remove(L"Games", wkey);
 }
 
 GameDTO GameRepository::GetConflictingGame(const GameDTO& gameDTO)

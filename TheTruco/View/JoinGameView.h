@@ -1,10 +1,11 @@
 #pragma once
 #include <Interfaces/ViewBase.h>
+#include <MenuController.h>
 
-class JoinGameView : public Interfaces::ViewBase, public CFrameWnd
+class JoinGameView : public Interfaces::ViewBase, public CFrameWnd, public std::enable_shared_from_this<JoinGameView>
 {
 public:
-	JoinGameView(CWnd* parentWindow);
+	JoinGameView(CWnd* parentWindow, std::shared_ptr<Controller::MenuController> menuController);
 	~JoinGameView() = default;
 
 	void Create();
@@ -12,7 +13,13 @@ public:
 	void Show();
 	void Hide();
 
+	void StartJoinGame();
+	void BackCommand();
+
 private:
+	std::shared_ptr<Controller::MenuController> _menuController;
+	std::shared_ptr<Model::UserModel> _userModel;
+
 	CWnd* _parentWindow;
 	CStatic _labelTitle;
 	CStatic _labelGameCode;

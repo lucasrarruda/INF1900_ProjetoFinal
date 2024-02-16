@@ -48,8 +48,8 @@ void CardDeckModel::RemoveCardFromCardDeck(const int& cardKey)
 	{
 		if (card.first == cardKey)
 		{
-			auto iterator = _cardDeck.begin() + card.first;
-			_cardDeck.erase(iterator);
+			auto it = std::find(_cardDeck.begin(), _cardDeck.end(), card);
+			_cardDeck.erase(it);
 			break;
 		}
 	}

@@ -1,10 +1,11 @@
 #pragma once
 #include <Interfaces/ViewBase.h>
+#include <GameController.h>
 
-class GameView : public Interfaces::ViewBase, public CFrameWnd
+class GameView : public Interfaces::ViewBase, public CFrameWnd, public std::enable_shared_from_this<GameView>
 {
 public:
-	GameView(CWnd* parentWindow);
+	GameView(CWnd* parentWindow, std::shared_ptr<Controller::GameController> gameController);
 	~GameView() = default;
 
 	void Create();
@@ -12,12 +13,22 @@ public:
 	void Show();
 	void Hide();
 
+	void CopyGameCodeToClipboard();
 	void DropCardOne();
 	void DropCardTwo();
 	void DropCardThree();
+	void DropCoveredCardOne();
+	void DropCoveredCardTwo();
+	void DropCoveredCardThree();
 	void NotifyTruco();
+	void LeaveGame();
 
 private:
+	std::shared_ptr<Controller::GameController> _gameController;
+	std::shared_ptr<Model::UserModel> _userModel;
+	std::shared_ptr<Model::PlayerModel> _currentPlayerModel;
+	std::shared_ptr<Model::GameModel> _gameModel;
+
 	CWnd* _parentWindow;
 	CStatic _labelGameScore;
 	CStatic _labelGamePoints;
@@ -27,13 +38,17 @@ private:
 	CStatic _yourPoints;
 	CStatic _theirScore;
 	CStatic _theirPoints;
+	CStatic _labelGameCode;
+	CStatic _gameCode;
 	CStatic _gameConsole;
 	CButton _trucoButton;
 	CButton _leaveGameButton;
+	CButton _copyToClipboardButton;
 	CFont _trucoButtonFont;
 	CFont _labelFont;
 	CFont _scoresFont;
 	CFont _buttonFont;
+	CButton _showMenuGameButton;
 
 	CStatic _cardsDeck;
 	CStatic _yourDroppedCard;
@@ -52,6 +67,7 @@ private:
 	CButton _yourCardCoverTwo;
 	CButton _yourCardCoverThree;
 
+	void CreateGameControls();
 	void CreateGameScore();
 	void CreateGameCards();
 };

@@ -22,6 +22,8 @@ namespace Model
             _playerThreeDiscardCardKey(playerThreeDiscardCardKey), _playerFourDiscardCardKey(playerFourDiscardCardKey) {}
         ~GameModel() = default;
 
+        inline void SwitchTurn() { Notify(); }
+
         inline std::string GetId() const { return _id; }
         inline void SetId(const std::string& id) { _id = id; };
 
@@ -58,6 +60,9 @@ namespace Model
         inline int GetPlayerFourDiscardCardKey() const { return _playerFourDiscardCardKey; }
         inline void SetPlayerFourDiscardCardKey(const int& playerFourDiscardCardKey) { _playerFourDiscardCardKey = playerFourDiscardCardKey; };
 
+        inline bool GetLeaveGame() const { return _leaveGame; }
+        inline void SetLeaveGame(const bool& leaveGame) { _leaveGame = leaveGame; };
+
         void AddPlayerToGame(const std::shared_ptr<PlayerModel>& player);
         void RemovePlayerFromGame(const int& playerkey);
 
@@ -77,7 +82,48 @@ namespace Model
                 _playerFourDiscardCardKey = other->_playerFourDiscardCardKey;
                 _gameCardDeck = other->_gameCardDeck;
                 _players = other->_players;
+                _leaveGame = other->_leaveGame;
             }
+            Notify();
+        }
+
+        inline bool IsHostPlayer(const std::string& nickname)
+        {
+            for (auto& player : GetPlayers())
+            {
+                if (player.second->GetNickName().compare(nickname) == 0)
+                {
+                    return player.second->IsHostPlayer();
+                }
+            }
+            return false;
+        }
+
+        inline bool IsMyTurn(const std::string& nickname)
+        {
+            for (auto& player : GetPlayers())
+            {
+                if (player.second->GetNickName().compare(nickname) == 0)
+                {
+                    if (player.second->GetNumberPlayer() == _turnPlayer)
+                        return true;
+                    return false;
+                    
+                }
+            }
+            return false;
+        }
+
+        inline std::shared_ptr<Model::PlayerModel> GetCurrentPlayer(const std::string& nickname)
+        {
+            for (auto& player : GetPlayers())
+            {
+                if (player.second->GetNickName().compare(nickname) == 0)
+                {
+                    return player.second;
+                }
+            }
+            return std::shared_ptr<Model::PlayerModel>();
         }
 
     private:
@@ -93,7 +139,9 @@ namespace Model
         int _playerThreeDiscardCardKey = 0;
         int _playerFourDiscardCardKey = 0;
 
-        std::shared_ptr<Model::CardDeckModel> _gameCardDeck;
+        bool _leaveGame = false;
+
+        std::shared_ptr<Model::CardDeckModel> _gameCardDeck = std::make_shared<Model::CardDeckModel>();
         std::map<int, std::shared_ptr<PlayerModel>> _players;
     };
 }

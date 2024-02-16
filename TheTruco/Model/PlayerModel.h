@@ -23,7 +23,7 @@ namespace Model
         inline int GetNumberPlayer() const { return _numberPlayer; }
         inline void SetNumberPlayer(const int& numberPlayer) { _numberPlayer = numberPlayer; };
 
-        inline bool GetHostPlayer() const { return _hostPlayer; }
+        inline bool IsHostPlayer() const { return _hostPlayer; }
         inline void SetHostPlayer(const bool& host) { _hostPlayer = host; };
 
         inline bool GetIsBot() const { return _isBot; }
@@ -40,6 +40,23 @@ namespace Model
 
         void AddCardToCardDeckPlayer(const std::shared_ptr<PlayingCardModel>& playingCard);
         void RemoveCardFromCardDeckPlayer(const int& cardkey);
+
+        inline void CopyFrom(const std::shared_ptr<PlayerModel> other)
+        {
+            if (this != other.get())
+            {
+                _nickName = other->_nickName;
+                _ready = other->_ready;
+                _numberPlayer = other->_numberPlayer;
+                _hostPlayer = other->_hostPlayer;
+                _handPoints = other->_handPoints;
+                _isBot = other->_isBot;
+                _handPoints = other->_handPoints;
+                _roundPoints = other->_roundPoints;
+                _cardsDeck = other->_cardsDeck;
+            }
+            Notify();
+        }
 
     private:
         std::string _nickName = "";

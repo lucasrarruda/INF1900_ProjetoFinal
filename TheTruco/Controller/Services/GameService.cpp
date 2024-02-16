@@ -7,6 +7,9 @@
 #include <iostream>
 #include <ctime>
 #include <algorithm>
+#include <thread>
+#include <Communication/StructMessage.h>
+#include <Exceptions/GameInvalid.h>
 
 using namespace Service;
 using namespace Model;
@@ -15,8 +18,27 @@ using namespace Repository::DTOs;
 using namespace std;
 using namespace Helpers::Constants;
 using namespace Helpers::Enums;
+using namespace Communication;
 
-vector<std::shared_ptr<Model::GameModel>> GameService::GetAllGames()
+void GameService::MonitoringPartnerConnection(shared_future<bool> isPartnerConnected, 
+    shared_ptr<GameModel>& currentGame)
+{
+    thread connectionThread([this, isPartnerConnected, &currentGame]()
+        {
+            if (isPartnerConnected.get())
+            {
+                bool isPlayerHost = currentGame->IsHostPlayer(_userModel->GetNickName());
+
+                if (isPlayerHost)
+                    ConnectGameAsHost(currentGame, _userModel);
+                else
+                    ConnectGameAsClient(currentGame, _userModel);
+            }
+        });
+    connectionThread.detach();
+}
+
+vector<shared_ptr<GameModel>> GameService::GetAllGames()
 {
     vector<GameDTO> gamesDTO = _gameRepository.GetAll(DATABASE_GAMES);
 
@@ -31,14 +53,14 @@ vector<std::shared_ptr<Model::GameModel>> GameService::GetAllGames()
     return games;
 }
 
-std::shared_ptr<Model::GameModel> GameService::GetGameById(const string& id)
+shared_ptr<GameModel> GameService::GetGameById(const string& id)
 {
     GameDTO game = _gameRepository.GetById(DATABASE_GAMES, id);
 
     return ToGameModel(game);
 }
 
-std::shared_ptr<Model::GameModel> GameService::SaveGame(std::shared_ptr<Model::GameModel> game)
+shared_ptr<GameModel> GameService::SaveGame(shared_ptr<GameModel> game)
 {
     GameDTO gameNew;
 
@@ -59,7 +81,7 @@ std::shared_ptr<Model::GameModel> GameService::SaveGame(std::shared_ptr<Model::G
     return ToGameModel(_gameRepository.Save(DATABASE_GAMES, "", gameNew));
 }
 
-void GameService::UpdateGame(std::shared_ptr<Model::GameModel> game)
+void GameService::UpdateGame(shared_ptr<GameModel> game)
 {
     GameDTO gameNew;
 
@@ -80,7 +102,25 @@ void GameService::UpdateGame(std::shared_ptr<Model::GameModel> game)
     }
 }
 
-void GameService::RemoveGame(std::shared_ptr<Model::GameModel> game)
+void GameService::UpdateOtherPlayers(shared_ptr<GameModel>& game)
+{
+    StructMessage message;
+    message.MessageSuccessfuly = true;
+    message.Content = Serialize::ConvertGameModelToString(game);
+ 
+    if (game->IsHostPlayer(_userModel->GetNickName()))
+        _communicationService->SendMessageAsHost(message);
+    else
+        _communicationService->SendMessageAsClient(message);
+
+    _waitingThread = thread([this, &game]()
+        {
+            WaitTurn(game);
+        });
+    //waitingThread.detach();
+}
+
+void GameService::RemoveGame(shared_ptr<GameModel> game)
 {
     auto gameByid = _gameRepository.GetById(DATABASE_GAMES, game->GetId());
 
@@ -90,7 +130,7 @@ void GameService::RemoveGame(std::shared_ptr<Model::GameModel> game)
     }
 }
 
-std::shared_ptr<Model::GameModel> GameService::GetConflictingGame(std::shared_ptr<Model::GameModel> game)
+shared_ptr<GameModel> GameService::GetConflictingGame(shared_ptr<GameModel> game)
 {
     GameDTO gameConflictngDTO = _gameRepository.GetConflictingGame(ToGameDTO(game));
 
@@ -102,7 +142,7 @@ std::shared_ptr<Model::GameModel> GameService::GetConflictingGame(std::shared_pt
     return gameConflictng;
 }
 
-std::shared_ptr<Model::GameModel> GameService::NewGame(shared_ptr<PlayerModel>& playerHost)
+shared_ptr<GameModel> GameService::NewGame(shared_ptr<PlayerModel>& playerHost)
 {
     playerHost->SetReady(true);
     playerHost->SetNumberPlayer(1);
@@ -116,9 +156,9 @@ std::shared_ptr<Model::GameModel> GameService::NewGame(shared_ptr<PlayerModel>& 
 
     auto gameModel = make_shared<GameModel>("{ChaveAleatorio}", ModeGameEnum::PAIR);
     
-    srand(time(0));
-    int turnPlayer = rand() % 3;
-    gameModel->SetTurnPlayer(turnPlayer + 1);
+    //srand(time(0));
+    //int turnPlayer = rand() % 3;
+    gameModel->SetTurnPlayer(/*turnPlayer +*/ 1);
     gameModel->SetPlayGame(false);
 
     gameModel->AddPlayerToGame(playerHost);
@@ -130,7 +170,7 @@ std::shared_ptr<Model::GameModel> GameService::NewGame(shared_ptr<PlayerModel>& 
     return gameModel;
 }
 
-std::shared_ptr<Model::GameModel> GameService::JoinGame(const string& id, shared_ptr<PlayerModel>& player)
+shared_ptr<GameModel> GameService::JoinGame(const string& id, shared_ptr<PlayerModel>& player)
 {
     auto game = GetGameById(id);
 
@@ -146,7 +186,7 @@ std::shared_ptr<Model::GameModel> GameService::JoinGame(const string& id, shared
     return game;
 }
 
-std::shared_ptr<Model::GameModel> GameService::RecoverLastGame(const string& currentGameID)
+shared_ptr<GameModel> GameService::RecoverLastGame(const string& currentGameID)
 {
     auto game = GetGameById(currentGameID);
 
@@ -155,7 +195,7 @@ std::shared_ptr<Model::GameModel> GameService::RecoverLastGame(const string& cur
     return game;
 }
 
-void GameService::ReadyGame(std::shared_ptr<Model::GameModel> currentGame, const string& nickName)
+void GameService::ReadyGame(shared_ptr<GameModel>& currentGame, const string& nickName)
 {
     bool allPlayersReady = true;
     for (auto& player : currentGame->GetPlayers())
@@ -179,7 +219,7 @@ void GameService::ReadyGame(std::shared_ptr<Model::GameModel> currentGame, const
     UpdateGame(currentGame);
 }
 
-void GameService::StartGame(std::shared_ptr<Model::GameModel> currentGame)
+void GameService::StartGame(shared_ptr<GameModel>& currentGame)
 {
     for (auto& player : currentGame->GetPlayers())
     {
@@ -191,7 +231,7 @@ void GameService::StartGame(std::shared_ptr<Model::GameModel> currentGame)
     UpdateGame(currentGame);
 }
 
-void GameService::LeaveGame(std::shared_ptr<Model::GameModel> currentGame, const string& nickName)
+void GameService::LeaveGame(shared_ptr<GameModel>& currentGame, const string& nickName)
 {
     for (auto& player : currentGame->GetPlayers())
     {
@@ -205,12 +245,30 @@ void GameService::LeaveGame(std::shared_ptr<Model::GameModel> currentGame, const
     UpdateGame(currentGame);
 }
 
-void GameService::SurrenderGame(std::shared_ptr<Model::GameModel> currentGame)
+void GameService::SurrenderGame(shared_ptr<GameModel>& currentGame)
 {
     RemoveGame(currentGame);
 }
 
-void GameService::Hand(std::shared_ptr<Model::GameModel> currentGame)
+void GameService::ResetGame(std::shared_ptr<GameModel>& currentGame)
+{
+    currentGame->SetId("");
+    currentGame->SetPlayGame(false);
+    currentGame->SetTurnPlayer(1);
+    currentGame->SetModeGame(Helpers::Enums::ModeGameEnum::PAIR);
+    currentGame->SetHandPoints(1);
+    currentGame->SetFirstRound(true);
+    currentGame->SetPlayerOneDiscardCardKey(0);
+    currentGame->SetPlayerTwoDiscardCardKey(0);
+    currentGame->SetPlayerThreeDiscardCardKey(0);
+    currentGame->SetPlayerFourDiscardCardKey(0);
+    currentGame->SetGameCardDeck(std::make_shared<Model::CardDeckModel>());
+    
+    std::map<int, std::shared_ptr<PlayerModel>> players;
+    currentGame->SetPlayers(players);
+}
+
+void GameService::Hand(std::shared_ptr<GameModel>& currentGame)
 {
     currentGame->SetFirstRound(true);
     currentGame->SetHandPoints(static_cast<int>(TrucoEnum::TRUCO));
@@ -220,9 +278,11 @@ void GameService::Hand(std::shared_ptr<Model::GameModel> currentGame)
     TurnCard(currentGame);
 
     UpdateGame(currentGame);
+
+    _currentPlayerModel->CopyFrom(currentGame->GetCurrentPlayer(_userModel->GetNickName()));
 }
 
-void GameService::PlayCard(std::shared_ptr<Model::GameModel> currentGame, const std::string& nickName, const int& cardKey)
+void GameService::PlayCard(shared_ptr<GameModel>& currentGame, const string& nickName, const int& cardKey)
 {
     for (auto& player : currentGame->GetPlayers())
     {
@@ -258,7 +318,7 @@ void GameService::PlayCard(std::shared_ptr<Model::GameModel> currentGame, const 
     UpdateGame(currentGame);
 }
 
-void GameService::HideCard(std::shared_ptr<Model::GameModel> currentGame, const std::string& nickName, const int& cardKey)
+void GameService::HideCard(shared_ptr<GameModel>& currentGame, const string& nickName, const int& cardKey)
 {
     for (auto& player : currentGame->GetPlayers())
     {
@@ -295,7 +355,7 @@ void GameService::HideCard(std::shared_ptr<Model::GameModel> currentGame, const 
     UpdateGame(currentGame);
 }
 
-void GameService::Truco(std::shared_ptr<Model::GameModel> currentGame)
+void GameService::Truco(shared_ptr<GameModel>& currentGame)
 {
     switch (currentGame->GetHandPoints())
     {
@@ -316,7 +376,7 @@ void GameService::Truco(std::shared_ptr<Model::GameModel> currentGame)
     UpdateGame(currentGame);
 }
 
-void GameService::FinishedRound(std::shared_ptr<Model::GameModel> currentGame)
+void GameService::FinishedRound(shared_ptr<GameModel>& currentGame)
 {
     currentGame->SetFirstRound(false);
 
@@ -374,7 +434,7 @@ void GameService::FinishedRound(std::shared_ptr<Model::GameModel> currentGame)
     UpdateGame(currentGame);
 }
 
-void GameService::FinishedHand(std::shared_ptr<Model::GameModel> currentGame)
+void GameService::FinishedHand(shared_ptr<GameModel>& currentGame)
 {
     bool draw = false;
     bool justOnePlayerWinWithOutDraw = false;
@@ -411,7 +471,7 @@ void GameService::FinishedHand(std::shared_ptr<Model::GameModel> currentGame)
     UpdateGame(currentGame);
 }
 
-bool GameService::ElevenHand(std::shared_ptr<Model::GameModel> currentGame, const std::string& nickName)
+bool GameService::ElevenHand(shared_ptr<GameModel>& currentGame, const string& nickName)
 {
     bool elevenHand = false;
     for (auto& player : currentGame->GetPlayers())
@@ -439,7 +499,7 @@ bool GameService::ElevenHand(std::shared_ptr<Model::GameModel> currentGame, cons
     return elevenHand;
 }
 
-void GameService::RunGame(std::shared_ptr<Model::GameModel> currentGame, const std::string& nickName)
+void GameService::RunGame(shared_ptr<GameModel>& currentGame, const string& nickName)
 {
     for (auto& player : currentGame->GetPlayers())
     {
@@ -466,7 +526,7 @@ void GameService::RunGame(std::shared_ptr<Model::GameModel> currentGame, const s
     UpdateGame(currentGame);
 }
 
-bool GameService::IronHand(std::shared_ptr<Model::GameModel> currentGame)
+bool GameService::IronHand(shared_ptr<GameModel>& currentGame)
 {
     bool ironHand = true;
     for (auto& player : currentGame->GetPlayers())
@@ -481,7 +541,7 @@ bool GameService::IronHand(std::shared_ptr<Model::GameModel> currentGame)
     return ironHand;
 }
 
-GameDTO GameService::ToGameDTO(std::shared_ptr<Model::GameModel> gameModel)
+GameDTO GameService::ToGameDTO(std::shared_ptr<GameModel> gameModel)
 {
     return GameDTO(
         gameModel->GetPlayGame(), 
@@ -497,7 +557,7 @@ GameDTO GameService::ToGameDTO(std::shared_ptr<Model::GameModel> gameModel)
         gameModel->GetPlayerFourDiscardCardKey());
 }
 
-std::shared_ptr<Model::GameModel> GameService::ToGameModel(Repository::DTOs::GameDTO gameDTO)
+shared_ptr<GameModel> GameService::ToGameModel(Repository::DTOs::GameDTO gameDTO)
 {
     return make_shared<GameModel>(
         Serialize::ConvertGUIDToString(gameDTO.Id), 
@@ -514,7 +574,7 @@ std::shared_ptr<Model::GameModel> GameService::ToGameModel(Repository::DTOs::Gam
         gameDTO.PlayerFourDiscardCardKey);
 }
 
-void GameService::DistributeCards(std::shared_ptr<Model::GameModel> currentGame)
+void GameService::DistributeCards(shared_ptr<GameModel>& currentGame)
 {
     vector<int> cardsRemoved;
     int cardsDealt = 0;
@@ -524,7 +584,7 @@ void GameService::DistributeCards(std::shared_ptr<Model::GameModel> currentGame)
         cardsDealt = 0;
         for (auto& card : currentGame->GetGameCardDeck()->GetCardDeck())
         {
-            if (cardsDealt > 3)
+            if (cardsDealt < 3)
             {
                 if (std::find(cardsRemoved.begin(), cardsRemoved.end(), card.first) == cardsRemoved.end())
                 {
@@ -543,7 +603,7 @@ void GameService::DistributeCards(std::shared_ptr<Model::GameModel> currentGame)
     }
 }
 
-void GameService::TurnCard(std::shared_ptr<Model::GameModel> currentGame)
+void GameService::TurnCard(shared_ptr<GameModel>& currentGame)
 {
     int turnCardKey = 0;
     int manila;
@@ -602,4 +662,81 @@ bool GameService::ElevenHand(const int& totalPoints)
     }
 
     return false;
+}
+
+void GameService::ConnectGameAsHost(shared_ptr<GameModel>& currentGame, shared_ptr<UserModel>& currentUser)
+{
+    StructMessage receivedConfirmation = _communicationService->ReceiveMessageHost();
+    if (!receivedConfirmation.MessageSuccessfuly)
+    {
+        throw Exceptions::GameInvalid("O jogador no conseguiu se conectar na partida!");
+    }
+
+    auto clientGameModel = Serialize::ConvertStringToGameModel(receivedConfirmation.Content);
+    
+    currentGame->AddPlayerToGame(clientGameModel->GetPlayers()[3]);
+
+    StartGame(currentGame);
+    Hand(currentGame);
+
+    StructMessage gameMessage;
+    gameMessage.MessageSuccessfuly = true;
+    gameMessage.Content = Serialize::ConvertGameModelToString(currentGame);
+    _communicationService->SendMessageAsHost(gameMessage);
+}
+
+void GameService::ConnectGameAsClient(shared_ptr<GameModel>& currentGame, shared_ptr<UserModel>& currentUser)
+{
+    StructMessage message;
+    message.MessageSuccessfuly = true;
+    message.Content = Serialize::ConvertGameModelToString(currentGame);
+    bool messageSent = _communicationService->SendMessageAsClient(message);
+
+    if (!messageSent)
+    {
+        throw Exceptions::GameInvalid("O host nao conseguiu inicializar a partida!");
+    }
+
+    StructMessage receivedGameMessage;
+    receivedGameMessage = _communicationService->ReceiveMessageClient();
+    if (receivedGameMessage.MessageSuccessfuly)
+    {
+        currentGame->CopyFrom(Serialize::ConvertStringToGameModel(receivedGameMessage.Content));
+        _currentPlayerModel->CopyFrom(currentGame->GetCurrentPlayer(_userModel->GetNickName()));
+    }
+
+    WaitTurn(currentGame);
+}
+
+void GameService::WaitTurn(shared_ptr<GameModel>& currentGame)
+{
+    bool isPlayerHost = currentGame->IsHostPlayer(_userModel->GetNickName());
+
+    StructMessage receivedMessage;
+    if (isPlayerHost)
+    {
+        receivedMessage = _communicationService->ReceiveMessageHost();
+        // TODO: resolver jogada
+        currentGame->CopyFrom(Serialize::ConvertStringToGameModel(receivedMessage.Content));
+        _currentPlayerModel->CopyFrom(currentGame->GetCurrentPlayer(_userModel->GetNickName()));
+
+        if (currentGame->GetLeaveGame())
+        {
+            currentGame->SwitchTurn();
+            RemoveGame(currentGame);
+        }
+    }
+    else
+    {
+        receivedMessage = _communicationService->ReceiveMessageClient();
+        // TODO: resolver jogada
+        currentGame->CopyFrom(Serialize::ConvertStringToGameModel(receivedMessage.Content));
+        _currentPlayerModel->CopyFrom(currentGame->GetCurrentPlayer(_userModel->GetNickName()));
+
+        if (currentGame->GetLeaveGame())
+        {
+            currentGame->SwitchTurn();
+            RemoveGame(currentGame);
+        }
+    }
 }
