@@ -108,7 +108,7 @@ GameDTO Serialize::ConvertStringToGameDTO(const std::string& result)
 			}
 			continue;
 		case 5:
-			if (gameCardDeck.compare(L"") != 0)
+			if (gameCardDeck.compare(L"") == 0)
 			{
 				DatabaseUtils::Get(ConvertStringToWString(value), L"GameCardDeck", gameCardDeck);
 
@@ -116,7 +116,7 @@ GameDTO Serialize::ConvertStringToGameDTO(const std::string& result)
 			}
 			continue;
 		case 6:
-			if (players.compare(L"") != 0)
+			if (players.compare(L"") == 0)
 			{
 				DatabaseUtils::Get(ConvertStringToWString(value), L"Players", players);
 
@@ -211,8 +211,7 @@ shared_ptr<GameModel> Serialize::ConvertStringToGameModel(const string& result)
 			}
 			continue;
 		case 5:
-			// TODO: erro aqui, está vazio!
-			if (gameCardDeck.compare(L"") != 0)
+			if (gameCardDeck.compare(L"") == 0)
 			{
 				DatabaseUtils::Get(ConvertStringToWString(value), L"GameCardDeckCopy", gameCardDeck);
 
@@ -290,6 +289,9 @@ string Serialize::ConvertGameCardDeckModelToString(const shared_ptr<CardDeckMode
 
 shared_ptr<CardDeckModel> Serialize::ConvertStringToGameCardDeckModel(const string& cardDeckModel)
 {
+	if (cardDeckModel.empty())
+		return shared_ptr<CardDeckModel>();
+
 	vector<string> response = Utils::SplitString(cardDeckModel, "|");
 	auto cardDeck = make_shared<CardDeckModel>();
 
