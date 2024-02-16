@@ -90,15 +90,6 @@ void Controller::GameController::LeaveGame(const bool& otherPlayer)
         {
             _gameService->UpdateOtherPlayers(_gameModel);  
         }
-
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-
-        _gameService->GetCommunicationService()->CloseConnection();
-        _gameService->KillWaitingThread();
-    }
-    else
-    {
-        _gameService->KillWaitingThread();
     }
 
     _gameService->ResetGame(_gameModel);

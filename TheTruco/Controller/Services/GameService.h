@@ -56,8 +56,6 @@ namespace Service
         void FinishedRound(std::shared_ptr<Model::GameModel>& currentGame);
         void FinishedHand(std::shared_ptr<Model::GameModel>& currentGame);
 
-        void KillWaitingThread();
-
     private:
         Repository::GameRepository _gameRepository;
         std::shared_ptr<Communication::CommunicationService> _communicationService;

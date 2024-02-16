@@ -469,14 +469,6 @@ void GameService::FinishedHand(shared_ptr<GameModel>& currentGame)
     UpdateGame(currentGame);
 }
 
-void GameService::KillWaitingThread()
-{
-    if (_waitingThread.joinable())
-    {
-        _waitingThread.join();
-    }
-}
-
 bool GameService::ElevenHand(shared_ptr<GameModel>& currentGame, const string& nickName)
 {
     bool elevenHand = false;
