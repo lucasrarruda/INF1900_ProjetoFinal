@@ -360,6 +360,9 @@ string Serialize::ConvertPlayerModelMapToString(const map<int, shared_ptr<Player
 
 map<int, shared_ptr<PlayerModel>> Serialize::ConvertStringToPlayerModelMap(const string& playerModelMap)
 {
+	if (playerModelMap.empty())
+		return map<int, shared_ptr<PlayerModel>>();
+
 	vector<string> response = Utils::SplitString(playerModelMap, "|");
 	auto playerMap = map<int, shared_ptr<PlayerModel>>();
 
