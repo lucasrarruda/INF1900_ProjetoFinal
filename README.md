@@ -10,6 +10,20 @@ Alunos:
 - Marlon Regis
 - Roger Luiz
 
+## O Jogo
+
+Foi desenvolvido o jogo **The Truco** seguindo as definições estabelecidas para o projeto final.
+
+A aplicação permite realizar uma partida entre 2 jogadores humanos e 2 *bots*, sendo um jogador responsável por criar a partida e convidar um segundo jogador, através de um código compartilhável.
+
+![Alt text](Doc/mainWindow.png)
+![Alt text](Doc/joinGame.png)
+![Alt text](Doc/gameView.png)
+
+# Implementação
+
+## Considerações
+
 ## Requisitos
 
 O projeto está de acordo com os requisitos definidos [aqui](Doc/Requisitos_TheTruco_ProjetoFinal.pdf).
