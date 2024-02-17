@@ -122,3 +122,4 @@ Abaixo segue o diagrama de classe geral da aplicação.
 ![Alt text](Doc/c4_model-GameFlow.jpg)
 
 #### Conexão Entre Instâncias
+![Alt text](Doc/c4_model-ConectionFlow.jpg)
